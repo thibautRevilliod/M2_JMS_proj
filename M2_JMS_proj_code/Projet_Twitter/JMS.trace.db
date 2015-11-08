@@ -1,0 +1,441 @@
+11-08 15:32:51 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "GAZOUILLI" not found; SQL statement:
+select idGAZOUILLI from GAZOUILLI [42102-147]
+11-08 15:32:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PROFIL" not found; SQL statement:
+select idPROFIL from PROFIL limit 1 [42102-147]
+11-08 15:32:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "GAZOUILLI" not found; SQL statement:
+select id from Gazouilli limit 1 [42102-147]
+11-08 15:32:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "ABONNEMENTS" not found; SQL statement:
+select id from ABONNEMENTS limit 1 [42102-147]
+11-08 15:32:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "ABONNE" not found; SQL statement:
+select idGAZOUILLI from ABONNE limit 1 [42102-147]
+11-08 15:32:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "SUIVI" not found; SQL statement:
+select id from SUIVI limit 1 [42102-147]
+11-08 15:32:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTOTO" not found; SQL statement:
+insert into PROFIL values ('1', NomToto,PrenomToto,Toulouse) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:268)
+11-08 15:32:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTUTU" not found; SQL statement:
+insert into PROFIL values ('2', NomTutu,PrenomTutu,Paris) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:269)
+11-08 15:32:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO GAZOUILLI VALUES ('1', BONJOUR CONTENU[*],CURRENT_TIMESTAMP(),TOULOUSE,1) "; expected ")"; SQL statement:
+insert into GAZOUILLI values ('1', Bonjour contenu,CURRENT_TIMESTAMP(),Toulouse,1) [42001-147]
+11-08 15:35:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "GAZOUILLI" not found; SQL statement:
+select id from Gazouilli limit 1 [42102-147]
+11-08 15:35:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from ABONNEMENTS limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:53)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:35:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "ABONNEMENTS" already exists; SQL statement:
+create table ABONNEMENTS  (  idABONNEMENTS VARCHAR( 500 ) NOT NULL PRIMARY KEY,  DATEHEURE TIMESTAMP ) [42101-147]
+11-08 15:35:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTOTO" not found; SQL statement:
+insert into PROFIL values ('1', NomToto,PrenomToto,Toulouse) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:268)
+11-08 15:35:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTUTU" not found; SQL statement:
+insert into PROFIL values ('2', NomTutu,PrenomTutu,Paris) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:269)
+11-08 15:35:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO GAZOUILLI VALUES ('1', BONJOUR CONTENU[*],CURRENT_TIMESTAMP(),TOULOUSE,1) "; expected ")"; SQL statement:
+insert into GAZOUILLI values ('1', Bonjour contenu,CURRENT_TIMESTAMP(),Toulouse,1) [42001-147]
+11-08 15:37:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PROFIL" not found; SQL statement:
+select idPROFIL from PROFIL limit 1 [42102-147]
+11-08 15:37:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "GAZOUILLI" not found; SQL statement:
+select id from Gazouilli limit 1 [42102-147]
+11-08 15:37:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "ABONNEMENTS" not found; SQL statement:
+select id from ABONNEMENTS limit 1 [42102-147]
+11-08 15:37:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "ABONNE" not found; SQL statement:
+select idGAZOUILLI from ABONNE limit 1 [42102-147]
+11-08 15:37:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "SUIVI" not found; SQL statement:
+select id from SUIVI limit 1 [42102-147]
+11-08 15:37:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTOTO" not found; SQL statement:
+insert into PROFIL values ('1', NomToto,PrenomToto,Toulouse) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:268)
+11-08 15:37:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTUTU" not found; SQL statement:
+insert into PROFIL values ('2', NomTutu,PrenomTutu,Paris) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:269)
+11-08 15:37:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO GAZOUILLI VALUES ('1', BONJOUR CONTENU[*],CURRENT_TIMESTAMP(),TOULOUSE,1) "; expected ")"; SQL statement:
+insert into GAZOUILLI values ('1', Bonjour contenu,CURRENT_TIMESTAMP(),Toulouse,1) [42001-147]
+11-08 15:39:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from Gazouilli limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:38)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:39:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from ABONNEMENTS limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:53)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:39:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "IDGAZOUILLI" not found; SQL statement:
+select idGAZOUILLI from ABONNE limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:64)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:39:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from SUIVI limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:78)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:39:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTOTO" not found; SQL statement:
+insert into PROFIL values ('1', NomToto,PrenomToto,Toulouse) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:268)
+11-08 15:39:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTUTU" not found; SQL statement:
+insert into PROFIL values ('2', NomTutu,PrenomTutu,Paris) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:269)
+11-08 15:39:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO GAZOUILLI VALUES ('1', BONJOUR CONTENU[*],CURRENT_TIMESTAMP(),TOULOUSE,1) "; expected ")"; SQL statement:
+insert into GAZOUILLI values ('1', Bonjour contenu,CURRENT_TIMESTAMP(),Toulouse,1) [42001-147]
+11-08 15:39:22 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from Gazouilli limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:38)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:39:22 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from ABONNEMENTS limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:53)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:39:22 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "IDGAZOUILLI" not found; SQL statement:
+select idGAZOUILLI from ABONNE limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:64)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:39:22 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from SUIVI limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:78)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:39:22 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTOTO" not found; SQL statement:
+insert into PROFIL values ('1', NomToto,PrenomToto,Toulouse) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:268)
+11-08 15:39:22 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "NOMTUTU" not found; SQL statement:
+insert into PROFIL values ('2', NomTutu,PrenomTutu,Paris) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Insert.prepare(Insert.java:224)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeUpdateInternal(JdbcStatement.java:122)
+	at org.h2.jdbc.JdbcStatement.executeUpdate(JdbcStatement.java:111)
+	at BDD.JmsJDBC.creerProfil(JmsJDBC.java:166)
+	at BDD.JmsJDBC.main(JmsJDBC.java:269)
+11-08 15:39:22 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO GAZOUILLI VALUES ('1', BONJOUR CONTENU[*],CURRENT_TIMESTAMP(),TOULOUSE,1) "; expected ")"; SQL statement:
+insert into GAZOUILLI values ('1', Bonjour contenu,CURRENT_TIMESTAMP(),Toulouse,1) [42001-147]
+11-08 15:42:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from Gazouilli limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:38)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:42:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "GAZOUILLI" already exists; SQL statement:
+create table GAZOUILLI  (  idGAZOUILLI VARCHAR( 500 ) NOT NULL PRIMARY KEY,  CONTENU VARCHAR( 500 ) ,  DATEHEURE TIMESTAMP ,  VILLE VARCHAR( 500 ) ,  EMETTEUR VARCHAR( 500 ) ,  FOREIGN KEY (EMETTEUR) REFERENCES PROFIL(idPROFIL)) [42101-147]
+11-08 15:43:16 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from Gazouilli limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:38)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:43:16 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE IF NOT EXIST[*] GAZOUILLI  (  IDGAZOUILLI VARCHAR( 500 ) NOT NULL PRIMARY KEY,  CONTENU VARCHAR( 500 ) ,  DATEHEURE TIMESTAMP ,  VILLE VARCHAR( 500 ) ,  EMETTEUR VARCHAR( 500 ) ,  FOREIGN KEY (EMETTEUR) REFERENCES PROFIL(IDPROFIL)) "; expected "EXISTS"; SQL statement:
+create table IF NOT EXIST GAZOUILLI  (  idGAZOUILLI VARCHAR( 500 ) NOT NULL PRIMARY KEY,  CONTENU VARCHAR( 500 ) ,  DATEHEURE TIMESTAMP ,  VILLE VARCHAR( 500 ) ,  EMETTEUR VARCHAR( 500 ) ,  FOREIGN KEY (EMETTEUR) REFERENCES PROFIL(idPROFIL)) [42001-147]
+11-08 15:43:45 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from Gazouilli limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:38)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:43:45 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ID" not found; SQL statement:
+select id from ABONNEMENTS limit 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at BDD.JmsJDBC.<init>(JmsJDBC.java:53)
+	at BDD.JmsJDBC.main(JmsJDBC.java:265)
+11-08 15:43:45 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "ABONNEMENTS" already exists; SQL statement:
+create table ABONNEMENTS  (  idABONNEMENTS VARCHAR( 500 ) NOT NULL PRIMARY KEY,  DATEHEURE TIMESTAMP ) [42101-147]
