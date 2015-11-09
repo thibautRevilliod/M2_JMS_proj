@@ -37,10 +37,13 @@
       <Subscriber name="sub1" />
       <Subscriber name="sub2" />
     </AdministeredTopic>
-  
-    <AdministeredQueue name="queue1" />
-    <AdministeredQueue name="queue2" />
-    <AdministeredQueue name="queue3" />
+  	
+  	<AdministeredTopic name="messagesGeo" />
+  	<AdministeredTopic name="messagesNonGeo" />
+  	
+    <AdministeredQueue name="fileTemp1" />
+    <AdministeredQueue name="fileTemp2" />
+    <AdministeredQueue name="fileGestProfils" />
   </AdministeredDestinations>
 
   <!-- Optional. If not specified, no users will be created -->
