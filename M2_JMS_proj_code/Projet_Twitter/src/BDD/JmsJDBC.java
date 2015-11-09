@@ -147,7 +147,7 @@ public class JmsJDBC {
 		
 	}
 	
-	public int creerGazouilli(String pcontenu, String pville, String pemetteur) {
+	public int creerGazouilli(String pcontenu, String pville, int pemetteur) {
 		int id = -1;
 		try {
 			Statement s = conn.createStatement();
