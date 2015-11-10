@@ -25,11 +25,8 @@ public class LInscription implements ActionListener
 		
 		SenderTwitter.inscription("Toto", "123", "Nom", "Prenom", "Ville");
 		
-		String message = "!celui qu'on reçoit";
-		/**
-		 * TODO : Ajouter : SenderTwitter.getMessage()...
-		 * Puis ouvrir la pop-up
-		 * */
+		String message = SenderTwitter.getMessageRetour();
+
 		JOptionPane.showMessageDialog(vi, message, "Information Inscription", JOptionPane.INFORMATION_MESSAGE);
 	}
 }
