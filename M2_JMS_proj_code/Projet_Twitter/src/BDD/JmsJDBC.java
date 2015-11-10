@@ -141,6 +141,7 @@ public class JmsJDBC {
 	        return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			id = -1;
 			return id;
 		}
 		
@@ -166,6 +167,7 @@ public class JmsJDBC {
         	return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			id = -1;
 			return id;
 		}
 	}
