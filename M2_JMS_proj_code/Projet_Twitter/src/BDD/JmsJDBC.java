@@ -126,11 +126,11 @@ public class JmsJDBC {
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select MAX(idPROFIL) from PROFIL GROUP BY idPROFIL");
+			ResultSet rs = s.executeQuery("select MAX(idPROFIL) from PROFIL");
         	if (rs.next())
         	{
         		id = rs.getInt(1)+1;
-	        	s.executeUpdate("insert into PROFIL values ('"+id+"', '"+ppseudo+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
+	        	s.executeUpdate("insert into PROFIL values ("+id+", '"+ppseudo+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
 	        } 
 			else
 	        {
@@ -152,7 +152,7 @@ public class JmsJDBC {
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select MAX(idGAZOUILLI) from GAZOUILLI GROUP BY idGAZOUILLI");
+			ResultSet rs = s.executeQuery("select MAX(idGAZOUILLI) from GAZOUILLI");
         	if (rs.next())
         	{
         		id = rs.getInt(1)+1;
@@ -240,7 +240,7 @@ public class JmsJDBC {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		JmsJDBC.clearBDD("JMS");
+		//JmsJDBC.clearBDD("JMS");
 		JmsJDBC bdd = new JmsJDBC("JMS");
 		
 		System.out.println(" Création des profils : ");
@@ -248,8 +248,8 @@ public class JmsJDBC {
 		System.out.println("Profil n°: " +bdd.creerProfil("PseudoTutu", "NomTutu", "PrenomTutu", "Paris"));
 		System.out.println(" --> OK");
 		System.out.println(" Création des Gazouilli : ");
-		System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "Toulouse", "1"));
-		System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "Toulouse2", "1"));
+		System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "Toulouse", 1));
+		System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "Toulouse2", 1));
 		System.out.println(" --> OK");
 		
 //		banque.creerCompte("Bobby", 1000);
@@ -260,6 +260,9 @@ public class JmsJDBC {
 //		banque.retirer("Bobby", 150);
 //		System.out.println(" Compte Bobby : "+banque.position("Bobby"));
 
+		//Pour ouvrir H2 il faut pointer sur le bon dossier:
+		//C:\Users\landt\Dropbox\USB\MIAGE\M2\S9\Intergiciels pour la répartition\Projet_JMS\M2_JMS_proj\M2_JMS_proj_code\Projet_Twitter
+		
 		bdd.fermer();		
 	}
 

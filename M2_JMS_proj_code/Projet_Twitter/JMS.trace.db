@@ -455,3 +455,26 @@ org.h2.jdbc.JdbcSQLException: Invalid value "0" for parameter "columnIndex" [900
 	at BDD.JmsJDBC.main(JmsJDBC.java:241)
 11-09 10:39:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: No data is available [2000-147]
+11-10 17:13:20 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "IDGAZOUILLI" not found; SQL statement:
+select MAX(idGAZOUILLI) from PROFIL [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.expression.Aggregate.optimize(Aggregate.java:351)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:165)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:153)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1316)
+	at org.h2.server.web.WebApp.query(WebApp.java:1004)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:967)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:970)
+	at org.h2.server.web.WebThread.process(WebThread.java:166)
+	at org.h2.server.web.WebThread.run(WebThread.java:93)
+	at java.lang.Thread.run(Unknown Source)
