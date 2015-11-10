@@ -52,9 +52,11 @@ import javax.jms.Message;
 import javax.jms.Destination;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.MessageConsumer;
+import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import metier.Gazouilli;
@@ -75,44 +77,53 @@ public class Receiver {
      *
      * @param args command line arguments
      */
-    private static JmsJDBC bdd;
+	private static Context context = null;
+	private static ConnectionFactory factory = null;
+	private static Connection connection = null;
+	private static String factoryName = "ConnectionFactory";
+	private static String destName = null;
+	private static Destination dest = null;
+	private static int count = 1;
+	private static Session session = null;
+	private static MessageConsumer receiver = null;
+	private static MessageProducer sender = null;
+	
+	private static JmsJDBC bdd;
     
+	public static void initialize() throws NamingException, JMSException
+	{
+		// create the JNDI initial context
+        context = new InitialContext();
+
+        // look up the ConnectionFactory
+        factory = (ConnectionFactory) context.lookup(factoryName);
+
+        // look up the Destination
+        dest = (Destination) context.lookup(destName);
+
+        // create the connection
+        connection = factory.createConnection();
+
+        // create the session
+        session = connection.createSession(
+            false, Session.AUTO_ACKNOWLEDGE);
+
+        // create the receiver
+        receiver = session.createConsumer(dest);
+
+        // start the connection, to enable message receipt
+        connection.start();
+	}
+	
+
+	
 	public static void receptionGazouilli()
 	{
-        Context context = null;
-        ConnectionFactory factory = null;
-        Connection connection = null;
-        String factoryName = "ConnectionFactory";
-        String destName = null;
-        Destination dest = null;
-        int count = 1;
-        Session session = null;
-        MessageConsumer receiver = null;
-
         destName = "fileGestProfils";
 
         try {
-            // create the JNDI initial context
-            context = new InitialContext();
-
-            // look up the ConnectionFactory
-            factory = (ConnectionFactory) context.lookup(factoryName);
-
-            // look up the Destination
-            dest = (Destination) context.lookup(destName);
-
-            // create the connection
-            connection = factory.createConnection();
-
-            // create the session
-            session = connection.createSession(
-                false, Session.AUTO_ACKNOWLEDGE);
-
-            // create the receiver
-            receiver = session.createConsumer(dest);
-
-            // start the connection, to enable message receipt
-            connection.start();
+            
+        	initialize();
 
             for (int i = 0; i < count; ++i) {
                 Message message = receiver.receive();
@@ -153,45 +164,20 @@ public class Receiver {
                     exception.printStackTrace();
                 }
             }
+            
+            //réponse dans la file temporaire
         }
     }
 	
 	public static void receptionInscription()
 	{
-        Context context = null;
-        ConnectionFactory factory = null;
-        Connection connection = null;
-        String factoryName = "ConnectionFactory";
-        String destName = null;
-        Destination dest = null;
-        int count = 1;
-        Session session = null;
-        MessageConsumer receiver = null;
-
         destName = "fileGestProfils";
+        int retourCreerProfil;
+        TextMessage replyMessage;
 
         try {
-            // create the JNDI initial context
-            context = new InitialContext();
-
-            // look up the ConnectionFactory
-            factory = (ConnectionFactory) context.lookup(factoryName);
-
-            // look up the Destination
-            dest = (Destination) context.lookup(destName);
-
-            // create the connection
-            connection = factory.createConnection();
-
-            // create the session
-            session = connection.createSession(
-                false, Session.AUTO_ACKNOWLEDGE);
-
-            // create the receiver
-            receiver = session.createConsumer(dest);
-
-            // start the connection, to enable message receipt
-            connection.start();
+            
+        	initialize();
 
             for (int i = 0; i < count; ++i) {
                 Message message = receiver.receive();
@@ -202,9 +188,31 @@ public class Receiver {
                 	
                     System.out.println("Received: " + messageInscription.toString());
                     
-                 // instanciation de la BD 
+                    Destination temporaryQueue = objectMessage.getJMSReplyTo();
+                    System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
                     
-                    bdd.creerProfil(messageInscription.getPseudo(), messageInscription.getNom(), messageInscription.getPrenom(), messageInscription.getVille());
+                    
+                    // enregistrement du profil en BD 
+                    retourCreerProfil = bdd.creerProfil(messageInscription.getPseudo(), messageInscription.getNom(), messageInscription.getPrenom(), messageInscription.getVille());
+                    
+                    if(retourCreerProfil == -1)//inscription KO en BD
+                    {
+                    	replyMessage = session.createTextMessage("Inscription KO");
+                    }
+                    else
+                    {
+                    	replyMessage = session.createTextMessage("Inscription OK");
+                    }
+                    
+                    
+                    
+                    // create the sender
+                    sender = session.createProducer(temporaryQueue);
+                    
+                    sender.send(replyMessage);
+                    
+                    System.out.println("envoi de replyMessage : " + replyMessage);                    
+                    
                     
                 } else if (message != null) {
                     System.out.println("Received non text message");

@@ -4,9 +4,12 @@ import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
+import javax.jms.TemporaryQueue;
+import javax.jms.Message;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -27,8 +30,19 @@ public class SenderTwitter {
     private static Destination dest = null;
     private static Session session = null;
     private static MessageProducer sender = null;
+    private static MessageConsumer consumer = null;
+    
+    private static String messageRetour;
 	
-    public static void initialize() throws NamingException, JMSException
+    public static String getMessageRetour() {
+		return messageRetour;
+	}
+
+	public static void setMessageRetour(String messageRetour) {
+		SenderTwitter.messageRetour = messageRetour;
+	}
+
+	public static void initialize() throws NamingException, JMSException
     {
     	// create the JNDI initial context.
         context = new InitialContext();
@@ -48,6 +62,8 @@ public class SenderTwitter {
 
         // create the sender
         sender = session.createProducer(dest);
+        
+     
 
         // start the connection, to enable message sends
         connection.start();
@@ -60,11 +76,21 @@ public class SenderTwitter {
         try {
             
         	initialize();
+        	
+        	TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
 
         	MessageInscription messageInscription = new MessageInscription(pseudo, motDePasse, nom, prenom, ville);
         	ObjectMessage objectMessage = session.createObjectMessage(messageInscription);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
         	sender.send(objectMessage);
         	System.out.println("Sent: " + messageInscription.toString());
+        	
+        	Message receivedMessage = consumer.receive();//TODO cf 3000 en paramètre
+        	setMessageRetour(receivedMessage.toString());
+        	System.out.println("received message : " + receivedMessage);
             
           
         } catch (JMSException exception) {
