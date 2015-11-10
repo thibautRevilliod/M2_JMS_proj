@@ -1,6 +1,8 @@
 package metier;
 
-public class Gazouilli {
+import java.io.Serializable;
+
+public class Gazouilli implements Serializable {
 	
 	private int idGazouilli;
 	private String contenu;
@@ -12,6 +14,16 @@ public class Gazouilli {
 	
 
 	public Gazouilli(int idGazouilli, String contenu, String date, String heure, String ville,
+			int idEmetteur) {
+		this.idGazouilli = idGazouilli;
+		this.contenu = contenu;
+		this.date = date;
+		this.heure = heure;
+		this.ville = ville;
+		this.idEmetteur = idEmetteur;
+	}
+	
+	public Gazouilli(String contenu, String date, String heure, String ville,
 			int idEmetteur) {
 		this.idGazouilli = idGazouilli;
 		this.contenu = contenu;

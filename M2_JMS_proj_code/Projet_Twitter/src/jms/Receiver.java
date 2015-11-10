@@ -43,7 +43,6 @@ package jms;
  *
  * $Id: Receiver.java,v 1.2 2005/11/18 03:28:01 tanderson Exp $
  */
-import TitreBoursier;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -59,6 +58,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.TextMessage;
 
 import metier.Gazouilli;
+import metier.MessageInscription;
 import bdd.JmsJDBC;
 
 
@@ -75,8 +75,9 @@ public class Receiver {
      *
      * @param args command line arguments
      */
+    private static JmsJDBC bdd;
     
-	public static void receptionInscription()
+	public static void receptionGazouilli()
 	{
         Context context = null;
         ConnectionFactory factory = null;
@@ -155,7 +156,8 @@ public class Receiver {
         }
     }
 	
-	public static void main(String[] args) {
+	public static void receptionInscription()
+	{
         Context context = null;
         ConnectionFactory factory = null;
         Connection connection = null;
@@ -166,15 +168,7 @@ public class Receiver {
         Session session = null;
         MessageConsumer receiver = null;
 
-        if (args.length < 1 || args.length > 2) {
-            System.out.println("usage: Receiver <destination> [count]");
-            System.exit(1);
-        }
-
-        destName = args[0];
-        if (args.length == 2) {
-            count = Integer.parseInt(args[1]);
-        }
+        destName = "fileGestProfils";
 
         try {
             // create the JNDI initial context
@@ -201,9 +195,17 @@ public class Receiver {
 
             for (int i = 0; i < count; ++i) {
                 Message message = receiver.receive();
-                if (message instanceof TextMessage) {
-                    TextMessage text = (TextMessage) message;
-                    System.out.println("Received: " + text.getText());
+                if (message instanceof ObjectMessage) {
+                	
+                    ObjectMessage objectMessage = (ObjectMessage) message;
+                    MessageInscription messageInscription = (MessageInscription) objectMessage.getObject();
+                	
+                    System.out.println("Received: " + messageInscription.toString());
+                    
+                 // instanciation de la BD 
+                    
+                    bdd.creerProfil(messageInscription.getPseudo(), messageInscription.getNom(), messageInscription.getPrenom(), messageInscription.getVille());
+                    
                 } else if (message != null) {
                     System.out.println("Received non text message");
                 }
@@ -232,4 +234,87 @@ public class Receiver {
             }
         }
     }
+	
+	public static void main(String[] args) {
+		bdd = new JmsJDBC("JMS");
+		receptionInscription();
+	}
+	
+//	public static void main(String[] args) {
+//        Context context = null;
+//        ConnectionFactory factory = null;
+//        Connection connection = null;
+//        String factoryName = "ConnectionFactory";
+//        String destName = null;
+//        Destination dest = null;
+//        int count = 1;
+//        Session session = null;
+//        MessageConsumer receiver = null;
+//
+//        if (args.length < 1 || args.length > 2) {
+//            System.out.println("usage: Receiver <destination> [count]");
+//            System.exit(1);
+//        }
+//
+//        destName = args[0];
+//        if (args.length == 2) {
+//            count = Integer.parseInt(args[1]);
+//        }
+//
+//        try {
+//            // create the JNDI initial context
+//            context = new InitialContext();
+//
+//            // look up the ConnectionFactory
+//            factory = (ConnectionFactory) context.lookup(factoryName);
+//
+//            // look up the Destination
+//            dest = (Destination) context.lookup(destName);
+//
+//            // create the connection
+//            connection = factory.createConnection();
+//
+//            // create the session
+//            session = connection.createSession(
+//                false, Session.AUTO_ACKNOWLEDGE);
+//
+//            // create the receiver
+//            receiver = session.createConsumer(dest);
+//
+//            // start the connection, to enable message receipt
+//            connection.start();
+//
+//            for (int i = 0; i < count; ++i) {
+//                Message message = receiver.receive();
+//                if (message instanceof TextMessage) {
+//                    TextMessage text = (TextMessage) message;
+//                    System.out.println("Received: " + text.getText());
+//                } else if (message != null) {
+//                    System.out.println("Received non text message");
+//                }
+//            }
+//        } catch (JMSException exception) {
+//            exception.printStackTrace();
+//        } catch (NamingException exception) {
+//            exception.printStackTrace();
+//        } finally {
+//            // close the context
+//            if (context != null) {
+//                try {
+//                    context.close();
+//                } catch (NamingException exception) {
+//                    exception.printStackTrace();
+//                }
+//            }
+//
+//            // close the connection
+//            if (connection != null) {
+//                try {
+//                    connection.close();
+//                } catch (JMSException exception) {
+//                    exception.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 }
