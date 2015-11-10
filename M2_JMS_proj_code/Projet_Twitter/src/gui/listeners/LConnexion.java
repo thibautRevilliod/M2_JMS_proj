@@ -6,6 +6,8 @@ import gui.vues.VueConnexion;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import jms.SenderTwitter;
+
 
 
 
@@ -22,7 +24,7 @@ public class LConnexion implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		System.out.println("OK j'ai cliqué sur connecter");
-			
+		SenderTwitter.connexion("Toto", "123");
 	}
 }
 

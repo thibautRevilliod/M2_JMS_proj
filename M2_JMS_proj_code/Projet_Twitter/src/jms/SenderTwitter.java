@@ -13,6 +13,8 @@ import javax.naming.NamingException;
 
 import bdd.JmsJDBC;
 import metier.Gazouilli;
+import metier.MessageConnexion;
+import metier.MessageDeconnexion;
 import metier.MessageInscription;
 
 public class SenderTwitter {	
@@ -90,63 +92,98 @@ public class SenderTwitter {
         }
     }
 	
+	public static void connexion(String pseudo, String motDePasse)
+	{
+        destName = "fileGestProfils";
+
+        try {
+            
+        	initialize();
+
+        	MessageConnexion messageConnexion = new MessageConnexion(pseudo, motDePasse);
+        	ObjectMessage objectMessage = session.createObjectMessage(messageConnexion);
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageConnexion.toString());
+            
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	public static void deconnexion(String pseudo)
+	{
+        destName = "fileGestProfils";
+
+        try {
+            
+        	initialize();
+
+        	MessageDeconnexion messageDeconnexion = new MessageDeconnexion(pseudo);
+        	ObjectMessage objectMessage = session.createObjectMessage(messageDeconnexion);
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageDeconnexion.toString());
+            
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
 	
 	public static void creerGazouilliTopic()
 	{
-        Context context = null;
-        ConnectionFactory factory = null;
-        Connection connection = null;
-        String factoryName = "ConnectionFactory";
-        String destName = null;
-        Destination dest = null;
-        Session session = null;
-        MessageProducer sender = null;
-        String text = "Message ";
         destName = "messagesNonGeo";
 
         try {
-            // create the JNDI initial context.
-            context = new InitialContext();
-
-            // look up the ConnectionFactory
-            factory = (ConnectionFactory) context.lookup(factoryName);
-
-            // look up the Destination
-            dest = (Destination) context.lookup(destName);
-
-            // create the connection
-            connection = factory.createConnection();
-
-            // create the session
-            session = connection.createSession(
-                false, Session.AUTO_ACKNOWLEDGE);
-
-            // create the sender
-            sender = session.createProducer(dest);
-
-            // start the connection, to enable message sends
-            connection.start();
-            
-            String vContenu = "Bonjour contenu";
-            String vDate = "";
-            String vHeure = "";
-            String vVille = "Toulouse";
-            int vIdEmetteur = 1;
-            
-            while(true) {
-            	Gazouilli gazouilli = new Gazouilli(1,vContenu, vDate, vHeure, vVille, vIdEmetteur);
+        		
+        		initialize();
+        		
+        		Gazouilli gazouilli = new Gazouilli("Content","10/11/2015","10h00","Marseille",1);
             	ObjectMessage objectMessage = session.createObjectMessage(gazouilli);
             	sender.send(objectMessage);
             	System.out.println("Sent: " + gazouilli.toString());
-            }
-
-            
-            
-            
-            
-            
-            
-          
+                      
         } catch (JMSException exception) {
             exception.printStackTrace();
         } catch (NamingException exception) {
@@ -242,11 +279,11 @@ public class SenderTwitter {
             int vIdEmetteur = 1;
             
             // instanciation de la BD 
-            JmsJDBC bdd = new JmsJDBC("JMS");
-            
-            bdd.creerGazouilli(vContenu, vVille, vIdEmetteur);
-            
-            Gazouilli gazouilli = new Gazouilli(vvContenu, vDate, vHeure, vVille, vEmetteur);
+//            JmsJDBC bdd = new JmsJDBC("JMS");
+//            
+//            bdd.creerGazouilli(vContenu, vVille, vIdEmetteur);
+//            
+//            Gazouilli gazouilli = new Gazouilli(vvContenu, vDate, vHeure, vVille, vEmetteur);
             
             
           
