@@ -7,18 +7,18 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JOptionPane;
 
-import gui.vues.VueMenuDepart;
+import gui.vues.VueParametres;
 
 
 
-public class LFermerMenu implements ActionListener, WindowListener 
+public class LFermerParametres implements ActionListener, WindowListener 
 {
 
 		
-	private VueMenuDepart vue;
+	private VueParametres vue;
 		
 	
-	public LFermerMenu (VueMenuDepart pvue)
+	public LFermerParametres (VueParametres pvue)
 	{
 			this.vue=pvue;
 	}
@@ -31,7 +31,7 @@ public class LFermerMenu implements ActionListener, WindowListener
 		
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
-			System.exit(0);
+			this.vue.setVisible(false);
 		}
 		
 	}
@@ -48,7 +48,6 @@ public class LFermerMenu implements ActionListener, WindowListener
 
 	//@Override
 	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	} 
 	

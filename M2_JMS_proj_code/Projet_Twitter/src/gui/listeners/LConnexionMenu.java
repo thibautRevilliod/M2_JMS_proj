@@ -22,6 +22,7 @@ public class LConnexionMenu implements ActionListener
 	{
 		VueConnexion vc = new VueConnexion();
 		vc.setVisible(true);
+		vc.setLocation(800, 300);
 	}
 }
 

@@ -2,8 +2,6 @@ package gui.vues;
 
 import gui.listeners.*;
 
-import java.awt.BorderLayout;
-
 import javax.swing.*;
 
 import java.awt.event.ActionListener;

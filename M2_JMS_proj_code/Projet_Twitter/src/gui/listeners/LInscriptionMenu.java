@@ -21,6 +21,7 @@ public class LInscriptionMenu implements ActionListener
 	{
 		VueInscription vI = new VueInscription();
 		vI.setVisible(true);
+		vI.setLocation(800, 300);
 	}
 }
 

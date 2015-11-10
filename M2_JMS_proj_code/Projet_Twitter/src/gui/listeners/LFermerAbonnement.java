@@ -7,20 +7,20 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JOptionPane;
 
-import gui.vues.VueMenuDepart;
+import gui.vues.VueAbonnement;
 
 
 
-public class LFermerMenu implements ActionListener, WindowListener 
+public class LFermerAbonnement implements ActionListener, WindowListener 
 {
 
 		
-	private VueMenuDepart vue;
+	private VueAbonnement vue;
 		
 	
-	public LFermerMenu (VueMenuDepart pvue)
+	public LFermerAbonnement (VueAbonnement vue)
 	{
-			this.vue=pvue;
+			this.vue=vue;
 	}
 	
 	
@@ -31,7 +31,7 @@ public class LFermerMenu implements ActionListener, WindowListener
 		
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
-			System.exit(0);
+			this.vue.setVisible(false);
 		}
 		
 	}

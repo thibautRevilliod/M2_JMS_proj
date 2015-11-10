@@ -1,16 +1,24 @@
 package gui.vues;
 
+import gui.listeners.LConnexion;
+import gui.listeners.LEnregistrerParametres;
+import gui.listeners.LFermer;
 import gui.listeners.LFermerInscription;
+import gui.listeners.LFermerParametres;
 import gui.listeners.LInscription;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class VueInscription extends JFrame{
+public class VueParametres extends JFrame{
 		
-
+	private JPanel panelInscription; 
 		private JLabel lblEntrezVotrePseudo;
 		private JLabel lblEntrezVotreMot;
 		private JLabel lblEntrezVotreNom;
@@ -23,16 +31,16 @@ public class VueInscription extends JFrame{
 		private JTextField textField_4;
 	
 
-	public VueInscription ()
+	public VueParametres ()
 	{
 		
-		this.setTitle("Inscription");
+		this.setTitle("Param\u00E8tres");
 		this.setLocationRelativeTo(null);
 		this.setSize(515,345);
 		this.setResizable(false);
 		this.setLocation(50, 50);
 	
-		this.addWindowListener(new LFermerInscription (this));
+		this.addWindowListener(new LFermerParametres (this));
 		getContentPane().setLayout(null);
 		
 		lblEntrezVotrePseudo = new JLabel("Entrez votre pseudo :");
@@ -80,9 +88,9 @@ public class VueInscription extends JFrame{
 		getContentPane().add(textField_4);
 		textField_4.setColumns(10);
 		
-		JButton btnValider = new JButton("Valider");
-		btnValider.setBounds(144, 249, 115, 29);
-		getContentPane().add(btnValider);
+		JButton btnEnregistrer = new JButton("Enregistrer");
+		btnEnregistrer.setBounds(144, 249, 115, 29);
+		getContentPane().add(btnEnregistrer);
 		
 		JButton btnQuitter = new JButton("Quitter");
 		btnQuitter.setBounds(296, 249, 115, 29);
@@ -90,10 +98,10 @@ public class VueInscription extends JFrame{
 		
 		
 		// Abonnements :
-		btnValider.addActionListener(new LInscription (this));    // A COMPLETER AVEC LA BDD
-		btnQuitter.addActionListener(new LFermerInscription (this));
-		this.addWindowListener(new LFermerInscription (this));
-					
+		btnEnregistrer.addActionListener(new LEnregistrerParametres (this));    // A COMPLETER AVEC LA BDD
+		btnQuitter.addActionListener(new LFermerParametres (this));
+		this.addWindowListener(new LFermerParametres (this));
+				
 				
 	}	
 }

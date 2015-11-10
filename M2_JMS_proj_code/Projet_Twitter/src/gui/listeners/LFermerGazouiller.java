@@ -1,5 +1,7 @@
 package gui.listeners;
 
+import gui.vues.VueGazouiller;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -7,18 +9,16 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JOptionPane;
 
-import gui.vues.VueMenuDepart;
 
 
-
-public class LFermerMenu implements ActionListener, WindowListener 
+public class LFermerGazouiller implements ActionListener, WindowListener 
 {
 
 		
-	private VueMenuDepart vue;
+	private VueGazouiller vue;
 		
 	
-	public LFermerMenu (VueMenuDepart pvue)
+	public LFermerGazouiller (VueGazouiller pvue)
 	{
 			this.vue=pvue;
 	}
@@ -31,26 +31,31 @@ public class LFermerMenu implements ActionListener, WindowListener
 		
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
+			this.vue.setVisible(false);
+		}
+		
+	}
+		
+	
+
+	
+	public void windowClosing(WindowEvent arg0) 
+	{
+		int reponse = JOptionPane.showConfirmDialog(this.vue, "Voulez réellemment fermer la fenêtre ?", "Quitter ?", JOptionPane.YES_NO_OPTION);
+					
+		if (reponse == JOptionPane.YES_OPTION) 
+		{
 			System.exit(0);
 		}
 		
 	}
-
-	
 	
 	public void windowActivated(WindowEvent arg0) {}
 	public void windowClosed(WindowEvent arg0) {}
 	public void windowDeactivated(WindowEvent arg0) {}
 	public void windowDeiconified(WindowEvent arg0) {}
 	public void windowIconified(WindowEvent arg0) {}
-	public void windowOpened(WindowEvent arg0) {}
-
-
-	//@Override
-	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	} 
+	public void windowOpened(WindowEvent arg0) {} 
 	
 }
 	
