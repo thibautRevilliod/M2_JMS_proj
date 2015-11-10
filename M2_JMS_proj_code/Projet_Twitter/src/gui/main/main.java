@@ -3,7 +3,7 @@ import gui.vues.*;
 
 import java.*;
 
-import BDD.JmsJDBC; 
+import bdd.JmsJDBC; 
 
 public class main {
 
