@@ -16,9 +16,11 @@ import javax.naming.NamingException;
 
 import bdd.JmsJDBC;
 import metier.Gazouilli;
+import metier.MessageAbonnement;
 import metier.MessageConnexion;
 import metier.MessageDeconnexion;
 import metier.MessageInscription;
+import metier.MessageListeAbonnement;
 
 public class SenderTwitter {	
 	
@@ -33,6 +35,7 @@ public class SenderTwitter {
     private static MessageConsumer consumer = null;
     
     private static String messageRetour;
+    private static String[] listeAbonnementMessageRetour;
 	
     public static String getMessageRetour() {
 		return messageRetour;
@@ -40,6 +43,15 @@ public class SenderTwitter {
 
 	public static void setMessageRetour(String messageRetour) {
 		SenderTwitter.messageRetour = messageRetour;
+	}
+
+	public static String[] getListeAbonnementMessageRetour() {
+		return listeAbonnementMessageRetour;
+	}
+
+	public static void setListeAbonnementMessageRetour(
+			String[] listeAbonnementMessageRetour) {
+		SenderTwitter.listeAbonnementMessageRetour = listeAbonnementMessageRetour;
 	}
 
 	public static void initialize() throws NamingException, JMSException
@@ -218,6 +230,209 @@ public class SenderTwitter {
         }
     }
 	
+	public static void creerAbonnement(String pPseudoSuivi, String pPseudoAbonne)
+	{
+        destName = "fileGestProfils";
+
+        try {
+            
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+
+        	MessageAbonnement messageAbonnement = new MessageAbonnement(pPseudoSuivi, pPseudoAbonne);
+        	ObjectMessage objectMessage = session.createObjectMessage(messageAbonnement);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("creerAbonnement");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageAbonnement.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	setMessageRetour(receivedMessage.toString());
+        	System.out.println("received message : " + receivedMessage);
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	public static void suppAbonnement(String pPseudoSuivi, String pPseudoAbonne)
+	{
+        destName = "fileGestProfils";
+
+        try {
+            
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+
+        	MessageAbonnement messageAbonnement = new MessageAbonnement(pPseudoSuivi, pPseudoAbonne);
+        	ObjectMessage objectMessage = session.createObjectMessage(messageAbonnement);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("suppAbonnement");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageAbonnement.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	setMessageRetour(receivedMessage.toString());
+        	System.out.println("received message : " + receivedMessage);
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	public static void listeAbonne(String pPseudoAbonne)
+	{
+        destName = "fileGestProfils";
+        String[] listeAbonnement = null;
+
+        try {
+            
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+        	
+        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoAbonne, listeAbonnement, "");
+        	ObjectMessage objectMessage = session.createObjectMessage(messageListeAbonnement);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("listeAbonne");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageListeAbonnement.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
+        	MessageListeAbonnement messageListeAbonnementRetour = (MessageListeAbonnement) objectMessageRetour.getObject();
+        	setMessageRetour(messageListeAbonnementRetour.getMessageRetour().toString());
+        	setListeAbonnementMessageRetour(messageListeAbonnementRetour.getListeAbonnement());
+        	System.out.println("received message : " + receivedMessage);
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	public static void listeSuivi(String pPseudoSuivi)
+	{
+        destName = "fileGestProfils";
+        String[] listeAbonnement = null;
+
+        try {
+            
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+        	
+        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoSuivi, listeAbonnement, "");
+        	ObjectMessage objectMessage = session.createObjectMessage(messageListeAbonnement);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("listeSuivi");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageListeAbonnement.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
+        	MessageListeAbonnement messageListeAbonnementRetour = (MessageListeAbonnement) objectMessageRetour.getObject();
+        	setMessageRetour(messageListeAbonnementRetour.getMessageRetour().toString());
+        	setListeAbonnementMessageRetour(messageListeAbonnementRetour.getListeAbonnement());
+        	System.out.println("received message : " + receivedMessage);
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
 	
 	public static void creerGazouilliTopic()
 	{

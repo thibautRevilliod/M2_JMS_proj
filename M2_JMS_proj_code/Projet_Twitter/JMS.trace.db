@@ -478,3 +478,217 @@ select MAX(idGAZOUILLI) from PROFIL [42122-147]
 	at org.h2.server.web.WebThread.process(WebThread.java:166)
 	at org.h2.server.web.WebThread.run(WebThread.java:93)
 	at java.lang.Thread.run(Unknown Source)
+11-11 19:12:13 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "AND" not found; SQL statement:
+select idProfil, idABONNE from ABONNEMENTS WHERE idProfil =  AND idABONNE = [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.expression.Comparison.optimize(Comparison.java:156)
+	at org.h2.command.dml.Select.prepare(Select.java:776)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:165)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:153)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1316)
+	at org.h2.server.web.WebApp.query(WebApp.java:1004)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:967)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:970)
+	at org.h2.server.web.WebThread.process(WebThread.java:166)
+	at org.h2.server.web.WebThread.run(WebThread.java:93)
+	at java.lang.Thread.run(Unknown Source)
+11-11 19:13:44 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = 'PseudoToto'
+
+SELECT[*] IDPROFIL, IDABONNE FROM ABONNEMENTS WHERE IDPROFIL = 2 AND IDABONNE = 1 "; SQL statement:
+SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoToto'
+
+select idProfil, idABONNE from ABONNEMENTS WHERE idProfil = 2 AND idABONNE = 1 [42000-147]
+11-11 20:33:14 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: No data is available [2000-147]
+11-11 20:36:14 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: No data is available [2000-147]
+11-11 21:26:51 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Ambiguous column name "IDPROFIL"; SQL statement:
+select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.suivi= PROFIL.idProfil  and idProfil = 1 [90059-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.mapColumn(ExpressionColumn.java:104)
+	at org.h2.expression.ExpressionColumn.mapColumns(ExpressionColumn.java:81)
+	at org.h2.expression.Comparison.mapColumns(Comparison.java:427)
+	at org.h2.expression.ConditionAndOr.mapColumns(ConditionAndOr.java:233)
+	at org.h2.command.dml.Select.init(Select.java:748)
+	at org.h2.command.Parser.parseSelect(Parser.java:1455)
+	at org.h2.command.Parser.parsePrepared(Parser.java:401)
+	at org.h2.command.Parser.parse(Parser.java:275)
+	at org.h2.command.Parser.parse(Parser.java:247)
+	at org.h2.command.Parser.prepare(Parser.java:201)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:165)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:153)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1316)
+	at org.h2.server.web.WebApp.query(WebApp.java:1004)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:967)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:970)
+	at org.h2.server.web.WebThread.process(WebThread.java:166)
+	at org.h2.server.web.WebThread.run(WebThread.java:93)
+	at java.lang.Thread.run(Unknown Source)
+11-11 21:27:04 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Ambiguous column name "IDPROFIL"; SQL statement:
+select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idprofil= PROFIL.idProfil  and idProfil = 1 [90059-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.mapColumn(ExpressionColumn.java:104)
+	at org.h2.expression.ExpressionColumn.mapColumns(ExpressionColumn.java:81)
+	at org.h2.expression.Comparison.mapColumns(Comparison.java:427)
+	at org.h2.expression.ConditionAndOr.mapColumns(ConditionAndOr.java:233)
+	at org.h2.command.dml.Select.init(Select.java:748)
+	at org.h2.command.Parser.parseSelect(Parser.java:1455)
+	at org.h2.command.Parser.parsePrepared(Parser.java:401)
+	at org.h2.command.Parser.parse(Parser.java:275)
+	at org.h2.command.Parser.parse(Parser.java:247)
+	at org.h2.command.Parser.prepare(Parser.java:201)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:165)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:153)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1316)
+	at org.h2.server.web.WebApp.query(WebApp.java:1004)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:967)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:970)
+	at org.h2.server.web.WebThread.process(WebThread.java:166)
+	at org.h2.server.web.WebThread.run(WebThread.java:93)
+	at java.lang.Thread.run(Unknown Source)
+11-11 21:28:16 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "ABONNEMENTS.IDSUIVI" not found; SQL statement:
+select Profil.idprofil ,PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idsuivi = PROFIL.idProfil  and abonnements.idProfil = 1 [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.expression.Comparison.optimize(Comparison.java:154)
+	at org.h2.expression.ConditionAndOr.optimize(ConditionAndOr.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:776)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:165)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:153)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1316)
+	at org.h2.server.web.WebApp.query(WebApp.java:1004)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:967)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:970)
+	at org.h2.server.web.WebThread.process(WebThread.java:166)
+	at org.h2.server.web.WebThread.run(WebThread.java:93)
+	at java.lang.Thread.run(Unknown Source)
+11-11 21:30:14 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Ambiguous column name "IDPROFIL"; SQL statement:
+select idprofil  from ABONNEMENTS, PROFIL WHERE abonnements.idabonne = 1 [90059-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.mapColumn(ExpressionColumn.java:104)
+	at org.h2.expression.ExpressionColumn.mapColumns(ExpressionColumn.java:81)
+	at org.h2.command.dml.Select.init(Select.java:745)
+	at org.h2.command.Parser.parseSelect(Parser.java:1455)
+	at org.h2.command.Parser.parsePrepared(Parser.java:401)
+	at org.h2.command.Parser.parse(Parser.java:275)
+	at org.h2.command.Parser.parse(Parser.java:247)
+	at org.h2.command.Parser.prepare(Parser.java:201)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:165)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:153)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1316)
+	at org.h2.server.web.WebApp.query(WebApp.java:1004)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:967)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:970)
+	at org.h2.server.web.WebThread.process(WebThread.java:166)
+	at org.h2.server.web.WebThread.run(WebThread.java:93)
+	at java.lang.Thread.run(Unknown Source)
+11-11 21:31:29 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Ambiguous column name "IDPROFIL"; SQL statement:
+select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.suivi= PROFIL.idProfil  and idProfil = 1 [90059-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.mapColumn(ExpressionColumn.java:104)
+	at org.h2.expression.ExpressionColumn.mapColumns(ExpressionColumn.java:81)
+	at org.h2.expression.Comparison.mapColumns(Comparison.java:427)
+	at org.h2.expression.ConditionAndOr.mapColumns(ConditionAndOr.java:233)
+	at org.h2.command.dml.Select.init(Select.java:748)
+	at org.h2.command.Parser.parseSelect(Parser.java:1455)
+	at org.h2.command.Parser.parsePrepared(Parser.java:401)
+	at org.h2.command.Parser.parse(Parser.java:275)
+	at org.h2.command.Parser.parse(Parser.java:247)
+	at org.h2.command.Parser.prepare(Parser.java:201)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:165)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:153)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1316)
+	at org.h2.server.web.WebApp.query(WebApp.java:1004)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:967)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:970)
+	at org.h2.server.web.WebThread.process(WebThread.java:166)
+	at org.h2.server.web.WebThread.run(WebThread.java:93)
+	at java.lang.Thread.run(Unknown Source)
+11-11 21:37:32 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "IDPROFIL" not found; SQL statement:
+create table IF NOT EXISTS ABONNEMENTS  (  idSUIVI INT NOT NULL,  idABONNE INT NOT NULL,  DATEHEURE TIMESTAMP,  PRIMARY KEY (idABONNE, idPROFIL) ,  FOREIGN KEY (idABONNE) REFERENCES PROFIL(idPROFIL) ,  FOREIGN KEY (idPROFIL) REFERENCES PROFIL(idPROFIL)) [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.table.Table.getColumn(Table.java:556)
+	at org.h2.table.IndexColumn.mapColumns(IndexColumn.java:75)
+	at org.h2.command.ddl.AlterTableAddConstraint.tryUpdate(AlterTableAddConstraint.java:96)
+	at org.h2.command.ddl.AlterTableAddConstraint.update(AlterTableAddConstraint.java:68)
+	at org.h2.command.ddl.CreateTable.update(CreateTable.java:163)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:69)
+	at org.h2.command.Command.executeUpdate(Command.java:201)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:178)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:153)
+	at bdd.JmsJDBC.<init>(JmsJDBC.java:41)
+	at bdd.JmsJDBC.main(JmsJDBC.java:359)
+11-11 21:37:32 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "ABONNEMENTS" not found; SQL statement:
+select idProfil, idABONNE from ABONNEMENTS WHERE idProfil = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoToto') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoTutu') [42102-147]
+11-11 21:37:32 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "ABONNEMENTS" not found; SQL statement:
+select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idSuivi = PROFIL.idProfil AND idAbonne = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoToto') [42102-147]
+11-11 21:38:46 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "IDPROFIL" not found; SQL statement:
+select idProfil, idABONNE from ABONNEMENTS WHERE idProfil = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoToto') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoTutu') [42122-147]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:327)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:126)
+	at org.h2.command.dml.Select.prepare(Select.java:773)
+	at org.h2.command.Parser.prepare(Parser.java:202)
+	at org.h2.command.Parser.prepareCommand(Parser.java:214)
+	at org.h2.engine.Session.prepareLocal(Session.java:425)
+	at org.h2.engine.Session.prepareCommand(Session.java:374)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1056)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:71)
+	at bdd.JmsJDBC.creerAbonnement(JmsJDBC.java:240)
+	at bdd.JmsJDBC.main(JmsJDBC.java:375)
+11-11 22:07:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "DELETE FROM ABONNEMENTS WHERE WHERE[*] IDSUIVI = (SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = 'PseudoToto') AND IDABONNE = (SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = 'PseudoTutu') "; expected "NOT, EXISTS, SELECT, FROM"; SQL statement:
+DELETE FROM ABONNEMENTS WHERE WHERE idSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoToto') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoTutu') [42001-147]

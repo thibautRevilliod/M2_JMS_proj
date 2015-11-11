@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 
 
 public class JmsJDBC {
@@ -34,23 +35,25 @@ public class JmsJDBC {
 					" EMETTEUR INT , " +
 					" FOREIGN KEY (EMETTEUR) REFERENCES PROFIL(idPROFIL))");
 			
+//        	s.execute("create table IF NOT EXISTS ABONNEMENTS  ( " +
+//        			" idABONNEMENTS INT NOT NULL PRIMARY KEY, " +
+//					" DATEHEURE TIMESTAMP )");
+	        
         	s.execute("create table IF NOT EXISTS ABONNEMENTS  ( " +
-        			" idABONNEMENTS INT NOT NULL PRIMARY KEY, " +
-					" DATEHEURE TIMESTAMP )");
-	        
-        	s.execute("create table IF NOT EXISTS ABONNE  ( " +
-        			" idABONNE INT NOT NULL, " +
-					" idPROFIL INT NOT NULL, " +
-					" PRIMARY KEY (idABONNE, idPROFIL) , " +
-					" FOREIGN KEY (idABONNE) REFERENCES ABONNEMENTS(idABONNEMENTS) , " +
-					" FOREIGN KEY (idPROFIL) REFERENCES PROFIL(idPROFIL))");
-	        
-        	s.execute("create table IF NOT EXISTS SUIVI  ( " +
         			" idSUIVI INT NOT NULL, " +
-					" idPROFIL INT NOT NULL, " +
-					" PRIMARY KEY (idSUIVI, idPROFIL) , " +
-					" FOREIGN KEY (idSUIVI) REFERENCES ABONNEMENTS(idABONNEMENTS) , " +
-					" FOREIGN KEY (idPROFIL) REFERENCES PROFIL(idPROFIL))");
+					" idABONNE INT NOT NULL, " +
+					" DATEHEURE TIMESTAMP, " +
+					" PRIMARY KEY (idSUIVI, idABONNE) , " +
+					" FOREIGN KEY (idSUIVI) REFERENCES PROFIL(idPROFIL) , " +
+					" FOREIGN KEY (idABONNE) REFERENCES PROFIL(idPROFIL))");
+	        
+//        	s.execute("create table IF NOT EXISTS SUIVI  ( " +
+//        			" idSUIVI INT NOT NULL, " +
+//					" idPROFIL INT NOT NULL, " +
+//					" DATEHEURE TIMESTAMP, " +
+//					" PRIMARY KEY (idSUIVI, idPROFIL) , " +
+//					" FOREIGN KEY (idSUIVI) REFERENCES PROFIL(idPROFIL) , " +
+//					" FOREIGN KEY (idPROFIL) REFERENCES PROFIL(idPROFIL))");
 			
 		} catch(Exception e) {
 			// il y a eu une erreur
@@ -73,23 +76,23 @@ public class JmsJDBC {
 	        	res = false;
 	        }
 	        
-	        rs = conn.getMetaData().getTables(null, null, "ABONNE", null);
+	        rs = conn.getMetaData().getTables(null, null, "ABONNEMENTS", null);
 	        if (rs.next()) {
 	        	// la table existe
-	        	s.execute("drop table ABONNE");
+	        	s.execute("drop table ABONNEMENTS");
 	        	res = true;
 	        } else {	
 	        	res = false;
 	        }
 	        
-	        rs = conn.getMetaData().getTables(null, null, "SUIVI", null);
-	        if (rs.next()) {
-	        	// la table existe
-	        	s.execute("drop table SUIVI");
-	        	res = true;
-	        } else {	
-	        	res = false;
-	        }
+//	        rs = conn.getMetaData().getTables(null, null, "SUIVI", null);
+//	        if (rs.next()) {
+//	        	// la table existe
+//	        	s.execute("drop table SUIVI");
+//	        	res = true;
+//	        } else {	
+//	        	res = false;
+//	        }
 	        
 	        rs = conn.getMetaData().getTables(null, null, "PROFIL", null);
 	        if (rs.next()) {
@@ -100,14 +103,14 @@ public class JmsJDBC {
 	        	res = false;
 	        }
 	        
-	        rs = conn.getMetaData().getTables(null, null, "ABONNEMENTS", null);
-	        if (rs.next()) {
-	        	// la table existe
-	        	s.execute("drop table ABONNEMENTS");
-	        	res = true;
-	        } else {	
-	        	res = false;
-	        }
+//	        rs = conn.getMetaData().getTables(null, null, "ABONNEMENTS", null);
+//	        if (rs.next()) {
+//	        	// la table existe
+//	        	s.execute("drop table ABONNEMENTS");
+//	        	res = true;
+//	        } else {	
+//	        	res = false;
+//	        }
 	        
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -229,6 +232,128 @@ public class JmsJDBC {
 			return id;
 		}
 	}
+	
+	public int creerAbonnement(String ppseudoSuivi, String ppseudoAbonne) {
+		int id = -1;
+		try {
+			Statement s = conn.createStatement();
+        	//récupère le dernier ID
+			ResultSet rs = s.executeQuery("select idSUIVI, idABONNE from ABONNEMENTS WHERE idSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoSuivi+"') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoAbonne+"')");
+        	if (!rs.next())
+        	{
+        		s.executeUpdate("insert into ABONNEMENTS values ((SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoSuivi+"'), (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoAbonne+"'),CURRENT_TIMESTAMP())");
+        		id = 0;
+        	}
+        	else
+        	{
+        		// Erreur : l'abonnement existe déjà
+        		id = -2;
+        	}
+        	return id;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			id = -1;
+			return id;
+		}
+	}
+	
+	public int supprimerAbonnement(String ppseudoSuivi, String ppseudoAbonne) {
+		int id = -1;
+		try {
+			Statement s = conn.createStatement();
+        	//récupère le dernier ID
+			ResultSet rs = s.executeQuery("select idSUIVI, idABONNE from ABONNEMENTS WHERE idSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoSuivi+"') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoAbonne+"')");
+        	if (rs.next())
+        	{
+        		s.executeUpdate("DELETE FROM ABONNEMENTS WHERE idSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoSuivi+"') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoAbonne+"')");
+        		id = 0;
+        	}
+        	else
+        	{
+        		// Erreur : l'abonnement n'existe pas
+        		id = -2;
+        	}
+        	return id;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			id = -1;
+			return id;
+		}
+	}
+	
+	//liste des abonnements du profil passé en paramètre
+	public String[] listeAbonne(String pPseudoAbonne) {
+		String[] res = null;
+		boolean resOK = false;
+		
+		try {
+			Statement s = conn.createStatement();
+        	//récupère le dernier ID
+			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idSuivi = PROFIL.idProfil AND idAbonne = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoAbonne+"')");
+        	Vector<String> vector = new Vector<String>();
+
+    		while(rs.next())
+    		{
+    			resOK = true;
+    			vector.add(rs.getString(1));
+    		}
+    		
+    		if(resOK)
+    		{
+    			res = new String[vector.size()];
+    			for (int i = 0; i < vector.size(); i++)
+    			{
+    				res[i]= vector.get(i);
+    			}
+        	}
+        	else
+        	{
+        		// Erreur : auncun abonnement existe
+        		// return null
+        	}
+        	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return res;
+		}
+	}
+	
+	//liste des suivis du profil passé en paramètre
+	public String[] listeSuivi(String pPseudoSuivi) {
+		String[] res = null;
+		boolean resOK = false;
+		
+		try {
+			Statement s = conn.createStatement();
+        	//récupère le dernier ID
+			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idABONNE = PROFIL.idProfil AND IDSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoSuivi+"')");
+        	Vector<String> vector = new Vector<String>();
+
+    		while(rs.next())
+    		{
+    			resOK = true;
+    			vector.add(rs.getString(1));
+    		}
+    		
+    		if(resOK)
+    		{
+    			res = new String[vector.size()];
+    			for (int i = 0; i < vector.size(); i++)
+    			{
+    				res[i]= vector.get(i);
+    			}
+        	}
+        	else
+        	{
+        		// Erreur : auncun abonnement existe
+        		// return null
+        	}
+        	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return res;
+		}
+	}
 
 //	public boolean ajouter(String id, double somme) {	
 //		try {
@@ -316,6 +441,28 @@ public class JmsJDBC {
 		System.out.println("--> Information profil : ");
 			String[] var_res = bdd.informationProfil("1");
 			System.out.println("     " + var_res[0] + " " + var_res[1] + " " + var_res[2] + " " + var_res[3]);
+		
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoToto", "PseudoTutu"));
+		
+		System.out.println("--> Liste Abonne : ");
+			System.out.print("     ");
+			for(int i = 0; i < bdd.listeAbonne("PseudoTutu").length; i++)
+			{
+				System.out.print(bdd.listeAbonne("PseudoTutu")[i] + " ");
+			}
+			System.out.println("");
+			
+		System.out.println("--> Liste Suivi : ");
+			System.out.print("     ");
+			for(int i = 0; i < bdd.listeSuivi("PseudoToto").length; i++)
+			{
+				System.out.print(bdd.listeSuivi("PseudoToto")[i] + " ");
+			}
+			System.out.println("");
+			
+		System.out.println("--> Supprimer Abonnement : " + bdd.supprimerAbonnement("PseudoToto", "PseudoTutu"));
+		
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoTutu", "PseudoToto"));
 		
 //		banque.creerCompte("Bobby", 1000);
 //		System.out.println(" Compte Bobby : "+banque.position("Bobby"));

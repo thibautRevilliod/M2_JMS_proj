@@ -62,9 +62,11 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import metier.Gazouilli;
+import metier.MessageAbonnement;
 import metier.MessageConnexion;
 import metier.MessageDeconnexion;
 import metier.MessageInscription;
+import metier.MessageListeAbonnement;
 import bdd.JmsJDBC;
 
 
@@ -196,6 +198,18 @@ public class Receiver {
                 	} else if (message.getJMSType().equals("deconnexion"))
                 	{
                 		receptionDeconnexion(message);
+                	} else if (message.getJMSType().equals("creerAbonnement"))
+                	{
+                		receptionCreerAbonnement(message);
+                	} else if (message.getJMSType().equals("suppAbonnement"))
+                	{
+                		receptionSuppAbonnement(message);
+                	} else if (message.getJMSType().equals("listeAbonne"))
+                	{
+                		receptionListeAbonne(message);
+                	} else if (message.getJMSType().equals("listeSuivi"))
+                	{
+                		receptionListeSuivi(message);
                 	}
                     
                 } else if (message != null) {
@@ -287,7 +301,7 @@ public class Receiver {
         
         if(retourConnexionProfil == -1)//connexion KO en BD
         {
-        	replyMessage = session.createTextMessage("Connexion KO (Pseudo ou mot de passe invalide)");
+        	replyMessage = session.createTextMessage("Connexion KO : Pseudo ou mot de passe invalide");
         }
         else
         {
@@ -305,7 +319,6 @@ public class Receiver {
 	
 	public static void receptionDeconnexion(Message message) throws JMSException
 	{
-		int retourConnexionProfil;
 		TextMessage replyMessage;
 		
 		ObjectMessage objectMessage = (ObjectMessage) message;
@@ -325,6 +338,154 @@ public class Receiver {
         {
         	replyMessage = session.createTextMessage("Deconnexion KO");
         }
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
+	public static void receptionCreerAbonnement(Message message) throws JMSException
+	{
+		TextMessage replyMessage;
+		int retourReceptionAbonnement;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageAbonnement messageAbonnement = (MessageAbonnement) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageAbonnement.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //inscription dans la BD de l'abonnement
+        retourReceptionAbonnement = bdd.creerAbonnement(messageAbonnement.getPseudoSuivi(), messageAbonnement.getPseudoAbonne());
+        
+        if(retourReceptionAbonnement == -1)//création KO en BD
+        {
+        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' KO");
+        }
+        else if(retourReceptionAbonnement == -2)
+        {
+        	//abonnement existe déjà
+        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' KO : L'abonnement existe déjà");
+        }else
+        {
+        	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
+        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' OK");
+        }
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
+	public static void receptionSuppAbonnement(Message message) throws JMSException
+	{
+		TextMessage replyMessage;
+		int retourReceptionAbonnement;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageAbonnement messageAbonnement = (MessageAbonnement) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageAbonnement.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //inscription dans la BD de l'abonnement
+        retourReceptionAbonnement = bdd.supprimerAbonnement(messageAbonnement.getPseudoSuivi(), messageAbonnement.getPseudoAbonne());
+        
+        if(retourReceptionAbonnement == -1)//suppression KO en BD
+        {
+        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' KO");
+        }
+        else if(retourReceptionAbonnement == -2)
+        {
+        	//abonnement n'existe pas
+        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' KO : L'abonnement n'existe pas");
+        }else
+        {
+        	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
+        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' OK");
+        }
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
+	public static void receptionListeAbonne(Message message) throws JMSException
+	{
+		ObjectMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageListeAbonnement messageListeAbonnement = (MessageListeAbonnement) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageListeAbonnement.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //récupération de la liste des abonnes
+        String[] listeAbonne = bdd.listeAbonne(messageListeAbonnement.getPseudoAbonne());
+        MessageListeAbonnement messageListeAbonnementRetour = new MessageListeAbonnement(messageListeAbonnement.getPseudoAbonne(),listeAbonne,"");
+        
+        if(messageListeAbonnementRetour.getListeAbonnement() == null)//aucun abonne existe
+        {
+        	messageListeAbonnementRetour.setMessageRetour("Liste abonne KO : aucun abonne existe");
+        }
+        else
+        {
+        	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
+        	messageListeAbonnementRetour.setMessageRetour("Liste des abonnes OK");
+        }
+        
+        replyMessage = session.createObjectMessage(messageListeAbonnementRetour);
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
+	public static void receptionListeSuivi(Message message) throws JMSException
+	{
+		ObjectMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageListeAbonnement messageListeAbonnement = (MessageListeAbonnement) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageListeAbonnement.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //récupération de la liste des suivis
+        String[] listeSuivi = bdd.listeSuivi(messageListeAbonnement.getPseudoAbonne());
+        MessageListeAbonnement messageListeAbonnementRetour = new MessageListeAbonnement(messageListeAbonnement.getPseudoAbonne(),listeSuivi,"");
+        
+        if(messageListeAbonnementRetour.getListeAbonnement() == null)//aucun abonne existe
+        {
+        	messageListeAbonnementRetour.setMessageRetour("Liste suiveur KO : aucun suiveur existe");
+        }
+        else
+        {
+        	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
+        	messageListeAbonnementRetour.setMessageRetour("Liste des suiveurs OK");
+        }
+        
+        replyMessage = session.createObjectMessage(messageListeAbonnementRetour);
         
         // create the sender
         sender = session.createProducer(temporaryQueue);
