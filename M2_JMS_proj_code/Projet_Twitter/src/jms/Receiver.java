@@ -44,6 +44,8 @@ package jms;
  * $Id: Receiver.java,v 1.2 2005/11/18 03:28:01 tanderson Exp $
  */
 
+import java.util.ArrayList;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -60,6 +62,8 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import metier.Gazouilli;
+import metier.MessageConnexion;
+import metier.MessageDeconnexion;
 import metier.MessageInscription;
 import bdd.JmsJDBC;
 
@@ -83,10 +87,12 @@ public class Receiver {
 	private static String factoryName = "ConnectionFactory";
 	private static String destName = null;
 	private static Destination dest = null;
-	private static int count = 1;
+	private static int count = 3;
 	private static Session session = null;
 	private static MessageConsumer receiver = null;
 	private static MessageProducer sender = null;
+	
+	private static ArrayList<String> listePseudoConnecte = new ArrayList();
 	
 	private static JmsJDBC bdd;
     
@@ -169,11 +175,9 @@ public class Receiver {
         }
     }
 	
-	public static void receptionInscription()
+	public static void receptionFileGestProfils()
 	{
         destName = "fileGestProfils";
-        int retourCreerProfil;
-        TextMessage replyMessage;
 
         try {
             
@@ -182,37 +186,17 @@ public class Receiver {
             for (int i = 0; i < count; ++i) {
                 Message message = receiver.receive();
                 if (message instanceof ObjectMessage) {
+                	if (message.getJMSType().equals("inscription"))
+                	{
+                		receptionInscription(message);
                 	
-                    ObjectMessage objectMessage = (ObjectMessage) message;
-                    MessageInscription messageInscription = (MessageInscription) objectMessage.getObject();
-                	
-                    System.out.println("Received: " + messageInscription.toString());
-                    
-                    Destination temporaryQueue = objectMessage.getJMSReplyTo();
-                    System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
-                    
-                    
-                    // enregistrement du profil en BD 
-                    retourCreerProfil = bdd.creerProfil(messageInscription.getPseudo(), messageInscription.getNom(), messageInscription.getPrenom(), messageInscription.getVille());
-                    
-                    if(retourCreerProfil == -1)//inscription KO en BD
-                    {
-                    	replyMessage = session.createTextMessage("Inscription KO");
-                    }
-                    else
-                    {
-                    	replyMessage = session.createTextMessage("Inscription OK");
-                    }
-                    
-                    
-                    
-                    // create the sender
-                    sender = session.createProducer(temporaryQueue);
-                    
-                    sender.send(replyMessage);
-                    
-                    System.out.println("envoi de replyMessage : " + replyMessage);                    
-                    
+                	} else if (message.getJMSType().equals("connexion"))
+                	{
+                		receptionConnexion(message);
+                	} else if (message.getJMSType().equals("deconnexion"))
+                	{
+                		receptionDeconnexion(message);
+                	}
                     
                 } else if (message != null) {
                     System.out.println("Received non text message");
@@ -243,9 +227,116 @@ public class Receiver {
         }
     }
 	
+	public static void receptionInscription(Message message) throws JMSException
+	{
+		int retourCreerProfil;
+		TextMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageInscription messageInscription = (MessageInscription) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageInscription.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        
+        // enregistrement du profil en BD 
+        retourCreerProfil = bdd.creerProfil(messageInscription.getPseudo(), messageInscription.getMotDePasse(), messageInscription.getNom(), messageInscription.getPrenom(), messageInscription.getVille());
+        
+        if(retourCreerProfil == -1)//inscription KO en BD
+        {
+        	replyMessage = session.createTextMessage("Inscription KO");
+        }
+        else if (retourCreerProfil == -2)//inscription KO en BD car le pseudo existe déjà
+        {
+        	replyMessage = session.createTextMessage("Inscription KO : Le pseudo existe déjà");
+        }
+        else
+        {
+        	replyMessage = session.createTextMessage("Inscription OK");
+        }
+    
+    
+    
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
+	public static void receptionConnexion(Message message) throws JMSException
+	{
+		int retourConnexionProfil;
+		TextMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageConnexion messageConnexion = (MessageConnexion) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageConnexion.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        
+        // test de l'existance du profil en BD 
+        retourConnexionProfil = bdd.verificationIDMDP(messageConnexion.getPseudo(), messageConnexion.getMotDePasse());
+        
+        
+        if(retourConnexionProfil == -1)//connexion KO en BD
+        {
+        	replyMessage = session.createTextMessage("Connexion KO (Pseudo ou mot de passe invalide)");
+        }
+        else
+        {
+        	listePseudoConnecte.add(messageConnexion.getPseudo());
+        	replyMessage = session.createTextMessage("Connexion OK");
+        }
+    
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
+	public static void receptionDeconnexion(Message message) throws JMSException
+	{
+		int retourConnexionProfil;
+		TextMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageDeconnexion messageDeconnexion = (MessageDeconnexion) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageDeconnexion.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //suppression dans listePseudoConnecte, le pseudo qui se déconnecte
+        if(listePseudoConnecte.contains(messageDeconnexion.getPseudo()))
+        {
+        	listePseudoConnecte.remove(messageDeconnexion.getPseudo());
+        	replyMessage = session.createTextMessage("Deconnexion OK");
+        }else
+        {
+        	replyMessage = session.createTextMessage("Deconnexion KO");
+        }
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
 	public static void main(String[] args) {
 		bdd = new JmsJDBC("JMS");
-		receptionInscription();
+		receptionFileGestProfils();
 	}
 	
 //	public static void main(String[] args) {

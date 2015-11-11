@@ -85,6 +85,7 @@ public class SenderTwitter {
         	MessageInscription messageInscription = new MessageInscription(pseudo, motDePasse, nom, prenom, ville);
         	ObjectMessage objectMessage = session.createObjectMessage(messageInscription);
         	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("inscription");
         	sender.send(objectMessage);
         	System.out.println("Sent: " + messageInscription.toString());
         	
@@ -124,13 +125,23 @@ public class SenderTwitter {
 
         try {
             
-        	initialize();
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
 
         	MessageConnexion messageConnexion = new MessageConnexion(pseudo, motDePasse);
         	ObjectMessage objectMessage = session.createObjectMessage(messageConnexion);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("connexion");
         	sender.send(objectMessage);
         	System.out.println("Sent: " + messageConnexion.toString());
-            
+        	
+        	Message receivedMessage = consumer.receive();
+        	setMessageRetour(receivedMessage.toString());
+        	System.out.println("received message : " + receivedMessage);
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -165,11 +176,22 @@ public class SenderTwitter {
             
         	initialize();
 
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+
         	MessageDeconnexion messageDeconnexion = new MessageDeconnexion(pseudo);
         	ObjectMessage objectMessage = session.createObjectMessage(messageDeconnexion);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("deconnexion");
         	sender.send(objectMessage);
         	System.out.println("Sent: " + messageDeconnexion.toString());
-            
+        	
+        	Message receivedMessage = consumer.receive();
+        	setMessageRetour(receivedMessage.toString());
+        	System.out.println("received message : " + receivedMessage);
+        	
           
         } catch (JMSException exception) {
             exception.printStackTrace();

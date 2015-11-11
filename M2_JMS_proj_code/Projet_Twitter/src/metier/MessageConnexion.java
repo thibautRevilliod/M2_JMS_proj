@@ -7,18 +7,18 @@ public class MessageConnexion implements Serializable {
 	private String pseudo;
 	private String motDePasse;
 	
-	public MessageConnexion(String idProfil, String motDePasse) {
+	public MessageConnexion(String pseudo, String motDePasse) {
 		super();
-		this.pseudo = idProfil;
+		this.pseudo = pseudo;
 		this.motDePasse = motDePasse;
 	}
 
-	public String getIdProfil() {
+	public String getPseudo() {
 		return pseudo;
 	}
 
-	public void setIdProfil(String idProfil) {
-		this.pseudo = idProfil;
+	public void setPseudo(String pseudo) {
+		this.pseudo = pseudo;
 	}
 
 	public String getMotDePasse() {

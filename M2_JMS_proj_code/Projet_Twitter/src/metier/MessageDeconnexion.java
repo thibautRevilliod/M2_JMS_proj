@@ -4,23 +4,23 @@ import java.io.Serializable;
 
 public class MessageDeconnexion implements Serializable {
 	
-	private String pseudo;
+	private String idProfil;
 
 	public MessageDeconnexion(String pseudo) {
 		super();
-		this.pseudo = pseudo;
+		this.idProfil = pseudo;
 	}
 
 	public String getPseudo() {
-		return pseudo;
+		return idProfil;
 	}
 
 	public void setPseudo(String pseudo) {
-		this.pseudo = pseudo;
+		this.idProfil = pseudo;
 	}
 
 	public String toString() {
-		return "MessageDeconnexion [pseudo=" + pseudo + "]";
+		return "MessageDeconnexion [pseudo=" + idProfil + "]";
 	}
 	
 	

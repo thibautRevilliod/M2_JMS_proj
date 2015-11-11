@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
 
 
 public class JmsJDBC {
@@ -21,7 +20,8 @@ public class JmsJDBC {
 			
         	s.execute("create table IF NOT EXISTS PROFIL  ( " +
         			" idPROFIL INT NOT NULL PRIMARY KEY, " +
-        			" PSEUDO VARCHAR( 500 ) , " +
+        			" PSEUDO VARCHAR( 500 ) UNIQUE, " +
+        			" MDP VARCHAR( 500 ) , " +
         			" NOM VARCHAR( 500 ) , " +
 					" PRENOM VARCHAR( 500 ) , " +
 					" VILLE VARCHAR( 500 ) )");
@@ -121,23 +121,30 @@ public class JmsJDBC {
 		return res;
 	}
 	
-	public int creerProfil(String ppseudo, String pnom, String pprenom, String pville) {
+	public int creerProfil(String ppseudo, String pmdp, String pnom, String pprenom, String pville) {
 		int id = -1;
 		try {
 			Statement s = conn.createStatement();
-        	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select MAX(idPROFIL) from PROFIL");
-        	if (rs.next())
-        	{
-        		id = rs.getInt(1)+1;
-	        	s.executeUpdate("insert into PROFIL values ("+id+", '"+ppseudo+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
-	        } 
+			ResultSet rs = s.executeQuery("select idPROFIL from PROFIL WHERE PSEUDO = '"+ppseudo+"'");
+			if (!rs.next())
+			{
+				//récupère le dernier ID
+				rs = s.executeQuery("select MAX(idPROFIL) from PROFIL");
+	        	if (rs.next())
+	        	{
+	        		id = rs.getInt(1)+1;
+		        	s.executeUpdate("insert into PROFIL values ("+id+", '"+ppseudo+"', '"+pmdp+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
+		        } 
+				else
+		        {
+					id = 1;
+		        	s.executeUpdate("insert into PROFIL values ('1', '"+ppseudo+"', '"+pmdp+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
+		        }
+			}
 			else
-	        {
-				id = 1;
-	        	s.executeUpdate("insert into PROFIL values ('1', '"+ppseudo+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
-	        }
-	        
+			{
+				id = -2; // le cas ou le pseudo existe déjà
+			}
 	        return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -146,6 +153,57 @@ public class JmsJDBC {
 		}
 		
 		
+	}
+	
+	// si OK, retourne l'ID de l'utilisateur, sinon retourne -1
+	public int verificationIDMDP(String ppseudo, String pmdp) {
+		int id = -1;
+		try {
+			Statement s = conn.createStatement();
+        	//récupère l'ID de l'utilisateur
+			ResultSet rs = s.executeQuery("SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = '"+ppseudo+"' AND MDP = '"+pmdp+"'");
+        	if (rs.next())
+        	{
+        		id = rs.getInt(1);
+	        } 
+			else
+	        {
+				id = -1;
+	        }
+	        
+	        return id;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			id = -1;
+			return id;
+		}
+	}
+	
+	// si OK, retourne les informations du profil, sinon retourne null
+	public String[] informationProfil(String pid) {
+		String[] res = new String[4];
+		try {
+			Statement s = conn.createStatement();
+        	//récupère l'ID de l'utilisateur
+			ResultSet rs = s.executeQuery("SELECT PSEUDO, NOM, PRENOM, VILLE FROM PROFIL WHERE IDPROFIL = '"+pid+"'");
+        	if (rs.next())
+        	{
+        		res[0] = rs.getString(1);
+        		res[1] = rs.getString(2);
+        		res[2] = rs.getString(3);
+        		res[3] = rs.getString(4);
+	        } 
+			else
+	        {
+				res = null;
+	        }
+	        
+	        return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			res = null;
+			return res;
+		}
 	}
 	
 	public int creerGazouilli(String pcontenu, String pville, int pemetteur) {
@@ -242,17 +300,22 @@ public class JmsJDBC {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		//JmsJDBC.clearBDD("JMS");
+		JmsJDBC.clearBDD("JMS");
 		JmsJDBC bdd = new JmsJDBC("JMS");
 		
 		System.out.println(" Création des profils : ");
-		System.out.println("Profil n°: " + bdd.creerProfil("PseudoToto", "NomToto", "PrenomToto", "Toulouse"));
-		System.out.println("Profil n°: " +bdd.creerProfil("PseudoTutu", "NomTutu", "PrenomTutu", "Paris"));
-		System.out.println(" --> OK");
+			System.out.println("Profil n°: " + bdd.creerProfil("PseudoToto", "mdp", "NomToto", "PrenomToto", "Toulouse"));
+			System.out.println("Profil n°: " +bdd.creerProfil("PseudoTutu", "mdp", "NomTutu", "PrenomTutu", "Paris"));
+			System.out.println(" --> OK");
 		System.out.println(" Création des Gazouilli : ");
-		System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "Toulouse", 1));
-		System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "Toulouse2", 1));
-		System.out.println(" --> OK");
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "Toulouse", 1));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "Toulouse2", 1));
+			System.out.println(" --> OK");
+		
+		System.out.println("--> Vérification mdp : " + bdd.verificationIDMDP("PseudoToto", "mdp"));
+		System.out.println("--> Information profil : ");
+			String[] var_res = bdd.informationProfil("1");
+			System.out.println("     " + var_res[0] + " " + var_res[1] + " " + var_res[2] + " " + var_res[3]);
 		
 //		banque.creerCompte("Bobby", 1000);
 //		System.out.println(" Compte Bobby : "+banque.position("Bobby"));

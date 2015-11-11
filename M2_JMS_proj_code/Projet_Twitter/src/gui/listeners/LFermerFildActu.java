@@ -7,6 +7,7 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JOptionPane;
 
+import jms.SenderTwitter;
 import gui.vues.VueFildActu;
 
 
@@ -31,6 +32,13 @@ public class LFermerFildActu implements ActionListener, WindowListener
 		
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
+			//TODO : Provisoire; permet de tester la déconnexion
+			// il faudra déplacer ce code dans le bouton déconnextion
+			SenderTwitter.deconnexion("Toto");
+			String message = SenderTwitter.getMessageRetour();
+			JOptionPane.showMessageDialog(vue, message, "Information Deconnexion", JOptionPane.INFORMATION_MESSAGE);
+		
+			
 			this.vue.setVisible(false);
 		}
 		
