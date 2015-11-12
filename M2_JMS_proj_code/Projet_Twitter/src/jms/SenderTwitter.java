@@ -10,12 +10,15 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
 import javax.jms.Message;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
+import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import bdd.JmsJDBC;
-import metier.Gazouilli;
+import metier.MessageGazouilli;
 import metier.MessageAbonnement;
 import metier.MessageConnexion;
 import metier.MessageDeconnexion;
@@ -36,6 +39,8 @@ public class SenderTwitter {
     
     private static String messageRetour;
     private static String[] listeAbonnementMessageRetour;
+    //TODO: Comment on gère les sessions ? Une liste de session d'abonnement ?
+    private static TopicSubscriber topicSubscriber;
 	
     public static String getMessageRetour() {
 		return messageRetour;
@@ -253,6 +258,62 @@ public class SenderTwitter {
         	Message receivedMessage = consumer.receive();
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
+        	
+        	//abonnement au topic
+        	String topicName = "messagesNonGeo";
+            Topic topic = (Topic) context.lookup(topicName); 
+            // création de l’abonné persistant (
+            topicSubscriber = session.createDurableSubscriber(topic, pPseudoAbonne);
+            // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
+            // en attente dès ce moment
+            connection.start();
+           
+            //TODO: enlever le boolean test et lancer la boucle dans un nouveau thread
+            boolean test = true;
+            while(test == true) {
+            	Message message = topicSubscriber.receive();
+            	if(message.getJMSType().equals(pPseudoSuivi))
+            	{
+            		objectMessage = (ObjectMessage) message;
+                    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
+	                System.out.println("Gazouilli : " + messageGazouilli.toString());
+	                test = false;
+            	}
+            }
+            
+//            Thread t = new Thread(
+//                    new Runnable() {
+//        				public void run(Message message) {
+//        					 boolean test = true;
+//        					 while(test == true) {
+//        			         
+//        							try {
+//        								message = topicSubscriber.receive();
+//        							} catch (JMSException e1) {
+//        								// TODO Auto-generated catch block
+//        								e1.printStackTrace();
+//        							}
+//        			            	try {
+//        								if(message.getJMSType().equals("Toto"))
+//        								{
+//        									ObjectMessage objectMessage = (ObjectMessage) message;
+//        								    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
+//        								    System.out.println("Gazouilli : " + messageGazouilli.toString());
+//        								    test = false;
+//        								}
+//        							} catch (JMSException e) {
+//        								// TODO Auto-generated catch block
+//        								e.printStackTrace();
+//        							}
+//        			            }
+//        				}
+//
+//        				public void run() {
+//        					// TODO Auto-generated method stub
+//        					
+//        				}
+//        			});
+//                    t.start();
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -302,6 +363,12 @@ public class SenderTwitter {
         	Message receivedMessage = consumer.receive();
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
+        	
+        	//desinscription au topic
+        	String topicName = "messagesNonGeo";
+            Topic topic = (Topic) context.lookup(topicName); 
+            topicSubscriber.close();
+        	session.unsubscribe(pPseudoAbonne);
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -434,18 +501,39 @@ public class SenderTwitter {
         }
     }
 	
-	public static void creerGazouilliTopic()
+	public static void creerGazouilliTopic(String pContenu, String pVille, String pPseudoEmetteur)
 	{
-        destName = "messagesNonGeo";
-
+        //destName = "messagesNonGeo";
+        destName = "fileGestProfils";
+        
         try {
         		
         		initialize();
-        		
-        		Gazouilli gazouilli = new Gazouilli("Content","10/11/2015","10h00","Marseille",1);
-            	ObjectMessage objectMessage = session.createObjectMessage(gazouilli);
+            	
+            	TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+            	
+            	// create the consumer
+            	consumer = session.createConsumer(temporaryQueue);
+
+            	MessageGazouilli messageGazouilli = new MessageGazouilli(pContenu, pVille, pPseudoEmetteur);
+            	ObjectMessage objectMessage = session.createObjectMessage(messageGazouilli);
+            	objectMessage.setJMSReplyTo(temporaryQueue);
+            	objectMessage.setJMSType("creerGazouilli");
             	sender.send(objectMessage);
-            	System.out.println("Sent: " + gazouilli.toString());
+            	System.out.println("Sent: " + messageGazouilli.toString());
+            	
+            	Message receivedMessage = consumer.receive();
+            	setMessageRetour(receivedMessage.toString());
+            	System.out.println("received message : " + receivedMessage);
+            	
+            	
+            	
+            	//dans le topic
+            	destName = "messagesNonGeo";
+            	initialize();
+            	objectMessage.setJMSType(pPseudoEmetteur);
+            	sender.send(objectMessage);
+            	System.out.println("Sent: " + messageGazouilli.toString());
                       
         } catch (JMSException exception) {
             exception.printStackTrace();

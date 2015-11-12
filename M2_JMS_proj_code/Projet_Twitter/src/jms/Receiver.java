@@ -61,7 +61,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
-import metier.Gazouilli;
+import metier.MessageGazouilli;
 import metier.MessageAbonnement;
 import metier.MessageConnexion;
 import metier.MessageDeconnexion;
@@ -89,7 +89,7 @@ public class Receiver {
 	private static String factoryName = "ConnectionFactory";
 	private static String destName = null;
 	private static Destination dest = null;
-	private static int count = 3;
+	private static int count = 10;
 	private static Session session = null;
 	private static MessageConsumer receiver = null;
 	private static MessageProducer sender = null;
@@ -125,57 +125,57 @@ public class Receiver {
 	
 
 	
-	public static void receptionGazouilli()
-	{
-        destName = "fileGestProfils";
-
-        try {
-            
-        	initialize();
-
-            for (int i = 0; i < count; ++i) {
-                Message message = receiver.receive();
-                if (message instanceof ObjectMessage) {
-                	
-                    ObjectMessage objectMessage = (ObjectMessage) message;
-                    Gazouilli gazouilli = (Gazouilli) objectMessage.getObject();
-                	
-                    System.out.println("Received: " + gazouilli.toString());
-                    
-                 // instanciation de la BD 
-                    JmsJDBC bdd = new JmsJDBC("JMS");
-                    bdd.creerGazouilli(gazouilli.getContenu(), gazouilli.getVille(), gazouilli.getIdEmetteur());
-                    
-                } else if (message != null) {
-                    System.out.println("Received non text message");
-                }
-            }
-        } catch (JMSException exception) {
-            exception.printStackTrace();
-        } catch (NamingException exception) {
-            exception.printStackTrace();
-        } finally {
-            // close the context
-            if (context != null) {
-                try {
-                    context.close();
-                } catch (NamingException exception) {
-                    exception.printStackTrace();
-                }
-            }
-
-            // close the connection
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (JMSException exception) {
-                    exception.printStackTrace();
-                }
-            }
-            
-            //réponse dans la file temporaire
-        }
-    }
+//	public static void receptionGazouilli()
+//	{
+//        destName = "fileGestProfils";
+//sss
+//        try {
+//            
+//        	initialize();
+//
+//            for (int i = 0; i < count; ++i) {
+//                Message message = receiver.receive();
+//                if (message instanceof ObjectMessage) {
+//                	
+//                    ObjectMessage objectMessage = (ObjectMessage) message;
+//                    MessageGazouilli gazouilli = (MessageGazouilli) objectMessage.getObject();
+//                	
+//                    System.out.println("Received: " + gazouilli.toString());
+//                    
+//                 // instanciation de la BD 
+//                    JmsJDBC bdd = new JmsJDBC("JMS");
+//                    bdd.creerGazouilli(gazouilli.getContenu(), gazouilli.getVille(), gazouilli.getIdEmetteur());
+//                    
+//                } else if (message != null) {
+//                    System.out.println("Received non text message");
+//                }
+//            }
+//        } catch (JMSException exception) {
+//            exception.printStackTrace();
+//        } catch (NamingException exception) {
+//            exception.printStackTrace();
+//        } finally {
+//            // close the context
+//            if (context != null) {
+//                try {
+//                    context.close();
+//                } catch (NamingException exception) {
+//                    exception.printStackTrace();
+//                }
+//            }
+//
+//            // close the connection
+//            if (connection != null) {
+//                try {
+//                    connection.close();
+//                } catch (JMSException exception) {
+//                    exception.printStackTrace();
+//                }
+//            }
+//            
+//            //réponse dans la file temporaire
+//        }
+//    }
 	
 	public static void receptionFileGestProfils()
 	{
@@ -210,6 +210,9 @@ public class Receiver {
                 	} else if (message.getJMSType().equals("listeSuivi"))
                 	{
                 		receptionListeSuivi(message);
+                	} else if (message.getJMSType().equals("creerGazouilli"))
+                	{
+                		receptionGazouilli(message);
                 	}
                     
                 } else if (message != null) {
@@ -486,6 +489,40 @@ public class Receiver {
         }
         
         replyMessage = session.createObjectMessage(messageListeAbonnementRetour);
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
+	public static void receptionGazouilli(Message message) throws JMSException
+	{		
+		TextMessage replyMessage;
+		int retourreceptionGazouilli;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageGazouilli.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        // inscription dans la BD du gazouilli
+        retourreceptionGazouilli = bdd.creerGazouilli(messageGazouilli.getContenu(), messageGazouilli.getVille(), messageGazouilli.getPseudoEmetteur());
+        
+        if(retourreceptionGazouilli == -1)//creation KO en BD
+        {
+        	replyMessage = session.createTextMessage("Creation du Gazouilli KO");
+        }
+        else
+        {
+        	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
+        	replyMessage = session.createTextMessage("Creation du Gazouilli OK");
+        }
         
         // create the sender
         sender = session.createProducer(temporaryQueue);

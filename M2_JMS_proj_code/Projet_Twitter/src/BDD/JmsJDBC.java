@@ -209,7 +209,7 @@ public class JmsJDBC {
 		}
 	}
 	
-	public int creerGazouilli(String pcontenu, String pville, int pemetteur) {
+	public int creerGazouilli(String pcontenu, String pville, String pPseudoEmetteur) {
 		int id = -1;
 		try {
 			Statement s = conn.createStatement();
@@ -218,12 +218,12 @@ public class JmsJDBC {
         	if (rs.next())
         	{
         		id = rs.getInt(1)+1;
-        		s.executeUpdate("insert into GAZOUILLI values ('"+id+"', '"+pcontenu+"',CURRENT_TIMESTAMP(),'"+pville+"','"+pemetteur+"')");
+        		s.executeUpdate("insert into GAZOUILLI values ('"+id+"', '"+pcontenu+"',CURRENT_TIMESTAMP(),'"+pville+"',(SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoEmetteur+"'))");
         	}
         	else
         	{
         		id = 1;
-        		s.executeUpdate("insert into GAZOUILLI values ('1', '"+pcontenu+"',CURRENT_TIMESTAMP(),'"+pville+"','"+pemetteur+"')");
+        		s.executeUpdate("insert into GAZOUILLI values ('1', '"+pcontenu+"',CURRENT_TIMESTAMP(),'"+pville+"',(SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoEmetteur+"'))");
         	}
         	return id;
 		} catch (SQLException e) {
@@ -433,8 +433,8 @@ public class JmsJDBC {
 			System.out.println("Profil n°: " +bdd.creerProfil("PseudoTutu", "mdp", "NomTutu", "PrenomTutu", "Paris"));
 			System.out.println(" --> OK");
 		System.out.println(" Création des Gazouilli : ");
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "Toulouse", 1));
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "Toulouse2", 1));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "Toulouse", "PseudoToto"));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "Toulouse2", "PseudoTutu"));
 			System.out.println(" --> OK");
 		
 		System.out.println("--> Vérification mdp : " + bdd.verificationIDMDP("PseudoToto", "mdp"));

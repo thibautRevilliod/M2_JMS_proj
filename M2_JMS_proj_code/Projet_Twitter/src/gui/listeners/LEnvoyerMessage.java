@@ -8,6 +8,8 @@ import gui.vues.VueMenuDepart;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import jms.SenderTwitter;
+
 public class LEnvoyerMessage implements ActionListener
 {
 
@@ -21,6 +23,8 @@ public class LEnvoyerMessage implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		System.out.println("OK j'ai cliqué sur envoyer le message");
+
+		SenderTwitter.creerGazouilliTopic("Content","Marseille", "Toto");
 		
 	}
 }
