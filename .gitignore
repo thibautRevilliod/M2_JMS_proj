@@ -8,6 +8,7 @@
 bin/
 tmp/
 openjms/
+*.class
 *.tmp
 *.bak
 *.swp
