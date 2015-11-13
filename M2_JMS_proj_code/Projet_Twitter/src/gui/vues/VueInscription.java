@@ -16,11 +16,11 @@ public class VueInscription extends JFrame{
 		private JLabel lblEntrezVotreNom;
 		private JLabel lblEntrezVotrePrnom;
 		private JLabel lblEntrezVotreVille;
-		private JTextField textField;
-		private JTextField textField_1;
-		private JTextField textField_2;
-		private JTextField textField_3;
-		private JTextField textField_4;
+		private JTextField pseudo;
+		private JTextField password;
+		private JTextField nom;
+		private JTextField prenom;
+		private JTextField ville;
 	
 
 	public VueInscription ()
@@ -47,7 +47,7 @@ public class VueInscription extends JFrame{
 		lblEntrezVotreNom.setBounds(48, 114, 211, 20);
 		getContentPane().add(lblEntrezVotreNom);
 		
-		lblEntrezVotrePrnom = new JLabel("Entrez votre pr\u00E9nom :");
+		lblEntrezVotrePrnom = new JLabel("Entrez votre prenom :");
 		lblEntrezVotrePrnom.setBounds(48, 150, 211, 20);
 		getContentPane().add(lblEntrezVotrePrnom);
 		
@@ -55,30 +55,30 @@ public class VueInscription extends JFrame{
 		lblEntrezVotreVille.setBounds(48, 183, 211, 20);
 		getContentPane().add(lblEntrezVotreVille);
 		
-		textField = new JTextField();
-		textField.setBounds(274, 39, 146, 26);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+		pseudo = new JTextField();
+		pseudo.setBounds(274, 39, 146, 26);
+		getContentPane().add(pseudo);
+		pseudo.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(274, 75, 146, 26);
-		getContentPane().add(textField_1);
-		textField_1.setColumns(10);
+		password = new JTextField();
+		password.setBounds(274, 75, 146, 26);
+		getContentPane().add(password);
+		password.setColumns(10);
 		
-		textField_2 = new JTextField();
-		textField_2.setBounds(274, 111, 146, 26);
-		getContentPane().add(textField_2);
-		textField_2.setColumns(10);
+		nom = new JTextField();
+		nom.setBounds(274, 111, 146, 26);
+		getContentPane().add(nom);
+		nom.setColumns(10);
 		
-		textField_3 = new JTextField();
-		textField_3.setBounds(274, 147, 146, 26);
-		getContentPane().add(textField_3);
-		textField_3.setColumns(10);
+		prenom = new JTextField();
+		prenom.setBounds(274, 147, 146, 26);
+		getContentPane().add(prenom);
+		prenom.setColumns(10);
 		
-		textField_4 = new JTextField();
-		textField_4.setBounds(274, 183, 146, 26);
-		getContentPane().add(textField_4);
-		textField_4.setColumns(10);
+		ville = new JTextField();
+		ville.setBounds(274, 183, 146, 26);
+		getContentPane().add(ville);
+		ville.setColumns(10);
 		
 		JButton btnValider = new JButton("Valider");
 		btnValider.setBounds(144, 249, 115, 29);
@@ -94,6 +94,57 @@ public class VueInscription extends JFrame{
 		btnQuitter.addActionListener(new LFermerInscription (this));
 		this.addWindowListener(new LFermerInscription (this));
 					
-				
+		
+		
 	}	
+	
+	//Getters and Setters
+	public JTextField getPseudo() {
+		return pseudo;
+	}
+
+
+	public void setPseudo(JTextField pseudo) {
+		this.pseudo = pseudo;
+	}
+
+
+	public JTextField getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(JTextField password) {
+		this.password = password;
+	}
+
+
+	public JTextField getNom() {
+		return nom;
+	}
+
+
+	public void setNom(JTextField nom) {
+		this.nom = nom;
+	}
+
+
+	public JTextField getPrenom() {
+		return prenom;
+	}
+
+
+	public void setPrenom(JTextField prenom) {
+		this.prenom = prenom;
+	}
+
+
+	public JTextField getVille() {
+		return ville;
+	}
+
+
+	public void setVille(JTextField ville) {
+		this.ville = ville;
+	}
 }

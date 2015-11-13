@@ -21,9 +21,11 @@ public class LInscription implements ActionListener
 
 	public void actionPerformed(ActionEvent e)
 	{
+		//TODO : Gérer la Validation
 		System.out.println("OK j'ai cliqué sur m'inscrire");
+		System.out.println(vi.getPseudo().getText()+" "+vi.getPassword().getText()+" "+vi.getNom().getText()+" "+vi.getPrenom().getText()+" "+vi.getVille().getText());
 		
-		SenderTwitter.inscription("Toto", "123", "Nom", "Prenom", "Ville");
+		SenderTwitter.inscription(vi.getPseudo().getText(), vi.getPassword().getText(), vi.getNom().getText(), vi.getPrenom().getText(), vi.getVille().getText());
 		
 		String message = SenderTwitter.getMessageRetour();
 
