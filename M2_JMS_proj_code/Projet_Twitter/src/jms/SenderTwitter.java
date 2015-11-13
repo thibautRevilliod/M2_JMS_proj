@@ -1,5 +1,7 @@
 package jms;
 
+import java.util.ArrayList;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -40,7 +42,9 @@ public class SenderTwitter {
     private static String messageRetour;
     private static String[] listeAbonnementMessageRetour;
     //TODO: Comment on gère les sessions ? Une liste de session d'abonnement ?
-    private static TopicSubscriber topicSubscriber;
+    private static TopicSubscriber topicSubscriberNonGeo;
+    private static TopicSubscriber topicSubscriberGeo;
+    private static ArrayList<String> listeFiltreProfil;
 	
     public static String getMessageRetour() {
 		return messageRetour;
@@ -159,6 +163,25 @@ public class SenderTwitter {
         	Message receivedMessage = consumer.receive();
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
+        	
+        	//abonnement au topic messagesNonGeo
+        	String topicMessagesNonGeo = "messagesNonGeo";
+            Topic topic1 = (Topic) context.lookup(topicMessagesNonGeo); 
+            // création de l’abonné persistant (
+            topicSubscriberNonGeo = session.createDurableSubscriber(topic1, pseudo);
+            // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
+            // en attente dès ce moment
+            connection.start();
+            
+            //TODO: Comment faire deux abonnements à deux TOPIC différent
+            //abonnement au topic messagesNonGeo
+        	String topicMessagesGeo = "messagesGeo";
+            Topic topic2 = (Topic) context.lookup(topicMessagesGeo); 
+            // création de l’abonné persistant (
+            topicSubscriberGeo = session.createDurableSubscriber(topic2, pseudo);
+            // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
+            // en attente dès ce moment
+            connection.start();
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -209,6 +232,16 @@ public class SenderTwitter {
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
         	
+        	//desinscription au topic
+        	String topicMessagesGeo = "messagesGeo";
+            Topic topic = (Topic) context.lookup(topicMessagesGeo); 
+            topicSubscriberGeo.close();
+        	session.unsubscribe(pseudo);
+        	String topicMessagesNonGeo = "messagesNonGeo";
+            topic = (Topic) context.lookup(topicMessagesNonGeo); 
+            topicSubscriberGeo.close();
+        	session.unsubscribe(pseudo);
+        	
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -235,7 +268,7 @@ public class SenderTwitter {
         }
     }
 	
-	public static void creerAbonnement(String pPseudoSuivi, String pPseudoAbonne)
+	public static void creerAbonnement(String pPseudoIdProfilSuiviPar1, String pPseudoIdProfil1)
 	{
         destName = "fileGestProfils";
 
@@ -248,7 +281,7 @@ public class SenderTwitter {
         	// create the consumer
         	consumer = session.createConsumer(temporaryQueue);
 
-        	MessageAbonnement messageAbonnement = new MessageAbonnement(pPseudoSuivi, pPseudoAbonne);
+        	MessageAbonnement messageAbonnement = new MessageAbonnement(pPseudoIdProfilSuiviPar1, pPseudoIdProfil1);
         	ObjectMessage objectMessage = session.createObjectMessage(messageAbonnement);
         	objectMessage.setJMSReplyTo(temporaryQueue);
         	objectMessage.setJMSType("creerAbonnement");
@@ -258,21 +291,13 @@ public class SenderTwitter {
         	Message receivedMessage = consumer.receive();
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
-        	
-        	//abonnement au topic
-        	String topicName = "messagesNonGeo";
-            Topic topic = (Topic) context.lookup(topicName); 
-            // création de l’abonné persistant (
-            topicSubscriber = session.createDurableSubscriber(topic, pPseudoAbonne);
-            // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
-            // en attente dès ce moment
-            connection.start();
-           
-            //TODO: enlever le boolean test et lancer la boucle dans un nouveau thread
+        	     
+            //TODO: Faire de même avec le topic topicSubscriberGeo
+        	listeFiltreProfil.add(pPseudoIdProfilSuiviPar1);
             boolean test = true;
             while(test == true) {
-            	Message message = topicSubscriber.receive();
-            	if(message.getJMSType().equals(pPseudoSuivi))
+            	Message message = topicSubscriberNonGeo.receive();
+            	if(listeFiltreProfil.contains(message.getJMSType()))
             	{
             		objectMessage = (ObjectMessage) message;
                     MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
@@ -340,7 +365,7 @@ public class SenderTwitter {
         }
     }
 	
-	public static void suppAbonnement(String pPseudoSuivi, String pPseudoAbonne)
+	public static void suppAbonnement(String pPseudoIdProfilSuiviPar1, String pPseudoIdProfil1)
 	{
         destName = "fileGestProfils";
 
@@ -353,7 +378,7 @@ public class SenderTwitter {
         	// create the consumer
         	consumer = session.createConsumer(temporaryQueue);
 
-        	MessageAbonnement messageAbonnement = new MessageAbonnement(pPseudoSuivi, pPseudoAbonne);
+        	MessageAbonnement messageAbonnement = new MessageAbonnement(pPseudoIdProfilSuiviPar1, pPseudoIdProfil1);
         	ObjectMessage objectMessage = session.createObjectMessage(messageAbonnement);
         	objectMessage.setJMSReplyTo(temporaryQueue);
         	objectMessage.setJMSType("suppAbonnement");
@@ -363,12 +388,9 @@ public class SenderTwitter {
         	Message receivedMessage = consumer.receive();
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
-        	
-        	//desinscription au topic
-        	String topicName = "messagesNonGeo";
-            Topic topic = (Topic) context.lookup(topicName); 
-            topicSubscriber.close();
-        	session.unsubscribe(pPseudoAbonne);
+     
+        	//suppression dans l'arraylist
+        	listeFiltreProfil.remove(pPseudoIdProfil1);
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -395,7 +417,7 @@ public class SenderTwitter {
         }
     }
 	
-	public static void listeAbonne(String pPseudoAbonne)
+	public static void listeAbonne(String pPseudoIdProfil1)
 	{
         destName = "fileGestProfils";
         String[] listeAbonnement = null;
@@ -409,7 +431,7 @@ public class SenderTwitter {
         	// create the consumer
         	consumer = session.createConsumer(temporaryQueue);
         	
-        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoAbonne, listeAbonnement, "");
+        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoIdProfil1, listeAbonnement, "");
         	ObjectMessage objectMessage = session.createObjectMessage(messageListeAbonnement);
         	objectMessage.setJMSReplyTo(temporaryQueue);
         	objectMessage.setJMSType("listeAbonne");
@@ -448,7 +470,7 @@ public class SenderTwitter {
         }
     }
 	
-	public static void listeSuivi(String pPseudoSuivi)
+	public static void listeSuivi(String pPseudoIdProfilSuiviPar1)
 	{
         destName = "fileGestProfils";
         String[] listeAbonnement = null;
@@ -462,7 +484,7 @@ public class SenderTwitter {
         	// create the consumer
         	consumer = session.createConsumer(temporaryQueue);
         	
-        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoSuivi, listeAbonnement, "");
+        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoIdProfilSuiviPar1, listeAbonnement, "");
         	ObjectMessage objectMessage = session.createObjectMessage(messageListeAbonnement);
         	objectMessage.setJMSReplyTo(temporaryQueue);
         	objectMessage.setJMSType("listeSuivi");

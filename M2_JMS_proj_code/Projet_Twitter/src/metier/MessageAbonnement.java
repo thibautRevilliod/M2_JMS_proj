@@ -6,13 +6,13 @@ public class MessageAbonnement implements Serializable {
 	private String pseudoSuivi;
 	private String pseudoAbonne;
 
-	public MessageAbonnement(String pPseudoSuivi, String pPseudoAbonne) {
+	public MessageAbonnement(String pPseudoIdProfilSuiviPar1, String pPseudoIdProfil1) {
 		super();
-		this.pseudoSuivi = pPseudoSuivi;
-		this.pseudoAbonne = pPseudoAbonne;
+		this.pseudoSuivi = pPseudoIdProfilSuiviPar1;
+		this.pseudoAbonne = pPseudoIdProfil1;
 	}
 
-	public String getPseudoSuivi() {
+	public String getPseudoIdProfilSuiviPar1() {
 		return pseudoSuivi;
 	}
 
@@ -20,7 +20,7 @@ public class MessageAbonnement implements Serializable {
 		this.pseudoSuivi = pseudoSuivi;
 	}
 
-	public String getPseudoAbonne() {
+	public String getPseudoIdProfil1() {
 		return pseudoAbonne;
 	}
 

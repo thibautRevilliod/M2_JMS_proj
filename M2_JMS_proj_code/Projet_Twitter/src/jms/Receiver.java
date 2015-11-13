@@ -364,20 +364,20 @@ public class Receiver {
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
         
         //inscription dans la BD de l'abonnement
-        retourReceptionAbonnement = bdd.creerAbonnement(messageAbonnement.getPseudoSuivi(), messageAbonnement.getPseudoAbonne());
+        retourReceptionAbonnement = bdd.creerAbonnement(messageAbonnement.getPseudoIdProfilSuiviPar1(), messageAbonnement.getPseudoIdProfil1());
         
         if(retourReceptionAbonnement == -1)//création KO en BD
         {
-        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' KO");
+        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoIdProfilSuiviPar1() +"' KO");
         }
         else if(retourReceptionAbonnement == -2)
         {
         	//abonnement existe déjà
-        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' KO : L'abonnement existe déjà");
+        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoIdProfilSuiviPar1() +"' KO : L'abonnement existe déjà");
         }else
         {
         	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
-        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' OK");
+        	replyMessage = session.createTextMessage("Abonnement avec '" + messageAbonnement.getPseudoIdProfilSuiviPar1() +"' OK");
         }
         
         // create the sender
@@ -402,20 +402,20 @@ public class Receiver {
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
         
         //inscription dans la BD de l'abonnement
-        retourReceptionAbonnement = bdd.supprimerAbonnement(messageAbonnement.getPseudoSuivi(), messageAbonnement.getPseudoAbonne());
+        retourReceptionAbonnement = bdd.supprimerAbonnement(messageAbonnement.getPseudoIdProfilSuiviPar1(), messageAbonnement.getPseudoIdProfil1());
         
         if(retourReceptionAbonnement == -1)//suppression KO en BD
         {
-        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' KO");
+        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoIdProfilSuiviPar1() +"' KO");
         }
         else if(retourReceptionAbonnement == -2)
         {
         	//abonnement n'existe pas
-        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' KO : L'abonnement n'existe pas");
+        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoIdProfilSuiviPar1() +"' KO : L'abonnement n'existe pas");
         }else
         {
         	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
-        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoSuivi() +"' OK");
+        	replyMessage = session.createTextMessage("Suppression de l'abonnement avec '" + messageAbonnement.getPseudoIdProfilSuiviPar1() +"' OK");
         }
         
         // create the sender
@@ -439,8 +439,8 @@ public class Receiver {
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
         
         //récupération de la liste des abonnes
-        String[] listeAbonne = bdd.listeAbonne(messageListeAbonnement.getPseudoAbonne());
-        MessageListeAbonnement messageListeAbonnementRetour = new MessageListeAbonnement(messageListeAbonnement.getPseudoAbonne(),listeAbonne,"");
+        String[] listeAbonne = bdd.listeAbonne(messageListeAbonnement.getPseudoIdProfil1());
+        MessageListeAbonnement messageListeAbonnementRetour = new MessageListeAbonnement(messageListeAbonnement.getPseudoIdProfil1(),listeAbonne,"");
         
         if(messageListeAbonnementRetour.getListeAbonnement() == null)//aucun abonne existe
         {
@@ -475,8 +475,8 @@ public class Receiver {
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
         
         //récupération de la liste des suivis
-        String[] listeSuivi = bdd.listeSuivi(messageListeAbonnement.getPseudoAbonne());
-        MessageListeAbonnement messageListeAbonnementRetour = new MessageListeAbonnement(messageListeAbonnement.getPseudoAbonne(),listeSuivi,"");
+        String[] listeSuivi = bdd.listeSuivi(messageListeAbonnement.getPseudoIdProfil1());
+        MessageListeAbonnement messageListeAbonnementRetour = new MessageListeAbonnement(messageListeAbonnement.getPseudoIdProfil1(),listeSuivi,"");
         
         if(messageListeAbonnementRetour.getListeAbonnement() == null)//aucun abonne existe
         {

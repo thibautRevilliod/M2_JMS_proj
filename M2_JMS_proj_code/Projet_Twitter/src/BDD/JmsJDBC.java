@@ -36,23 +36,23 @@ public class JmsJDBC {
 					" FOREIGN KEY (EMETTEUR) REFERENCES PROFIL(idPROFIL))");
 			
 //        	s.execute("create table IF NOT EXISTS ABONNEMENTS  ( " +
-//        			" idABONNEMENTS INT NOT NULL PRIMARY KEY, " +
+//        			" idProfil1MENTS INT NOT NULL PRIMARY KEY, " +
 //					" DATEHEURE TIMESTAMP )");
 	        
         	s.execute("create table IF NOT EXISTS ABONNEMENTS  ( " +
-        			" idSUIVI INT NOT NULL, " +
-					" idABONNE INT NOT NULL, " +
+        			" idProfilSuiviPar1 INT NOT NULL, " +
+					" idProfil1 INT NOT NULL, " +
 					" DATEHEURE TIMESTAMP, " +
-					" PRIMARY KEY (idSUIVI, idABONNE) , " +
-					" FOREIGN KEY (idSUIVI) REFERENCES PROFIL(idPROFIL) , " +
-					" FOREIGN KEY (idABONNE) REFERENCES PROFIL(idPROFIL))");
+					" PRIMARY KEY (idProfilSuiviPar1, idProfil1) , " +
+					" FOREIGN KEY (idProfilSuiviPar1) REFERENCES PROFIL(idPROFIL) , " +
+					" FOREIGN KEY (idProfil1) REFERENCES PROFIL(idPROFIL))");
 	        
 //        	s.execute("create table IF NOT EXISTS SUIVI  ( " +
-//        			" idSUIVI INT NOT NULL, " +
+//        			" idProfilSuiviPar1 INT NOT NULL, " +
 //					" idPROFIL INT NOT NULL, " +
 //					" DATEHEURE TIMESTAMP, " +
-//					" PRIMARY KEY (idSUIVI, idPROFIL) , " +
-//					" FOREIGN KEY (idSUIVI) REFERENCES PROFIL(idPROFIL) , " +
+//					" PRIMARY KEY (idProfilSuiviPar1, idPROFIL) , " +
+//					" FOREIGN KEY (idProfilSuiviPar1) REFERENCES PROFIL(idPROFIL) , " +
 //					" FOREIGN KEY (idPROFIL) REFERENCES PROFIL(idPROFIL))");
 			
 		} catch(Exception e) {
@@ -233,15 +233,15 @@ public class JmsJDBC {
 		}
 	}
 	
-	public int creerAbonnement(String ppseudoSuivi, String ppseudoAbonne) {
+	public int creerAbonnement(String pPseudoIdProfilSuiviPar1, String pPseudoIdProfil1) {
 		int id = -1;
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select idSUIVI, idABONNE from ABONNEMENTS WHERE idSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoSuivi+"') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoAbonne+"')");
+			ResultSet rs = s.executeQuery("select idProfilSuiviPar1, idProfil1 from ABONNEMENTS WHERE idProfilSuiviPar1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfilSuiviPar1+"') AND idProfil1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfil1+"')");
         	if (!rs.next())
         	{
-        		s.executeUpdate("insert into ABONNEMENTS values ((SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoSuivi+"'), (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoAbonne+"'),CURRENT_TIMESTAMP())");
+        		s.executeUpdate("insert into ABONNEMENTS values ((SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfilSuiviPar1+"'), (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfil1+"'),CURRENT_TIMESTAMP())");
         		id = 0;
         	}
         	else
@@ -257,15 +257,15 @@ public class JmsJDBC {
 		}
 	}
 	
-	public int supprimerAbonnement(String ppseudoSuivi, String ppseudoAbonne) {
+	public int supprimerAbonnement(String pPseudoIdProfilSuiviPar1, String pPseudoIdProfil1) {
 		int id = -1;
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select idSUIVI, idABONNE from ABONNEMENTS WHERE idSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoSuivi+"') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoAbonne+"')");
+			ResultSet rs = s.executeQuery("select idProfilSuiviPar1, idProfil1 from ABONNEMENTS WHERE idProfilSuiviPar1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfilSuiviPar1+"') AND idProfil1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfil1+"')");
         	if (rs.next())
         	{
-        		s.executeUpdate("DELETE FROM ABONNEMENTS WHERE idSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoSuivi+"') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+ppseudoAbonne+"')");
+        		s.executeUpdate("DELETE FROM ABONNEMENTS WHERE idProfilSuiviPar1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfilSuiviPar1+"') AND idProfil1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfil1+"')");
         		id = 0;
         	}
         	else
@@ -282,14 +282,14 @@ public class JmsJDBC {
 	}
 	
 	//liste des abonnements du profil passé en paramètre
-	public String[] listeAbonne(String pPseudoAbonne) {
+	public String[] listeAbonne(String pPseudoIdProfil1) {
 		String[] res = null;
 		boolean resOK = false;
 		
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idSuivi = PROFIL.idProfil AND idAbonne = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoAbonne+"')");
+			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfilSuiviPar1 = PROFIL.idProfil AND idProfil1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfil1+"')");
         	Vector<String> vector = new Vector<String>();
 
     		while(rs.next())
@@ -319,14 +319,14 @@ public class JmsJDBC {
 	}
 	
 	//liste des suivis du profil passé en paramètre
-	public String[] listeSuivi(String pPseudoSuivi) {
+	public String[] listeSuivi(String pPseudoIdProfilSuiviPar1) {
 		String[] res = null;
 		boolean resOK = false;
 		
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idABONNE = PROFIL.idProfil AND IDSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoSuivi+"')");
+			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfil1 = PROFIL.idProfil AND idProfilSuiviPar1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfilSuiviPar1+"')");
         	Vector<String> vector = new Vector<String>();
 
     		while(rs.next())

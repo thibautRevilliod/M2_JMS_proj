@@ -15,12 +15,12 @@ public class MessageListeAbonnement implements Serializable {
 		this.messageRetour = pmessageRetour;
 	}
 
-	public String getPseudoAbonne() {
+	public String getPseudoIdProfil1() {
 		return pseudo;
 	}
 
-	public void setPseudoAbonne(String pPseudoAbonne) {
-		this.pseudo = pPseudoAbonne;
+	public void setPseudoAbonne(String pPseudoIdProfil1) {
+		this.pseudo = pPseudoIdProfil1;
 	}
 
 	public String[] getListeAbonnement() {

@@ -692,3 +692,6 @@ select idProfil, idABONNE from ABONNEMENTS WHERE idProfil = (SELECT idProfil FRO
 11-11 22:07:49 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "DELETE FROM ABONNEMENTS WHERE WHERE[*] IDSUIVI = (SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = 'PseudoToto') AND IDABONNE = (SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = 'PseudoTutu') "; expected "NOT, EXISTS, SELECT, FROM"; SQL statement:
 DELETE FROM ABONNEMENTS WHERE WHERE idSUIVI = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoToto') AND idABONNE = (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoTutu') [42001-147]
+11-13 09:50:22 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: NULL not allowed for column "IDPROFILSUIVIPAR1"; SQL statement:
+insert into ABONNEMENTS values ((SELECT idProfil FROM PROFIL WHERE pseudo = 'Toto'), (SELECT idProfil FROM PROFIL WHERE pseudo = 'PseudoTutu'),CURRENT_TIMESTAMP()) [90006-147]
