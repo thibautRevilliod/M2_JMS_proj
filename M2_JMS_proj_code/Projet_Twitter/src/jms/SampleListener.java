@@ -62,8 +62,8 @@ public class SampleListener implements MessageListener {
 
     public void onMessage(Message message) {
     	
+    	System.out.println("test");
     	ObjectMessage object = (ObjectMessage) message;
-    	
     	try {
 			if(SenderTwitter.getListeFiltreProfil().contains(object.getJMSType()))
 			{

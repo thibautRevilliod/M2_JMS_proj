@@ -1,5 +1,8 @@
 package jms;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.jms.Connection;
@@ -39,6 +42,7 @@ public class SenderTwitter {
     private static MessageProducer sender = null;
     private static MessageConsumer consumer = null;
     private static Topic topic = null;
+    private static BufferedReader waiter = null;
     
     private static String messageRetour;
     private static String[] listeAbonnementMessageRetour;
@@ -110,6 +114,7 @@ public class SenderTwitter {
         // look up the Desination
         String topicMessages = "messagesNonGeo";
         topic = (Topic) context.lookup(topicMessages); 
+       // dest = (Destination) context.lookup(topicMessages); 
 
         // create the connection
         connection = factory.createConnection();
@@ -119,13 +124,16 @@ public class SenderTwitter {
             false, Session.AUTO_ACKNOWLEDGE);
 
         // create the receiver
-        consumer = session.createConsumer(dest);
+        consumer = session.createConsumer(topic);
 
         // register a listener
         consumer.setMessageListener(new SampleListener());
 
-        // start the connection, to enable message receipt
-        connection.start();
+//        // start the connection, to enable message receipt
+//        connection.start();
+//        
+//        waiter = new BufferedReader(new InputStreamReader(System.in));
+//        waiter.readLine();
       
 	}
     
@@ -210,6 +218,22 @@ public class SenderTwitter {
             initializeTopics();
         	// création de l’abonné persistant (
             topicSubscriberNonGeo = session.createDurableSubscriber(topic, pseudo);
+            // start the connection, to enable message receipt
+            connection.start();
+            try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
+//            waiter = new BufferedReader(new InputStreamReader(System.in));
+//            try {
+//				waiter.readLine();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
             // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
             // en attente dès ce moment
 //            connection.start();
@@ -596,7 +620,7 @@ public class SenderTwitter {
             	initialize();
             	objectMessage.setJMSType(pPseudoEmetteur);
             	sender.send(objectMessage);
-            	System.out.println("Sent: " + messageGazouilli.toString());
+            	System.out.println("Sent Topic: " + messageGazouilli.toString());
                       
         } catch (JMSException exception) {
             exception.printStackTrace();
