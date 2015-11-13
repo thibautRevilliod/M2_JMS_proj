@@ -98,7 +98,7 @@ public class Receiver {
 	
 	private static JmsJDBC bdd;
     
-	public static void initialize() throws NamingException, JMSException
+	public static void initializeQueues() throws NamingException, JMSException
 	{
 		// create the JNDI initial context
         context = new InitialContext();
@@ -121,8 +121,7 @@ public class Receiver {
 
         // start the connection, to enable message receipt
         connection.start();
-	}
-	
+	}	
 
 	
 //	public static void receptionGazouilli()
@@ -183,7 +182,7 @@ public class Receiver {
 
         try {
             
-        	initialize();
+        	initializeQueues();
 
             for (int i = 0; i < count; ++i) {
                 Message message = receiver.receive();

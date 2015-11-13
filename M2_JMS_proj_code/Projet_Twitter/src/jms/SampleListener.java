@@ -46,8 +46,11 @@ package jms;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 import javax.jms.JMSException;
+
+import metier.MessageGazouilli;
 
 /**
  * Sample <code>MessageListener</code> implementation
@@ -58,13 +61,20 @@ import javax.jms.JMSException;
 public class SampleListener implements MessageListener {
 
     public void onMessage(Message message) {
-        if (message instanceof TextMessage) {
-            TextMessage text = (TextMessage) message;
-            try {
-                System.out.println("Received: " + text.getText());
-            } catch (JMSException exception) {
-                System.err.println("Failed to get message text: " + exception);
-            }
-        }
+    	
+    	ObjectMessage object = (ObjectMessage) message;
+    	
+    	try {
+			if(SenderTwitter.getListeFiltreProfil().contains(object.getJMSType()))
+			{
+				ObjectMessage objectMessage = (ObjectMessage) message;
+			    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
+			    System.out.println("Gazouilli : " + messageGazouilli.toString());
+			}
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
     }
 }

@@ -38,15 +38,24 @@ public class SenderTwitter {
     private static Session session = null;
     private static MessageProducer sender = null;
     private static MessageConsumer consumer = null;
+    private static Topic topic = null;
     
     private static String messageRetour;
     private static String[] listeAbonnementMessageRetour;
     //TODO: Comment on gère les sessions ? Une liste de session d'abonnement ?
     private static TopicSubscriber topicSubscriberNonGeo;
     private static TopicSubscriber topicSubscriberGeo;
-    private static ArrayList<String> listeFiltreProfil;
+    private static ArrayList<String> listeFiltreProfil = new ArrayList<String>();
 	
-    public static String getMessageRetour() {
+    public static ArrayList<String> getListeFiltreProfil() {
+		return listeFiltreProfil;
+	}
+
+	public static void setListeFiltreProfil(ArrayList<String> listeFiltreProfil) {
+		SenderTwitter.listeFiltreProfil = listeFiltreProfil;
+	}
+
+	public static String getMessageRetour() {
 		return messageRetour;
 	}
 
@@ -89,6 +98,36 @@ public class SenderTwitter {
         // start the connection, to enable message sends
         connection.start();
     }
+	
+	public static void initializeTopics() throws NamingException, JMSException
+	{
+		// create the JNDI initial context.
+        context = new InitialContext();
+
+        // look up the ConnectionFactory
+        factory = (ConnectionFactory) context.lookup(factoryName);
+       
+        // look up the Desination
+        String topicMessages = "messagesNonGeo";
+        topic = (Topic) context.lookup(topicMessages); 
+
+        // create the connection
+        connection = factory.createConnection();
+
+        // create the session
+        session = connection.createSession(
+            false, Session.AUTO_ACKNOWLEDGE);
+
+        // create the receiver
+        consumer = session.createConsumer(dest);
+
+        // register a listener
+        consumer.setMessageListener(new SampleListener());
+
+        // start the connection, to enable message receipt
+        connection.start();
+      
+	}
     
 	public static void inscription(String pseudo, String motDePasse, String nom, String prenom, String ville)
 	{
@@ -164,24 +203,26 @@ public class SenderTwitter {
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
         	
-        	//abonnement au topic messagesNonGeo
-        	String topicMessagesNonGeo = "messagesNonGeo";
-            Topic topic1 = (Topic) context.lookup(topicMessagesNonGeo); 
-            // création de l’abonné persistant (
-            topicSubscriberNonGeo = session.createDurableSubscriber(topic1, pseudo);
+        	
+//        	//abonnement au topic messagesNonGeo
+//        	String topicMessagesNonGeo = "messagesNonGeo";
+//            Topic topic1 = (Topic) context.lookup(topicMessagesNonGeo); 
+            initializeTopics();
+        	// création de l’abonné persistant (
+            topicSubscriberNonGeo = session.createDurableSubscriber(topic, pseudo);
             // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
             // en attente dès ce moment
-            connection.start();
+//            connection.start();
             
             //TODO: Comment faire deux abonnements à deux TOPIC différent
-            //abonnement au topic messagesNonGeo
-        	String topicMessagesGeo = "messagesGeo";
-            Topic topic2 = (Topic) context.lookup(topicMessagesGeo); 
-            // création de l’abonné persistant (
-            topicSubscriberGeo = session.createDurableSubscriber(topic2, pseudo);
-            // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
-            // en attente dès ce moment
-            connection.start();
+//            //abonnement au topic messagesNonGeo
+//        	String topicMessagesGeo = "messagesGeo";
+//            Topic topic2 = (Topic) context.lookup(topicMessagesGeo); 
+//            // création de l’abonné persistant (
+//            topicSubscriberGeo = session.createDurableSubscriber(topic2, pseudo);
+//            // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
+//            // en attente dès ce moment
+//            connection.start();
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -294,17 +335,17 @@ public class SenderTwitter {
         	     
             //TODO: Faire de même avec le topic topicSubscriberGeo
         	listeFiltreProfil.add(pPseudoIdProfilSuiviPar1);
-            boolean test = true;
-            while(test == true) {
-            	Message message = topicSubscriberNonGeo.receive();
-            	if(listeFiltreProfil.contains(message.getJMSType()))
-            	{
-            		objectMessage = (ObjectMessage) message;
-                    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
-	                System.out.println("Gazouilli : " + messageGazouilli.toString());
-	                test = false;
-            	}
-            }
+//            boolean test = true;
+//            while(test == true) {
+//            	Message message = topicSubscriberNonGeo.receive();
+//            	if(listeFiltreProfil.contains(message.getJMSType()))
+//            	{
+//            		objectMessage = (ObjectMessage) message;
+//                    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
+//	                System.out.println("Gazouilli : " + messageGazouilli.toString());
+//	                test = false;
+//            	}
+//            }
             
 //            Thread t = new Thread(
 //                    new Runnable() {

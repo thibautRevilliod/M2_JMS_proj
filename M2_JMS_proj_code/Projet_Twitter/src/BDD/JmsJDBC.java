@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
+import jms.SenderTwitter;
+
 
 public class JmsJDBC {
 		
@@ -431,6 +433,7 @@ public class JmsJDBC {
 		System.out.println(" Création des profils : ");
 			System.out.println("Profil n°: " + bdd.creerProfil("PseudoToto", "mdp", "NomToto", "PrenomToto", "Toulouse"));
 			System.out.println("Profil n°: " +bdd.creerProfil("PseudoTutu", "mdp", "NomTutu", "PrenomTutu", "Paris"));
+			System.out.println("Profil n°: " +bdd.creerProfil("Toto", "123", "NomToto", "PrenomToto", "Rodez"));
 			System.out.println(" --> OK");
 		System.out.println(" Création des Gazouilli : ");
 			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "Toulouse", "PseudoToto"));
