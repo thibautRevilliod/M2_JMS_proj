@@ -9,6 +9,7 @@ import gui.listeners.LParametres;
 
 import java.awt.ScrollPane;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 
 public class VueFildActu extends JFrame
 
@@ -24,7 +25,7 @@ public class VueFildActu extends JFrame
 		getContentPane().add(scrollPane);
 		
 		JButton btnGazouiller = new JButton("Gazouiller");
-		btnGazouiller.setBounds(153, 16, 115, 29);
+		btnGazouiller.setBounds(303, 16, 115, 29);
 		getContentPane().add(btnGazouiller);
 		
 		JButton btnParamtres = new JButton("Parametres");
@@ -38,6 +39,10 @@ public class VueFildActu extends JFrame
 		JButton btnAbonnements = new JButton("Abonnements");
 		btnAbonnements.setBounds(15, 350, 115, 29);
 		getContentPane().add(btnAbonnements);
+		
+		JLabel lblMonPseudo = new JLabel("MON PSEUDO");
+		lblMonPseudo.setBounds(15, 20, 135, 20);
+		getContentPane().add(lblMonPseudo);
 	
 		// Abonnements :
 		btnAbonnements.addActionListener(new LAbonnements(this));

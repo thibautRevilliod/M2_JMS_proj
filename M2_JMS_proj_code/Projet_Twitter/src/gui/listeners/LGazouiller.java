@@ -25,7 +25,6 @@ public class LGazouiller implements ActionListener
 	{
 		VueGazouiller ve = new VueGazouiller();
 		ve.setVisible(true);
-		ve.setLocation(800, 300);
 			
 	}
 }

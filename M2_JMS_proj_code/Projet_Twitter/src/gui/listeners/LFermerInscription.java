@@ -43,7 +43,7 @@ public class LFermerInscription implements ActionListener, WindowListener
 					
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
-			System.exit(0);
+			this.vue.setVisible(false);
 		}
 		
 	}

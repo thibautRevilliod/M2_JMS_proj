@@ -19,7 +19,7 @@ public class VueMenuDepart extends JFrame
 		
 		this.setTitle("Menu");
 		this.setLocationRelativeTo(null);
-		this.setSize(360,250);
+		this.setSize(394,191);
 		this.setResizable(false);
 		getContentPane().setLayout(null);
 		
@@ -28,15 +28,15 @@ public class VueMenuDepart extends JFrame
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		btnInscription.setBounds(35, 110, 115, 29);
+		btnInscription.setBounds(15, 74, 115, 29);
 		getContentPane().add(btnInscription);
 		
 		JButton btnConnexion = new JButton("Connexion");
-		btnConnexion.setBounds(186, 110, 115, 29);
+		btnConnexion.setBounds(137, 74, 115, 29);
 		getContentPane().add(btnConnexion);
 		
 		JButton btnQuitter = new JButton("Quitter");
-		btnQuitter.setBounds(108, 155, 115, 29);
+		btnQuitter.setBounds(258, 74, 115, 29);
 		getContentPane().add(btnQuitter);
 		
 		JLabel lblQueVoulezVous = new JLabel("Que voulez vous faire ? ");

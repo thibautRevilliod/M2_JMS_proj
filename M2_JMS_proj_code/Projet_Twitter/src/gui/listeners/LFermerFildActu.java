@@ -56,7 +56,20 @@ public class LFermerFildActu implements ActionListener, WindowListener
 
 	//@Override
 	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		int reponse = JOptionPane.showConfirmDialog(this.vue, "Voulez-vous réellemment fermer la fenêtre ?", "Quitter ?", JOptionPane.YES_NO_OPTION);
+		
+		
+		if (reponse == JOptionPane.YES_OPTION) 
+		{
+			//TODO : Provisoire; permet de tester la déconnexion
+			// il faudra déplacer ce code dans le bouton déconnextion
+			SenderTwitter.deconnexion("Toto");
+			String message = SenderTwitter.getMessageRetour();
+			JOptionPane.showMessageDialog(vue, message, "Information Deconnexion", JOptionPane.INFORMATION_MESSAGE);
+		
+			
+			this.vue.setVisible(false);
+		}
 		
 	} 
 	

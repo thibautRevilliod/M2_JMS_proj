@@ -1,6 +1,6 @@
 package gui.listeners;
 
-import gui.vues.VueConnexion;
+import gui.vues.VueConsulter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,14 +11,14 @@ import javax.swing.JOptionPane;
 
 
 
-public class LFermer implements ActionListener, WindowListener 
+public class LFermerConsulter implements ActionListener, WindowListener 
 {
 
 		
-	private VueConnexion vue;
+	private VueConsulter vue;
 		
 	
-	public LFermer (VueConnexion pvue)
+	public LFermerConsulter (VueConsulter pvue)
 	{
 			this.vue=pvue;
 	}

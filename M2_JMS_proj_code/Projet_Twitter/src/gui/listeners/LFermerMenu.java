@@ -48,7 +48,12 @@ public class LFermerMenu implements ActionListener, WindowListener
 
 	//@Override
 	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+		int reponse = JOptionPane.showConfirmDialog(this.vue, "Voulez réellemment fermer la fenêtre ?", "Quitter ?", JOptionPane.YES_NO_OPTION);
+		
+		if (reponse == JOptionPane.YES_OPTION) 
+		{
+			System.exit(0);
+		}
 		
 	} 
 	
