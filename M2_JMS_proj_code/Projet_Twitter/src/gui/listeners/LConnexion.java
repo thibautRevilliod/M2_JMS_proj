@@ -44,7 +44,19 @@ public class LConnexion implements ActionListener
 		else {
 			message = "Vous devez remplir les 2 champs : pseudo et mot de passe";
 			JOptionPane.showMessageDialog(vc, message, "Erreur Connexion", JOptionPane.WARNING_MESSAGE);
-		}		
+		}	
+		
+		//TODO: Déplacer le code ci-dessous dans le fil de l'actualité
+		//liste des gazouillis de tout les abonnés d'un profil
+			SenderTwitter.listeGazouilliDesAbonnements("PseudoTutu");
+			message = SenderTwitter.getMessageRetour();
+			JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
+		
+		//TODO: Déplacer le code ci-dessous où on a besoin de la liste des profils
+		//liste des profils de la BD
+			SenderTwitter.listeDesProfils();
+			message = SenderTwitter.getMessageRetour();
+			JOptionPane.showMessageDialog(vc, message, "Information Liste des profils", JOptionPane.INFORMATION_MESSAGE);
 	}
 }
 
