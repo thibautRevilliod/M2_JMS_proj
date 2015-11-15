@@ -24,7 +24,7 @@ public class LEnvoyerMessage implements ActionListener
 	{
 		System.out.println("OK j'ai cliqué sur envoyer le message");
 
-		SenderTwitter.creerGazouilliTopic("Content","Marseille", "Toto");
+		SenderTwitter.creerGazouilliTopic("Content", "PseudoToto", true);
 		
 	}
 }

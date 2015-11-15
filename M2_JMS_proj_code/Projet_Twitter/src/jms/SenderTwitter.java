@@ -3,7 +3,10 @@ package jms;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -29,9 +32,17 @@ import metier.MessageConnexion;
 import metier.MessageDeconnexion;
 import metier.MessageInscription;
 import metier.MessageListeAbonnement;
+import metier.MessageListeMessageDunProfil;
+import metier.MessageListeProfil;
+import metier.MessageNbGazouilliUnProfil;
+import metier.ProfilType;
 
 public class SenderTwitter {	
 	
+	//constantes
+			public static final  String TOPICMESSAGETWITTER = "messagesProjetTwitter";
+			private static final String FILEGESTPROFILS = "fileGestProfils";
+			
 	private static Context context = null;
     private static ConnectionFactory factory = null;
     private static Connection connection = null;
@@ -41,23 +52,77 @@ public class SenderTwitter {
     private static Session session = null;
     private static MessageProducer sender = null;
     private static MessageConsumer consumer = null;
-    private static Topic topic = null;
     private static BufferedReader waiter = null;
     
     private static String messageRetour;
-    private static String[] listeAbonnementMessageRetour;
-    //TODO: Comment on gère les sessions ? Une liste de session d'abonnement ?
-    private static TopicSubscriber topicSubscriberNonGeo;
-    private static TopicSubscriber topicSubscriberGeo;
-    private static ArrayList<String> listeFiltreProfil = new ArrayList<String>();
+    //liste abonnement est utilisé par le thread comme filtre pour le topic
+    private static ArrayList<String> listeAbonnement = new ArrayList<String>();
+    private static ArrayList<String> listeSuivi = new ArrayList<String>();
+    private static ArrayList<MessageGazouilli> listeGazouilliDunAbonnement = new ArrayList<MessageGazouilli>();
+    private static ArrayList<MessageGazouilli> listeGazouilliDesAbonnements = new ArrayList<MessageGazouilli>();
+    private static Thread threadConnexion;
+	private static MonRunnable runnableConnexion;
+	private static int nbGazouilliUnProfil;
+	private static ArrayList<ProfilType> listeProfil = new ArrayList<ProfilType>();
 	
-    public static ArrayList<String> getListeFiltreProfil() {
-		return listeFiltreProfil;
+    
+    public static ArrayList<ProfilType> getListeProfil() {
+		return listeProfil;
 	}
 
-	public static void setListeFiltreProfil(ArrayList<String> listeFiltreProfil) {
-		SenderTwitter.listeFiltreProfil = listeFiltreProfil;
+	public static void setListeProfil(ArrayList<ProfilType> listeProfil) {
+		SenderTwitter.listeProfil = listeProfil;
 	}
+
+	public static int getNbGazouilliUnProfil() {
+		return nbGazouilliUnProfil;
+	}
+
+	public static void setNbGazouilliUnProfil(int nbGazouilliUnProfil) {
+		SenderTwitter.nbGazouilliUnProfil = nbGazouilliUnProfil;
+	}
+
+	public static ArrayList<MessageGazouilli> getListeGazouilliDunAbonnement() {
+		return listeGazouilliDunAbonnement;
+	}
+
+	public static void setListeGazouilliDunAbonnement(
+			ArrayList<MessageGazouilli> listeGazouilliDunAbonnement) {
+		SenderTwitter.listeGazouilliDunAbonnement = listeGazouilliDunAbonnement;
+	}
+
+	public static ArrayList<MessageGazouilli> getListeGazouilliDesAbonnements() {
+		return listeGazouilliDesAbonnements;
+	}
+
+	public static void setListeGazouilliDesAbonnements(
+			ArrayList<MessageGazouilli> listeGazouilliDesAbonnements) {
+		SenderTwitter.listeGazouilliDesAbonnements = listeGazouilliDesAbonnements;
+	}
+
+	public static ArrayList<String> getListeAbonnement() {
+		return listeAbonnement;
+	}
+
+	public static void setListeAbonnement(ArrayList<String> listeAbonnement) {
+		SenderTwitter.listeAbonnement = listeAbonnement;
+	}
+
+	public static ArrayList<String> getListeSuivi() {
+		return listeSuivi;
+	}
+
+	public static void setListeSuivi(ArrayList<String> listeSuivi) {
+		SenderTwitter.listeSuivi = listeSuivi;
+	}
+
+//	public static ArrayList<String> getListeFiltreProfil() {
+//		return listeFiltreProfil;
+//	}
+//
+//	public static void setListeFiltreProfil(ArrayList<String> listeFiltreProfil) {
+//		SenderTwitter.listeFiltreProfil = listeFiltreProfil;
+//	}
 
 	public static String getMessageRetour() {
 		return messageRetour;
@@ -67,14 +132,18 @@ public class SenderTwitter {
 		SenderTwitter.messageRetour = messageRetour;
 	}
 
-	public static String[] getListeAbonnementMessageRetour() {
-		return listeAbonnementMessageRetour;
-	}
-
-	public static void setListeAbonnementMessageRetour(
-			String[] listeAbonnementMessageRetour) {
-		SenderTwitter.listeAbonnementMessageRetour = listeAbonnementMessageRetour;
-	}
+//	public static HashMap<String, ArrayList<String>> getListeDesAbnnementsParProfil() {
+//		return listeDesAbnnementsParProfil;
+//	}
+//	
+//	public static void removeListeDesAbnnementsParProfil(String pPseudo) {
+//		listeDesAbnnementsParProfil.remove(pPseudo);
+//	}
+//
+//	public static void setListeDesAbnnementsParProfil(
+//			HashMap<String, ArrayList<String>> listeDesAbnnementsParProfil) {
+//		SenderTwitter.listeDesAbnnementsParProfil = listeDesAbnnementsParProfil;
+//	}
 
 	public static void initialize() throws NamingException, JMSException
     {
@@ -96,50 +165,14 @@ public class SenderTwitter {
 
         // create the sender
         sender = session.createProducer(dest);
-        
-     
 
         // start the connection, to enable message sends
         connection.start();
     }
-	
-	public static void initializeTopics() throws NamingException, JMSException
-	{
-		// create the JNDI initial context.
-        context = new InitialContext();
-
-        // look up the ConnectionFactory
-        factory = (ConnectionFactory) context.lookup(factoryName);
-       
-        // look up the Desination
-        String topicMessages = "messagesNonGeo";
-        topic = (Topic) context.lookup(topicMessages); 
-       // dest = (Destination) context.lookup(topicMessages); 
-
-        // create the connection
-        connection = factory.createConnection();
-
-        // create the session
-        session = connection.createSession(
-            false, Session.AUTO_ACKNOWLEDGE);
-
-        // create the receiver
-        consumer = session.createConsumer(topic);
-
-        // register a listener
-        consumer.setMessageListener(new SampleListener());
-
-//        // start the connection, to enable message receipt
-//        connection.start();
-//        
-//        waiter = new BufferedReader(new InputStreamReader(System.in));
-//        waiter.readLine();
-      
-	}
     
 	public static void inscription(String pseudo, String motDePasse, String nom, String prenom, String ville)
 	{
-        destName = "fileGestProfils";
+        destName = FILEGESTPROFILS;
 
         try {
             
@@ -189,7 +222,7 @@ public class SenderTwitter {
 	
 	public static void connexion(String pseudo, String motDePasse)
 	{
-        destName = "fileGestProfils";
+        destName = FILEGESTPROFILS;
 
         try {
             
@@ -200,53 +233,32 @@ public class SenderTwitter {
         	// create the consumer
         	consumer = session.createConsumer(temporaryQueue);
 
-        	MessageConnexion messageConnexion = new MessageConnexion(pseudo, motDePasse);
+        	MessageConnexion messageConnexion = new MessageConnexion(pseudo, motDePasse, "", "");
         	ObjectMessage objectMessage = session.createObjectMessage(messageConnexion);
         	objectMessage.setJMSReplyTo(temporaryQueue);
         	objectMessage.setJMSType("connexion");
         	sender.send(objectMessage);
         	System.out.println("Sent: " + messageConnexion.toString());
         	
+        	
         	Message receivedMessage = consumer.receive();
-        	setMessageRetour(receivedMessage.toString());
-        	System.out.println("received message : " + receivedMessage);
+        	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
+        	MessageConnexion messageConnexionRetour = (MessageConnexion) objectMessageRetour.getObject();
+        	setMessageRetour(messageConnexionRetour.getMessageRetour().toString());
+        	System.out.println("received message : " + messageConnexionRetour.toString());
         	
+        	if(messageConnexionRetour.getMessageRetour().toString().equals("Connexion OK"))
+        	{	        	
+        		//mise à jour de la liste des abonnés
+	            listeAbonne(pseudo);
+        		//abonnement au topic messagesGeo
+		        	//lance le thread d'écoute du Topic
+		        	runnableConnexion = new MonRunnable(pseudo, messageConnexionRetour.getVille());
+		        	threadConnexion = new Thread(runnableConnexion);
+		        	threadConnexion.start();
+        	}
         	
-//        	//abonnement au topic messagesNonGeo
-//        	String topicMessagesNonGeo = "messagesNonGeo";
-//            Topic topic1 = (Topic) context.lookup(topicMessagesNonGeo); 
-            initializeTopics();
-        	// création de l’abonné persistant (
-            topicSubscriberNonGeo = session.createDurableSubscriber(topic, pseudo);
-            // start the connection, to enable message receipt
-            connection.start();
-            try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            
-//            waiter = new BufferedReader(new InputStreamReader(System.in));
-//            try {
-//				waiter.readLine();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-            // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
-            // en attente dès ce moment
-//            connection.start();
-            
-            //TODO: Comment faire deux abonnements à deux TOPIC différent
-//            //abonnement au topic messagesNonGeo
-//        	String topicMessagesGeo = "messagesGeo";
-//            Topic topic2 = (Topic) context.lookup(topicMessagesGeo); 
-//            // création de l’abonné persistant (
-//            topicSubscriberGeo = session.createDurableSubscriber(topic2, pseudo);
-//            // démarre la connexion. Si l’abonné existait déjà on va recevoir les messages
-//            // en attente dès ce moment
-//            connection.start();
+        	setMessageRetour(messageConnexionRetour.getMessageRetour().toString());
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -275,7 +287,7 @@ public class SenderTwitter {
 	
 	public static void deconnexion(String pseudo)
 	{
-        destName = "fileGestProfils";
+        destName = FILEGESTPROFILS;
 
         try {
             
@@ -297,17 +309,14 @@ public class SenderTwitter {
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
         	
-        	//desinscription au topic
-        	String topicMessagesGeo = "messagesGeo";
-            Topic topic = (Topic) context.lookup(topicMessagesGeo); 
-            topicSubscriberGeo.close();
-        	session.unsubscribe(pseudo);
-        	String topicMessagesNonGeo = "messagesNonGeo";
-            topic = (Topic) context.lookup(topicMessagesNonGeo); 
-            topicSubscriberGeo.close();
-        	session.unsubscribe(pseudo);
+        	if(receivedMessage.toString().equals("Deconnexion OK"))
+        	{	        	
+        		//desinscription au topic
+	        	MonRunnable.setTest(false);
+	        	//remove the profil on the list profil
+	        	listeAbonnement.clear();
+        	}
         	
-          
         } catch (JMSException exception) {
             exception.printStackTrace();
         } catch (NamingException exception) {
@@ -335,7 +344,7 @@ public class SenderTwitter {
 	
 	public static void creerAbonnement(String pPseudoIdProfilSuiviPar1, String pPseudoIdProfil1)
 	{
-        destName = "fileGestProfils";
+        destName = FILEGESTPROFILS;
 
         try {
             
@@ -356,54 +365,10 @@ public class SenderTwitter {
         	Message receivedMessage = consumer.receive();
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
-        	     
-            //TODO: Faire de même avec le topic topicSubscriberGeo
-        	listeFiltreProfil.add(pPseudoIdProfilSuiviPar1);
-//            boolean test = true;
-//            while(test == true) {
-//            	Message message = topicSubscriberNonGeo.receive();
-//            	if(listeFiltreProfil.contains(message.getJMSType()))
-//            	{
-//            		objectMessage = (ObjectMessage) message;
-//                    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
-//	                System.out.println("Gazouilli : " + messageGazouilli.toString());
-//	                test = false;
-//            	}
-//            }
+        	
+        	// ajout de l'utilisateur suivi dans la liste d'abonnement
+        	listeAbonnement.add(pPseudoIdProfilSuiviPar1);
             
-//            Thread t = new Thread(
-//                    new Runnable() {
-//        				public void run(Message message) {
-//        					 boolean test = true;
-//        					 while(test == true) {
-//        			         
-//        							try {
-//        								message = topicSubscriber.receive();
-//        							} catch (JMSException e1) {
-//        								// TODO Auto-generated catch block
-//        								e1.printStackTrace();
-//        							}
-//        			            	try {
-//        								if(message.getJMSType().equals("Toto"))
-//        								{
-//        									ObjectMessage objectMessage = (ObjectMessage) message;
-//        								    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
-//        								    System.out.println("Gazouilli : " + messageGazouilli.toString());
-//        								    test = false;
-//        								}
-//        							} catch (JMSException e) {
-//        								// TODO Auto-generated catch block
-//        								e.printStackTrace();
-//        							}
-//        			            }
-//        				}
-//
-//        				public void run() {
-//        					// TODO Auto-generated method stub
-//        					
-//        				}
-//        			});
-//                    t.start();
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -432,7 +397,7 @@ public class SenderTwitter {
 	
 	public static void suppAbonnement(String pPseudoIdProfilSuiviPar1, String pPseudoIdProfil1)
 	{
-        destName = "fileGestProfils";
+        destName = FILEGESTPROFILS;
 
         try {
             
@@ -455,7 +420,7 @@ public class SenderTwitter {
         	System.out.println("received message : " + receivedMessage);
      
         	//suppression dans l'arraylist
-        	listeFiltreProfil.remove(pPseudoIdProfil1);
+    		listeAbonnement.remove(pPseudoIdProfilSuiviPar1);
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -483,9 +448,8 @@ public class SenderTwitter {
     }
 	
 	public static void listeAbonne(String pPseudoIdProfil1)
-	{
-        destName = "fileGestProfils";
-        String[] listeAbonnement = null;
+	{		
+		destName = FILEGESTPROFILS;
 
         try {
             
@@ -496,7 +460,7 @@ public class SenderTwitter {
         	// create the consumer
         	consumer = session.createConsumer(temporaryQueue);
         	
-        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoIdProfil1, listeAbonnement, "");
+        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoIdProfil1, null, "");
         	ObjectMessage objectMessage = session.createObjectMessage(messageListeAbonnement);
         	objectMessage.setJMSReplyTo(temporaryQueue);
         	objectMessage.setJMSType("listeAbonne");
@@ -507,8 +471,8 @@ public class SenderTwitter {
         	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
         	MessageListeAbonnement messageListeAbonnementRetour = (MessageListeAbonnement) objectMessageRetour.getObject();
         	setMessageRetour(messageListeAbonnementRetour.getMessageRetour().toString());
-        	setListeAbonnementMessageRetour(messageListeAbonnementRetour.getListeAbonnement());
-        	System.out.println("received message : " + receivedMessage);
+        	setListeAbonnement(messageListeAbonnementRetour.getListeAbonnement());
+        	System.out.println("received message : " + messageListeAbonnementRetour.toString());
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -537,8 +501,7 @@ public class SenderTwitter {
 	
 	public static void listeSuivi(String pPseudoIdProfilSuiviPar1)
 	{
-        destName = "fileGestProfils";
-        String[] listeAbonnement = null;
+        destName = FILEGESTPROFILS;
 
         try {
             
@@ -549,7 +512,7 @@ public class SenderTwitter {
         	// create the consumer
         	consumer = session.createConsumer(temporaryQueue);
         	
-        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoIdProfilSuiviPar1, listeAbonnement, "");
+        	MessageListeAbonnement messageListeAbonnement = new MessageListeAbonnement(pPseudoIdProfilSuiviPar1, null, "");
         	ObjectMessage objectMessage = session.createObjectMessage(messageListeAbonnement);
         	objectMessage.setJMSReplyTo(temporaryQueue);
         	objectMessage.setJMSType("listeSuivi");
@@ -560,8 +523,8 @@ public class SenderTwitter {
         	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
         	MessageListeAbonnement messageListeAbonnementRetour = (MessageListeAbonnement) objectMessageRetour.getObject();
         	setMessageRetour(messageListeAbonnementRetour.getMessageRetour().toString());
-        	setListeAbonnementMessageRetour(messageListeAbonnementRetour.getListeAbonnement());
-        	System.out.println("received message : " + receivedMessage);
+        	setListeSuivi(messageListeAbonnementRetour.getListeAbonnement());
+        	System.out.println("received message : " + messageListeAbonnementRetour.getMessageRetour());
           
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -588,10 +551,121 @@ public class SenderTwitter {
         }
     }
 	
-	public static void creerGazouilliTopic(String pContenu, String pVille, String pPseudoEmetteur)
+	public static void listeGazouilliDesAbonnements(String pPseudoIdProfil1)
+	{
+		destName = FILEGESTPROFILS;
+
+        try {
+        	
+        	initialize();
+        	
+        	TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	ObjectMessage objectMessage;
+        	Message receivedMessage;
+        	ObjectMessage objectMessageRetour;
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+        	
+        	
+            	MessageListeMessageDunProfil messageListeMessageDunProfil = new MessageListeMessageDunProfil(pPseudoIdProfil1, listeGazouilliDunAbonnement, "");
+            	objectMessage = session.createObjectMessage(messageListeMessageDunProfil);
+            	objectMessage.setJMSReplyTo(temporaryQueue);
+            	objectMessage.setJMSType("listeGazouilliDesAbonnements");
+            	sender.send(objectMessage);
+            	System.out.println("Sent: " + messageListeMessageDunProfil.toString());
+            	
+            	receivedMessage = consumer.receive();
+            	objectMessageRetour = (ObjectMessage) receivedMessage;
+            	MessageListeMessageDunProfil messageListeMessageDunProfilRetour = (MessageListeMessageDunProfil) objectMessageRetour.getObject();
+            	listeGazouilliDesAbonnements = messageListeMessageDunProfilRetour.getListeGazouilli();	   
+            	System.out.println("received message : " + messageListeMessageDunProfilRetour.toString());
+            	setMessageRetour(messageListeMessageDunProfilRetour.getMessageRetour());
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+
+    }
+	
+	public static void listeGazouilliDunAbonnements(String pPesudoAbonne)
+	{
+        destName = FILEGESTPROFILS;
+
+        try {
+        	
+        	initialize();
+        	
+        	TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	ObjectMessage objectMessage;
+        	Message receivedMessage;
+        	ObjectMessage objectMessageRetour;
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+        	
+        	
+            	MessageListeMessageDunProfil messageListeMessageDunProfil = new MessageListeMessageDunProfil(pPesudoAbonne, listeGazouilliDunAbonnement, "");
+            	objectMessage = session.createObjectMessage(messageListeMessageDunProfil);
+            	objectMessage.setJMSReplyTo(temporaryQueue);
+            	objectMessage.setJMSType("listeGazouilli");
+            	sender.send(objectMessage);
+            	System.out.println("Sent: " + messageListeMessageDunProfil.toString());
+            	
+            	receivedMessage = consumer.receive();
+            	objectMessageRetour = (ObjectMessage) receivedMessage;
+            	MessageListeMessageDunProfil messageListeMessageDunProfilRetour = (MessageListeMessageDunProfil) objectMessageRetour.getObject();
+            	listeGazouilliDunAbonnement = messageListeMessageDunProfilRetour.getListeGazouilli();	   
+            	System.out.println("received message : " + messageListeMessageDunProfilRetour.toString());
+        	
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	public static void creerGazouilliTopic(String pContenu, String pPseudoEmetteur, boolean pGeolocalisation)
 	{
         //destName = "messagesNonGeo";
-        destName = "fileGestProfils";
+        destName = FILEGESTPROFILS;
         
         try {
         		
@@ -601,8 +675,12 @@ public class SenderTwitter {
             	
             	// create the consumer
             	consumer = session.createConsumer(temporaryQueue);
-
-            	MessageGazouilli messageGazouilli = new MessageGazouilli(pContenu, pVille, pPseudoEmetteur);
+            	
+            	//récupère la dateHeure
+            	Date date= new Date();
+        		Timestamp time = new Timestamp(date.getTime());
+        		
+            	MessageGazouilli messageGazouilli = new MessageGazouilli(pContenu, "", pPseudoEmetteur,time, pGeolocalisation,"");
             	ObjectMessage objectMessage = session.createObjectMessage(messageGazouilli);
             	objectMessage.setJMSReplyTo(temporaryQueue);
             	objectMessage.setJMSType("creerGazouilli");
@@ -610,18 +688,124 @@ public class SenderTwitter {
             	System.out.println("Sent: " + messageGazouilli.toString());
             	
             	Message receivedMessage = consumer.receive();
-            	setMessageRetour(receivedMessage.toString());
-            	System.out.println("received message : " + receivedMessage);
-            	
-            	
+            	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
+            	MessageGazouilli messageGazouilliRetour = (MessageGazouilli) objectMessageRetour.getObject();
+            	setMessageRetour(messageGazouilliRetour.getMessageRetour().toString());
+            	System.out.println("received message : " + messageGazouilliRetour.toString());
             	
             	//dans le topic
-            	destName = "messagesNonGeo";
+            	destName = SenderTwitter.TOPICMESSAGETWITTER;
             	initialize();
-            	objectMessage.setJMSType(pPseudoEmetteur);
-            	sender.send(objectMessage);
-            	System.out.println("Sent Topic: " + messageGazouilli.toString());
+            	objectMessageRetour.setJMSType(pPseudoEmetteur);
+        		sender.send(objectMessageRetour);
+            	System.out.println("Sent Topic: " + messageGazouilliRetour.toString());
                       
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	public static void nbGazouilliDunProfil(String pPseudo)
+	{
+        destName = FILEGESTPROFILS;
+
+        try {
+            
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+
+        	MessageNbGazouilliUnProfil messageNbGazouilliUnProfil = new MessageNbGazouilliUnProfil(pPseudo, 0, "");
+        	ObjectMessage objectMessage = session.createObjectMessage(messageNbGazouilliUnProfil);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("nbGazouilliUnProfil");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageNbGazouilliUnProfil.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
+        	MessageNbGazouilliUnProfil messageNbGazouilliUnProfilRetour = (MessageNbGazouilliUnProfil) objectMessageRetour.getObject();
+        	setMessageRetour(messageNbGazouilliUnProfilRetour.getMessageRetour());
+        	setNbGazouilliUnProfil(messageNbGazouilliUnProfilRetour.getNbGazouilli());
+        	System.out.println("received message : " + messageNbGazouilliUnProfilRetour.toString());
+        
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	public static void listeDesProfils()
+	{
+        destName = FILEGESTPROFILS;
+
+        try {
+            
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+
+        	MessageListeProfil messageListeProfil = new MessageListeProfil(null, "");
+        	ObjectMessage objectMessage = session.createObjectMessage(messageListeProfil);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("listeProfil");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageListeProfil.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
+        	MessageListeProfil messageListeProfilRetour = (MessageListeProfil) objectMessageRetour.getObject();
+        	setMessageRetour(messageListeProfilRetour.getMessageRetour());
+        	setListeProfil(messageListeProfilRetour.getListeProfil());
+        	System.out.println("received message : " + messageListeProfilRetour.toString());
+        
+          
         } catch (JMSException exception) {
             exception.printStackTrace();
         } catch (NamingException exception) {

@@ -34,7 +34,7 @@ public class LFermerFildActu implements ActionListener, WindowListener
 		{
 			//TODO : Provisoire; permet de tester la déconnexion
 			// il faudra déplacer ce code dans le bouton déconnextion
-			SenderTwitter.deconnexion("Toto");
+			SenderTwitter.deconnexion("PseudoTutu");
 			String message = SenderTwitter.getMessageRetour();
 			JOptionPane.showMessageDialog(vue, message, "Information Deconnexion", JOptionPane.INFORMATION_MESSAGE);
 		
@@ -63,7 +63,7 @@ public class LFermerFildActu implements ActionListener, WindowListener
 		{
 			//TODO : Provisoire; permet de tester la déconnexion
 			// il faudra déplacer ce code dans le bouton déconnextion
-			SenderTwitter.deconnexion("Toto");
+			SenderTwitter.deconnexion("PseudoTutu");
 			String message = SenderTwitter.getMessageRetour();
 			JOptionPane.showMessageDialog(vue, message, "Information Deconnexion", JOptionPane.INFORMATION_MESSAGE);
 		

@@ -5,8 +5,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
+import metier.MessageGazouilli;
+import metier.ProfilType;
 import jms.SenderTwitter;
 
 
@@ -35,6 +40,7 @@ public class JmsJDBC {
 					" DATEHEURE TIMESTAMP , " +
         			" VILLE VARCHAR( 500 ) , " +
 					" EMETTEUR INT , " +
+					" GEOLOCALISATION BOOLEAN , " +
 					" FOREIGN KEY (EMETTEUR) REFERENCES PROFIL(idPROFIL))");
 			
 //        	s.execute("create table IF NOT EXISTS ABONNEMENTS  ( " +
@@ -138,12 +144,12 @@ public class JmsJDBC {
 	        	if (rs.next())
 	        	{
 	        		id = rs.getInt(1)+1;
-		        	s.executeUpdate("insert into PROFIL values ("+id+", '"+ppseudo+"', '"+pmdp+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
+		        	s.executeUpdate("insert into PROFIL (idPROFIL,PSEUDO,MDP,NOM,PRENOM,VILLE) values ("+id+", '"+ppseudo+"', '"+pmdp+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
 		        } 
 				else
 		        {
 					id = 1;
-		        	s.executeUpdate("insert into PROFIL values ('1', '"+ppseudo+"', '"+pmdp+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
+		        	s.executeUpdate("insert into PROFIL (idPROFIL,PSEUDO,MDP,NOM,PRENOM,VILLE) values ('1', '"+ppseudo+"', '"+pmdp+"', '"+pnom+"','"+pprenom+"','"+pville+"')");
 		        }
 			}
 			else
@@ -160,17 +166,38 @@ public class JmsJDBC {
 		
 	}
 	
-	// si OK, retourne l'ID de l'utilisateur, sinon retourne -1
-	public int verificationIDMDP(String ppseudo, String pmdp) {
+	// si OK, retourne la ville de l'utilisateur, sinon retourne null
+	public String verificationIDMDP(String ppseudo, String pmdp) {
+		String res = null;
+		try {
+			Statement s = conn.createStatement();
+        	//vérification du mdp et du pseudo
+			ResultSet rs = s.executeQuery("SELECT ville FROM PROFIL WHERE PSEUDO = '"+ppseudo+"' AND MDP = '"+pmdp+"'");
+        	if (rs.next())
+        	{
+        		res = rs.getString(1);
+    		} 
+	        
+	        return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return res;
+		}
+	}
+	
+	// mise à jour de la BD pour le profil déconnecté
+	public int deconnexionProfil(String ppseudo) {
 		int id = -1;
 		try {
 			Statement s = conn.createStatement();
-        	//récupère l'ID de l'utilisateur
-			ResultSet rs = s.executeQuery("SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = '"+ppseudo+"' AND MDP = '"+pmdp+"'");
+        	//vérification du mdp et du pseudo
+			ResultSet rs = s.executeQuery("SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = '"+ppseudo+"'");
         	if (rs.next())
         	{
         		id = rs.getInt(1);
-	        } 
+        		//mise à jour de la colonne connecte
+        		s.executeUpdate("UPDATE PROFIL SET CONNECTE = null WHERE PSEUDO = '"+ppseudo+"'");
+    		} 
 			else
 	        {
 				id = -1;
@@ -211,8 +238,10 @@ public class JmsJDBC {
 		}
 	}
 	
-	public int creerGazouilli(String pcontenu, String pville, String pPseudoEmetteur) {
-		int id = -1;
+	//retourne la ville du Gazouilli ou null
+	public String creerGazouilli(String pcontenu, String pPseudoEmetteur, Timestamp ptime, boolean pGeolocalisation) {
+		String res = null;
+		int id = 0;
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
@@ -220,18 +249,24 @@ public class JmsJDBC {
         	if (rs.next())
         	{
         		id = rs.getInt(1)+1;
-        		s.executeUpdate("insert into GAZOUILLI values ('"+id+"', '"+pcontenu+"',CURRENT_TIMESTAMP(),'"+pville+"',(SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoEmetteur+"'))");
+        		s.executeUpdate("insert into GAZOUILLI values ('"+id+"', '"+pcontenu+"','"+ptime+"',(SELECT VILLE FROM PROFIL WHERE PSEUDO = '"+pPseudoEmetteur+"'),(SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoEmetteur+"'), '"+ pGeolocalisation +"')");
         	}
         	else
         	{
         		id = 1;
-        		s.executeUpdate("insert into GAZOUILLI values ('1', '"+pcontenu+"',CURRENT_TIMESTAMP(),'"+pville+"',(SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoEmetteur+"'))");
+        		s.executeUpdate("insert into GAZOUILLI values ('1', '"+pcontenu+"','"+ptime+"',(SELECT VILLE FROM PROFIL WHERE PSEUDO = '"+pPseudoEmetteur+"'),(SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoEmetteur+"'), '"+ pGeolocalisation +"')");
         	}
-        	return id;
+        	
+        	rs = s.executeQuery("select VILLE from GAZOUILLI WHERE idGAZOUILLI = '"+id+"'");
+        	if (rs.next())
+        	{
+        		res = rs.getString(1);
+        	}
+        	
+        	return res;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			id = -1;
-			return id;
+			return res;
 		}
 	}
 	
@@ -284,35 +319,19 @@ public class JmsJDBC {
 	}
 	
 	//liste des abonnements du profil passé en paramètre
-	public String[] listeAbonne(String pPseudoIdProfil1) {
-		String[] res = null;
-		boolean resOK = false;
+	public ArrayList<String> listeAbonne(String pIdProfil1) {
+		ArrayList<String> res = new ArrayList<String>();
 		
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfilSuiviPar1 = PROFIL.idProfil AND idProfil1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfil1+"')");
-        	Vector<String> vector = new Vector<String>();
+			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfilSuiviPar1 = PROFIL.idProfil AND idProfil1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pIdProfil1+"')");
 
     		while(rs.next())
     		{
-    			resOK = true;
-    			vector.add(rs.getString(1));
+    			res.add(rs.getString(1));
     		}
     		
-    		if(resOK)
-    		{
-    			res = new String[vector.size()];
-    			for (int i = 0; i < vector.size(); i++)
-    			{
-    				res[i]= vector.get(i);
-    			}
-        	}
-        	else
-        	{
-        		// Erreur : auncun abonnement existe
-        		// return null
-        	}
         	return res;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -321,35 +340,107 @@ public class JmsJDBC {
 	}
 	
 	//liste des suivis du profil passé en paramètre
-	public String[] listeSuivi(String pPseudoIdProfilSuiviPar1) {
-		String[] res = null;
-		boolean resOK = false;
+	public ArrayList<String> listeSuivi(String pPseudoIdProfilSuiviPar1) {
+		ArrayList<String> res = new ArrayList<String>();
 		
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
 			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfil1 = PROFIL.idProfil AND idProfilSuiviPar1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfilSuiviPar1+"')");
-        	Vector<String> vector = new Vector<String>();
 
     		while(rs.next())
     		{
-    			resOK = true;
-    			vector.add(rs.getString(1));
+    			res.add(rs.getString(1));
     		}
     		
-    		if(resOK)
+        	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return res;
+		}
+	}
+	
+	//liste des gazouilli du profil passé en paramètre
+	public ArrayList<MessageGazouilli> listeGazouilli(String pPseudo) {
+		ArrayList<MessageGazouilli> res = new ArrayList<MessageGazouilli>();
+		MessageGazouilli gazouilli;
+		
+		try {
+			Statement s = conn.createStatement();
+        	//récupère le dernier ID
+			ResultSet rs = s.executeQuery("select GAZOUILLI.CONTENU, GAZOUILLI.VILLE, (SELECT PSEUDO FROM profil WHERE  idprofil = GAZOUILLI.emetteur), GAZOUILLI.DATEHEURE, GAZOUILLI.GEOLOCALISATION "
+					+ "FROM GAZOUILLI, PROFIL "
+					+ "WHERE GAZOUILLI.EMETTEUR= PROFIL.idProfil AND GAZOUILLI.EMETTEUR= (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudo+"')");
+
+    		while(rs.next())
     		{
-    			res = new String[vector.size()];
-    			for (int i = 0; i < vector.size(); i++)
-    			{
-    				res[i]= vector.get(i);
-    			}
-        	}
-        	else
+    			gazouilli = new MessageGazouilli(rs.getString(1),rs.getString(2),rs.getString(3), rs.getTimestamp(4), rs.getBoolean(5), "");
+    			res.add(gazouilli);
+    		}
+    		
+        	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return res;
+		}
+	}
+	
+	//nombre de gazouilli du profil passé en paramètre
+	public int nbGazouilliPourUnProfil(String pPseudo) {
+		int id = -1;
+		
+		try {
+			Statement s = conn.createStatement();
+        	//récupère le dernier ID
+			ResultSet rs = s.executeQuery("select COUNT(*) "
+					+ "FROM GAZOUILLI, PROFIL "
+					+ "WHERE GAZOUILLI.EMETTEUR= PROFIL.idProfil AND GAZOUILLI.EMETTEUR= (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudo+"')");
+
+			if (rs.next())
         	{
-        		// Erreur : auncun abonnement existe
-        		// return null
+				id = rs.getInt(1);
         	}
+    		
+        	return id;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return id;
+		}
+	}
+	
+	//liste des gazouilli des abonnements du profil passé en paramètre
+	public ArrayList<MessageGazouilli> listeGazouilliAbonnements(String pPseudoIdProfil1) {
+		ArrayList<MessageGazouilli> res = new ArrayList<MessageGazouilli>();
+		MessageGazouilli gazouilli;
+		
+		try {
+			Statement s = conn.createStatement();
+        	//récupère les gazouillis sans geolocalisation
+			ResultSet rs = s.executeQuery("SELECT GAZOUILLI.CONTENU, GAZOUILLI.VILLE, (SELECT PSEUDO FROM profil WHERE idprofil = GAZOUILLI.emetteur), GAZOUILLI.DATEHEURE, GAZOUILLI.GEOLOCALISATION "
+					+ " FROM GAZOUILLI, ABONNEMENTS "
+					+ " WHERE GAZOUILLI.EMETTEUR = ABONNEMENTS.IDPROFILSUIVIPAR1 "
+					+ " AND ABONNEMENTS.IDPROFIL1 = (SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = '"+pPseudoIdProfil1+"') "
+					+ " AND GAZOUILLI.GEOLOCALISATION = 'FALSE'");
+
+    		while(rs.next())
+    		{
+    			gazouilli = new MessageGazouilli(rs.getString(1),rs.getString(2),rs.getString(3), rs.getTimestamp(4), rs.getBoolean(5), "");
+    			res.add(gazouilli);
+    		}
+    		
+    		rs = s.executeQuery("SELECT GAZOUILLI.CONTENU, GAZOUILLI.VILLE, (SELECT PSEUDO FROM profil WHERE idprofil = GAZOUILLI.emetteur), GAZOUILLI.DATEHEURE, GAZOUILLI.GEOLOCALISATION "
+    				+ " FROM GAZOUILLI, ABONNEMENTS "
+    				+ " WHERE GAZOUILLI.EMETTEUR = ABONNEMENTS.IDPROFILSUIVIPAR1 "
+    				+ " AND ABONNEMENTS.IDPROFIL1 = (SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = '"+pPseudoIdProfil1+"') "
+    				+ " AND GAZOUILLI.GEOLOCALISATION = 'TRUE' "
+    				+ " AND GAZOUILLI.VILLE = (SELECT VILLE FROM PROFIL WHERE PSEUDO = '"+pPseudoIdProfil1+"')");
+
+    		while(rs.next())
+    		{
+    			gazouilli = new MessageGazouilli(rs.getString(1),rs.getString(2),rs.getString(3), rs.getTimestamp(4), rs.getBoolean(5), "");
+    			res.add(gazouilli);
+    		}
+    		
         	return res;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -357,65 +448,28 @@ public class JmsJDBC {
 		}
 	}
 
-//	public boolean ajouter(String id, double somme) {	
-//		try {
-//			Statement s = conn.createStatement();
-//			ResultSet rs = s.executeQuery("select solde from BANQUE where id = '"+id+"'");
-//	        if (rs.next()) {
-//	        	double solde = rs.getDouble("solde");
-//	        	solde+=somme;
-//	        	if (s.executeUpdate("update BANQUE set solde="+solde+",dateDerniereOperation=CURRENT_TIMESTAMP() where id = '"+id+"'")==1)
-//					return true;
-//	        	else
-//	        		return false;
-//	        } else {
-//	        	return false;
-//	        }
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}	
-//	}
-	
-//	public boolean retirer(String id, double somme) {
-//		try {
-//			Statement s = conn.createStatement();
-//			ResultSet rs = s.executeQuery("select solde from BANQUE where id = '"+id+"'");
-//	        if (rs.next()) {
-//	        	double solde = rs.getDouble("solde");
-//	        	solde-=somme;
-//	        	if (s.executeUpdate("update BANQUE set solde="+solde+",dateDerniereOperation=CURRENT_TIMESTAMP() where id = '"+id+"'")==1)
-//					return true;
-//	        	else
-//	        		return false;
-//	        } else {
-//	        	return false;
-//	        }
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}	
-//	}
+	//liste des profils dans la BD
+	public ArrayList<ProfilType> listeProfil() {
+		ArrayList<ProfilType> res = new ArrayList<ProfilType>();
+		ProfilType profil;
+		
+		try {
+			Statement s = conn.createStatement();
+        	//récupère le dernier ID
+			ResultSet rs = s.executeQuery("select PSEUDO,NOM, PRENOM, VILLE  from PROFIL");
 
-//	public Position position(String id) {
-//		try {
-//			Statement s = conn.createStatement();
-//			ResultSet rs = s.executeQuery("select solde,dateDerniereOperation from BANQUE where id = '"+id+"'");
-//	        if (rs.next()) {
-//	        	double solde = rs.getDouble("solde");
-//	        	Date date = rs.getTimestamp("dateDerniereOperation");
-//	        	Position p = new Position(solde);
-//	        	p.setDerniereOperation(date);
-//	        	return p;
-//	        } else {
-//	        	return null;
-//	        }
-//		} catch(Exception ex) {
-//			// il y a eu une erreur
-//			ex.printStackTrace();
-//			return null;
-//		}
-//	}
+    		while(rs.next())
+    		{
+    			profil = new ProfilType(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+    			res.add(profil);
+    		}
+    		
+        	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return res;
+		}
+	}
 	
 	public void fermer() throws Exception {		
 		try {
@@ -432,12 +486,15 @@ public class JmsJDBC {
 		
 		System.out.println(" Création des profils : ");
 			System.out.println("Profil n°: " + bdd.creerProfil("PseudoToto", "mdp", "NomToto", "PrenomToto", "Toulouse"));
-			System.out.println("Profil n°: " +bdd.creerProfil("PseudoTutu", "mdp", "NomTutu", "PrenomTutu", "Paris"));
+			System.out.println("Profil n°: " +bdd.creerProfil("PseudoTutu", "mdp", "NomTutu", "PrenomTutu", "Marseille"));
 			System.out.println("Profil n°: " +bdd.creerProfil("Toto", "123", "NomToto", "PrenomToto", "Rodez"));
 			System.out.println(" --> OK");
 		System.out.println(" Création des Gazouilli : ");
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "Toulouse", "PseudoToto"));
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "Toulouse2", "PseudoTutu"));
+			//récupère la dateHeure
+	    	Date date= new Date();
+			Timestamp time = new Timestamp(date.getTime());
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "PseudoToto", time, true));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "PseudoTutu", time, false));
 			System.out.println(" --> OK");
 		
 		System.out.println("--> Vérification mdp : " + bdd.verificationIDMDP("PseudoToto", "mdp"));
@@ -449,23 +506,34 @@ public class JmsJDBC {
 		
 		System.out.println("--> Liste Abonne : ");
 			System.out.print("     ");
-			for(int i = 0; i < bdd.listeAbonne("PseudoTutu").length; i++)
+			for(int i = 0; i < bdd.listeAbonne("PseudoTutu").size(); i++)
 			{
-				System.out.print(bdd.listeAbonne("PseudoTutu")[i] + " ");
+				System.out.print(bdd.listeAbonne("PseudoTutu").get(i) + " ");
 			}
 			System.out.println("");
 			
 		System.out.println("--> Liste Suivi : ");
 			System.out.print("     ");
-			for(int i = 0; i < bdd.listeSuivi("PseudoToto").length; i++)
+			for(int i = 0; i < bdd.listeSuivi("PseudoToto").size(); i++)
 			{
-				System.out.print(bdd.listeSuivi("PseudoToto")[i] + " ");
+				System.out.print(bdd.listeSuivi("PseudoToto").get(i) + " ");
 			}
 			System.out.println("");
 			
 		System.out.println("--> Supprimer Abonnement : " + bdd.supprimerAbonnement("PseudoToto", "PseudoTutu"));
 		
 		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoTutu", "PseudoToto"));
+		
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoToto", "PseudoTutu"));
+		
+		System.out.println("--> Liste gazouilli de PseudoToto : " +bdd.listeGazouilli("PseudoToto").get(0).toString());
+
+		System.out.println("--> Liste gazouilli des abonnements de PseudoToto : " +bdd.listeGazouilliAbonnements("PseudoToto").get(0).toString());
+		
+		System.out.println("--> Nombre de gazouilli de PseudoToto : " +bdd.nbGazouilliPourUnProfil("PseudoToto"));
+		
+		System.out.println("--> Liste des profils : " +bdd.listeProfil().get(0).toString());
+
 		
 //		banque.creerCompte("Bobby", 1000);
 //		System.out.println(" Compte Bobby : "+banque.position("Bobby"));

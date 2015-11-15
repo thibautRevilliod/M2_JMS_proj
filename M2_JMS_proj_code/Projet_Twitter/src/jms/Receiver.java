@@ -67,6 +67,10 @@ import metier.MessageConnexion;
 import metier.MessageDeconnexion;
 import metier.MessageInscription;
 import metier.MessageListeAbonnement;
+import metier.MessageListeMessageDunProfil;
+import metier.MessageListeProfil;
+import metier.MessageNbGazouilliUnProfil;
+import metier.ProfilType;
 import bdd.JmsJDBC;
 
 
@@ -83,13 +87,16 @@ public class Receiver {
      *
      * @param args command line arguments
      */
+	//constantes
+		private static final String FILEGESTPROFILS = "fileGestProfils";
+	
 	private static Context context = null;
 	private static ConnectionFactory factory = null;
 	private static Connection connection = null;
 	private static String factoryName = "ConnectionFactory";
 	private static String destName = null;
 	private static Destination dest = null;
-	private static int count = 10;
+	private static int count = 20;
 	private static Session session = null;
 	private static MessageConsumer receiver = null;
 	private static MessageProducer sender = null;
@@ -178,7 +185,7 @@ public class Receiver {
 	
 	public static void receptionFileGestProfils()
 	{
-        destName = "fileGestProfils";
+        destName = Receiver.FILEGESTPROFILS;
 
         try {
             
@@ -212,7 +219,21 @@ public class Receiver {
                 	} else if (message.getJMSType().equals("creerGazouilli"))
                 	{
                 		receptionGazouilli(message);
+                	} else if (message.getJMSType().equals("listeGazouilli"))
+                	{
+                		receptionListeGazouilliDunAbonnement(message);
+                	} else if (message.getJMSType().equals("listeGazouilliDesAbonnements"))
+                	{
+                		receptionListeGazouilliDesAbonnements(message);
+                	} else if (message.getJMSType().equals("nbGazouilliUnProfil"))
+                	{
+                		receptionNbGazouilliDunProfil(message);
+                	} else if (message.getJMSType().equals("listeProfil"))
+                	{
+                		receptionListeDesProfils(message);
                 	}
+                	
+                	
                     
                 } else if (message != null) {
                     System.out.println("Received non text message");
@@ -285,8 +306,8 @@ public class Receiver {
 	
 	public static void receptionConnexion(Message message) throws JMSException
 	{
-		int retourConnexionProfil;
-		TextMessage replyMessage;
+		String retourConnexionProfil;
+		ObjectMessage replyMessage;
 		
 		ObjectMessage objectMessage = (ObjectMessage) message;
         MessageConnexion messageConnexion = (MessageConnexion) objectMessage.getObject();
@@ -296,22 +317,31 @@ public class Receiver {
         Destination temporaryQueue = objectMessage.getJMSReplyTo();
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
         
+        MessageConnexion messageConnexionRetour = new MessageConnexion(messageConnexion.getPseudo(),messageConnexion.getMotDePasse(),"","");
         
-        // test de l'existance du profil en BD 
-        retourConnexionProfil = bdd.verificationIDMDP(messageConnexion.getPseudo(), messageConnexion.getMotDePasse());
-        
-        
-        if(retourConnexionProfil == -1)//connexion KO en BD
+        if(!listePseudoConnecte.contains(messageConnexion.getPseudo()))
         {
-        	replyMessage = session.createTextMessage("Connexion KO : Pseudo ou mot de passe invalide");
-        }
-        else
+	        // test de l'existance du profil en BD 
+	        retourConnexionProfil = bdd.verificationIDMDP(messageConnexion.getPseudo(), messageConnexion.getMotDePasse());
+	        
+	        if(retourConnexionProfil == null)//connexion KO en BD
+	        {
+	        	messageConnexionRetour.setMessageRetour("Connexion KO : Pseudo ou mot de passe invalide");
+	        }
+	        else
+	        {
+	        	listePseudoConnecte.add(messageConnexion.getPseudo());
+	        	messageConnexionRetour.setMessageRetour("Connexion OK");
+	        	messageConnexionRetour.setVille(retourConnexionProfil);
+	        }
+        }else
         {
-        	listePseudoConnecte.add(messageConnexion.getPseudo());
-        	replyMessage = session.createTextMessage("Connexion OK");
+        	messageConnexionRetour.setMessageRetour("Connexion KO : Profil déjà connecté");
         }
+        
+        replyMessage = session.createObjectMessage(messageConnexionRetour);
     
-        // create the sender
+        // create the senders
         sender = session.createProducer(temporaryQueue);
         
         sender.send(replyMessage);
@@ -330,7 +360,7 @@ public class Receiver {
         
         Destination temporaryQueue = objectMessage.getJMSReplyTo();
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
-        
+               
         //suppression dans listePseudoConnecte, le pseudo qui se déconnecte
         if(listePseudoConnecte.contains(messageDeconnexion.getPseudo()))
         {
@@ -438,7 +468,7 @@ public class Receiver {
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
         
         //récupération de la liste des abonnes
-        String[] listeAbonne = bdd.listeAbonne(messageListeAbonnement.getPseudoIdProfil1());
+        ArrayList<String> listeAbonne = bdd.listeAbonne(messageListeAbonnement.getPseudoIdProfil1());
         MessageListeAbonnement messageListeAbonnementRetour = new MessageListeAbonnement(messageListeAbonnement.getPseudoIdProfil1(),listeAbonne,"");
         
         if(messageListeAbonnementRetour.getListeAbonnement() == null)//aucun abonne existe
@@ -458,7 +488,7 @@ public class Receiver {
         
         sender.send(replyMessage);
         
-        System.out.println("envoi de replyMessage : " + replyMessage);                    
+        System.out.println("envoi de replyMessage : " + messageListeAbonnementRetour.toString());                    
 	}
 	
 	public static void receptionListeSuivi(Message message) throws JMSException
@@ -474,7 +504,7 @@ public class Receiver {
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
         
         //récupération de la liste des suivis
-        String[] listeSuivi = bdd.listeSuivi(messageListeAbonnement.getPseudoIdProfil1());
+        ArrayList<String> listeSuivi = bdd.listeSuivi(messageListeAbonnement.getPseudoIdProfil1());
         MessageListeAbonnement messageListeAbonnementRetour = new MessageListeAbonnement(messageListeAbonnement.getPseudoIdProfil1(),listeSuivi,"");
         
         if(messageListeAbonnementRetour.getListeAbonnement() == null)//aucun abonne existe
@@ -494,13 +524,13 @@ public class Receiver {
         
         sender.send(replyMessage);
         
-        System.out.println("envoi de replyMessage : " + replyMessage);                    
+        System.out.println("envoi de replyMessage : " + messageListeAbonnementRetour.toString());                    
 	}
 	
 	public static void receptionGazouilli(Message message) throws JMSException
 	{		
-		TextMessage replyMessage;
-		int retourreceptionGazouilli;
+		ObjectMessage replyMessage;
+		String retourReceptionGazouilli;
 		
 		ObjectMessage objectMessage = (ObjectMessage) message;
         MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
@@ -511,25 +541,171 @@ public class Receiver {
         System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
         
         // inscription dans la BD du gazouilli
-        retourreceptionGazouilli = bdd.creerGazouilli(messageGazouilli.getContenu(), messageGazouilli.getVille(), messageGazouilli.getPseudoEmetteur());
+        retourReceptionGazouilli = bdd.creerGazouilli(messageGazouilli.getContenu(), messageGazouilli.getPseudoEmetteur(), messageGazouilli.getDateHeure(), messageGazouilli.isEstGeolocalise());
         
-        if(retourreceptionGazouilli == -1)//creation KO en BD
+        MessageGazouilli messageGazouilliRetour = new MessageGazouilli(messageGazouilli.getContenu(), retourReceptionGazouilli, messageGazouilli.getPseudoEmetteur(), messageGazouilli.getDateHeure(), messageGazouilli.isEstGeolocalise(), "");
+        
+        if(retourReceptionGazouilli == null)//creation KO en BD
         {
-        	replyMessage = session.createTextMessage("Creation du Gazouilli KO");
+        	messageGazouilliRetour.setMessageRetour("Creation du Gazouilli KO");
         }
         else
         {
         	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
-        	replyMessage = session.createTextMessage("Creation du Gazouilli OK");
+        	messageGazouilliRetour.setMessageRetour("Creation du Gazouilli OK");
         }
+        
+        replyMessage = session.createObjectMessage(messageGazouilliRetour);
         
         // create the sender
         sender = session.createProducer(temporaryQueue);
         
         sender.send(replyMessage);
         
-        System.out.println("envoi de replyMessage : " + replyMessage);                    
+        System.out.println("envoi de replyMessage : " + messageGazouilliRetour.toString());                    
 	}
+	
+	public static void receptionListeGazouilliDunAbonnement(Message message) throws JMSException
+	{
+		ObjectMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageListeMessageDunProfil messageListeMessageDunProfil = (MessageListeMessageDunProfil) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageListeMessageDunProfil.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //récupération de la liste des suivis
+        ArrayList<MessageGazouilli> listeSuivi = bdd.listeGazouilli(messageListeMessageDunProfil.getPseudo());
+        MessageListeMessageDunProfil messageListeMessageDunProfilRetour = new MessageListeMessageDunProfil(messageListeMessageDunProfil.getPseudo(),listeSuivi,"");
+        
+        if(messageListeMessageDunProfilRetour.getListeGazouilli() == null)//aucun abonne existe
+        {
+        	messageListeMessageDunProfilRetour.setMessageRetour("Liste gazouilli KO");
+        }
+        else
+        {
+        	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
+        	messageListeMessageDunProfilRetour.setMessageRetour("Liste gazouilli OK");
+        }
+        
+        replyMessage = session.createObjectMessage(messageListeMessageDunProfilRetour);
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + messageListeMessageDunProfilRetour.toString());                    
+	}
+	
+	public static void receptionListeGazouilliDesAbonnements(Message message) throws JMSException
+	{
+		ObjectMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageListeMessageDunProfil messageListeMessageDesAbonnements = (MessageListeMessageDunProfil) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageListeMessageDesAbonnements.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //récupération de la liste des Gazouillis
+        ArrayList<MessageGazouilli> listeGazouilli = bdd.listeGazouilliAbonnements(messageListeMessageDesAbonnements.getPseudo());
+        MessageListeMessageDunProfil messageListeMessageDesAbonnementsRetour = new MessageListeMessageDunProfil(messageListeMessageDesAbonnements.getPseudo(),listeGazouilli,"");
+        
+        if(messageListeMessageDesAbonnementsRetour.getListeGazouilli() == null)//aucun abonne existe
+        {
+        	messageListeMessageDesAbonnementsRetour.setMessageRetour("Liste gazouilli des abonnements KO");
+        }
+        else
+        {
+        	//TODO : Doit on stocker dans une liste, les abonnements ou on regarde tout le temps dans la BD ?
+        	messageListeMessageDesAbonnementsRetour.setMessageRetour("Liste gazouilli des abonnements OK");
+        }
+        
+        replyMessage = session.createObjectMessage(messageListeMessageDesAbonnementsRetour);
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + messageListeMessageDesAbonnementsRetour.toString());                  
+	}
+	
+	public static void receptionNbGazouilliDunProfil(Message message) throws JMSException
+	{
+		ObjectMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageNbGazouilliUnProfil messageNbGazouilliUnProfil = (MessageNbGazouilliUnProfil) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageNbGazouilliUnProfil.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //récupération du nombre de gazouilli
+        int nbGazouilliRetour = bdd.nbGazouilliPourUnProfil(messageNbGazouilliUnProfil.getPseudo());
+        
+        if(nbGazouilliRetour == -1)//erreur BD
+        {
+        	messageNbGazouilliUnProfil.setMessageRetour("Nombre de gazouilli d'un profil KO");
+        }
+        else
+        {
+        	messageNbGazouilliUnProfil.setMessageRetour("Nombre de gazouilli d'un profil OK");
+        }
+        
+        replyMessage = session.createObjectMessage(messageNbGazouilliUnProfil);
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + messageNbGazouilliUnProfil.toString());                  
+	}
+	
+	public static void receptionListeDesProfils(Message message) throws JMSException
+	{
+		ObjectMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageListeProfil messageListeProfil = (MessageListeProfil) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageListeProfil.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+        
+        //récupération de la liste des profils
+        ArrayList<ProfilType> listeDesProfils = bdd.listeProfil();
+        MessageListeProfil messageListeProfilRetour = new MessageListeProfil(listeDesProfils, "");
+        
+        if(messageListeProfilRetour.getListeProfil() == null)//aucun profil existe
+        {
+        	messageListeProfilRetour.setMessageRetour("Liste des profils KO");
+        }
+        else
+        {
+        	messageListeProfilRetour.setMessageRetour("Liste des profils OK");
+        }
+        
+        replyMessage = session.createObjectMessage(messageListeProfilRetour);
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + messageListeProfilRetour.toString());                  
+	}
+	
 	
 	public static void main(String[] args) {
 		bdd = new JmsJDBC("JMS");

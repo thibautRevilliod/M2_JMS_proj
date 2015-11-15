@@ -1,14 +1,15 @@
 package metier;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MessageListeAbonnement implements Serializable {
 	private String pseudo;
-	private String[] listeAbonnement;
+	private ArrayList<String> listeAbonnement;
 	private String messageRetour;
 
-	public MessageListeAbonnement(String pPseudo, String[] pListeAbonnement, String pmessageRetour) {
+	public MessageListeAbonnement(String pPseudo, ArrayList<String> pListeAbonnement, String pmessageRetour) {
 		super();
 		this.pseudo = pPseudo;
 		this.listeAbonnement = pListeAbonnement;
@@ -23,11 +24,11 @@ public class MessageListeAbonnement implements Serializable {
 		this.pseudo = pPseudoIdProfil1;
 	}
 
-	public String[] getListeAbonnement() {
+	public ArrayList<String> getListeAbonnement() {
 		return listeAbonnement;
 	}
 
-	public void setListeAbonnement(String[] listeAbonnement) {
+	public void setListeAbonnement(ArrayList<String> listeAbonnement) {
 		this.listeAbonnement = listeAbonnement;
 	}
 
@@ -42,9 +43,11 @@ public class MessageListeAbonnement implements Serializable {
 	@Override
 	public String toString() {
 		return "MessageListeAbonnement [pseudo=" + pseudo
-				+ ", listeAbonnement=" + Arrays.toString(listeAbonnement)
-				+ ", messageRetour=" + messageRetour + "]";
+				+ ", listeAbonnement=" + listeAbonnement + ", messageRetour="
+				+ messageRetour + "]";
 	}
+
+
 
 	
 	

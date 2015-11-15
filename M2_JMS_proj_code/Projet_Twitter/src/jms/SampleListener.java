@@ -62,19 +62,32 @@ public class SampleListener implements MessageListener {
 
     public void onMessage(Message message) {
     	
-    	System.out.println("test");
-    	ObjectMessage object = (ObjectMessage) message;
-    	try {
-			if(SenderTwitter.getListeFiltreProfil().contains(object.getJMSType()))
-			{
-				ObjectMessage objectMessage = (ObjectMessage) message;
-			    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
-			    System.out.println("Gazouilli : " + messageGazouilli.toString());
-			}
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//    	System.out.println("test");
+//    	ObjectMessage object = (ObjectMessage) message;
+//    	try {
+//			if(SenderTwitter.getListeFiltreProfil().contains(object.getJMSType()))
+//			{
+//				ObjectMessage objectMessage = (ObjectMessage) message;
+//			    MessageGazouilli messageGazouilli = (MessageGazouilli) objectMessage.getObject();
+//			    System.out.println("Gazouilli : " + messageGazouilli.toString());
+//			}
+//		} catch (JMSException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
+    	int nb =0;
+		while(true)
+		{
+			try {
+				nb++;
+				Thread.sleep(3000);
+				System.out.println("test : " + nb);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
     }
 }

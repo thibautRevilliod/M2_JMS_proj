@@ -38,8 +38,7 @@
       <Subscriber name="sub2" />
     </AdministeredTopic>
   	
-  	<AdministeredTopic name="messagesGeo" />
-  	<AdministeredTopic name="messagesNonGeo" />
+  	<AdministeredTopic name="messagesProjetTwitter" />
   	
     <AdministeredQueue name="fileTemp1" />
     <AdministeredQueue name="fileTemp2" />
