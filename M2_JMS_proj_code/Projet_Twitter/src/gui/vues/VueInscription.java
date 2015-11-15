@@ -6,6 +6,7 @@ import gui.listeners.LInscription;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class VueInscription extends JFrame{
@@ -17,7 +18,7 @@ public class VueInscription extends JFrame{
 		private JLabel lblEntrezVotrePrnom;
 		private JLabel lblEntrezVotreVille;
 		private JTextField pseudo;
-		private JTextField password;
+		private JPasswordField password;
 		private JTextField nom;
 		private JTextField prenom;
 		private JTextField ville;
@@ -60,7 +61,7 @@ public class VueInscription extends JFrame{
 		getContentPane().add(pseudo);
 		pseudo.setColumns(10);
 		
-		password = new JTextField();
+		password = new JPasswordField();
 		password.setBounds(274, 75, 146, 26);
 		getContentPane().add(password);
 		password.setColumns(10);
@@ -109,12 +110,12 @@ public class VueInscription extends JFrame{
 	}
 
 
-	public JTextField getPassword() {
+	public JPasswordField getPassword() {
 		return password;
 	}
 
 
-	public void setPassword(JTextField password) {
+	public void setPassword(JPasswordField password) {
 		this.password = password;
 	}
 

@@ -6,6 +6,7 @@ import java.*;
 import bdd.JmsJDBC; 
 
 public class main {
+	
 
 	public static void main(String[] args) 
 	{
@@ -13,7 +14,7 @@ public class main {
 		VueConnexion vc;
 		VueInscription vi;
 		VueMenuDepart vd;
-		VueFildActu vf; 
+		VueFildActu vf;
 		
 	
 //		// Pour ouvrir la connexion 

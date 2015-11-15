@@ -9,7 +9,7 @@ import javax.swing.*;
 public class VueConnexion extends JFrame
 {
 	
-	private JTextField textField;
+	private JTextField pseudo;
 		private JPasswordField passwordField;
 
 		private JButton btnValider;
@@ -31,10 +31,10 @@ public class VueConnexion extends JFrame
 		lblMotDePasse.setBounds(35, 104, 110, 20);
 		getContentPane().add(lblMotDePasse);
 		
-		textField = new JTextField();
-		textField.setBounds(166, 36, 146, 26);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+		pseudo = new JTextField();
+		pseudo.setBounds(166, 36, 146, 26);
+		getContentPane().add(pseudo);
+		pseudo.setColumns(10);
 		
 		passwordField = new JPasswordField();
 		passwordField.setBounds(166, 101, 146, 26);
@@ -57,5 +57,16 @@ public class VueConnexion extends JFrame
 		getContentPane().setLayout(null);
 				
 				
-	}	
+	}
+
+
+	public JTextField getPseudo() {
+		return pseudo;
+	}
+
+
+	public JTextField getPasswordField() {
+		return passwordField;
+	}
+	
 }
