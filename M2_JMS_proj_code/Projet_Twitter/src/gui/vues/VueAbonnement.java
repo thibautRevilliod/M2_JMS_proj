@@ -46,8 +46,8 @@ public class VueAbonnement extends JFrame{
 		list_1.setBounds(290, 80, 184, 151);
 		getContentPane().add(list_1);
 		
-		JButton btnSabonner = new JButton("S'abonner");
-		btnSabonner.setBounds(119, 260, 115, 29);
+		JButton btnSabonner = new JButton("Gérer les abonnements");
+		btnSabonner.setBounds(80, 260, 195, 29);
 		getContentPane().add(btnSabonner);
 		
 		btnSabonner.addActionListener(new LSuivre(this));

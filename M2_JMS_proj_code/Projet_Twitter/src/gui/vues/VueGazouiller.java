@@ -10,6 +10,7 @@ import gui.listeners.LInscription;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -57,15 +58,20 @@ public class VueGazouiller extends JFrame{
 		JButton btnQuitter = new JButton("Quitter");
 		btnQuitter.setBounds(259, 247, 115, 29);
 		getContentPane().add(btnQuitter);
-		
+				
 		JRadioButton rdbtnOui = new JRadioButton("Oui");
 		rdbtnOui.setBounds(169, 23, 91, 29);
-		getContentPane().add(rdbtnOui);
-		
+				
 		JRadioButton rdbtnNon = new JRadioButton("Non");
 		rdbtnNon.setBounds(280, 23, 76, 29);
-		getContentPane().add(rdbtnNon);
-					
+		
+        ButtonGroup group = new ButtonGroup();
+        
+        group.add(rdbtnOui);
+        add(rdbtnOui);
+        
+        group.add(rdbtnNon);
+        add(rdbtnNon);
 		
 		// Abonnements :
 		btnEnvoyer.addActionListener(new LEnvoyerMessage(this));    // A COMPLETER AVEC LA BDD

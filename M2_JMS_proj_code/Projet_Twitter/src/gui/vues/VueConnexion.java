@@ -23,7 +23,7 @@ public class VueConnexion extends JFrame
 		setSize(450, 300);
 		setLocation(400, 300);
 		
-		JLabel lblIdentifiant = new JLabel("Identifiant :");
+		JLabel lblIdentifiant = new JLabel("Pseudo :");
 		lblIdentifiant.setBounds(35, 39, 98, 20);
 		getContentPane().add(lblIdentifiant);
 		

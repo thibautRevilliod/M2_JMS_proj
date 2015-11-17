@@ -16,7 +16,7 @@ public class VueConsulter extends JFrame
 
 {
 	public VueConsulter() {
-		setTitle("Fil d'actualit\u00E9s");
+		setTitle("Consulter un profil");
 		setSize(553, 580);
 		setLocation(400, 300);
 		getContentPane().setLayout(null);

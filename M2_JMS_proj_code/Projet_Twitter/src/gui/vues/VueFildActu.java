@@ -16,28 +16,28 @@ public class VueFildActu extends JFrame
 {
 	public VueFildActu() {
 		setTitle("Fil d'actualit\u00E9s");
-		setSize(450, 450);
+		setSize(473, 453);
 		setLocation(400, 300);
 		getContentPane().setLayout(null);
 		
 		ScrollPane scrollPane = new ScrollPane();
-		scrollPane.setBounds(10, 52, 408, 269);
+		scrollPane.setBounds(10, 52, 419, 269);
 		getContentPane().add(scrollPane);
 		
 		JButton btnGazouiller = new JButton("Gazouiller");
-		btnGazouiller.setBounds(303, 16, 115, 29);
+		btnGazouiller.setBounds(314, 16, 115, 29);
 		getContentPane().add(btnGazouiller);
 		
 		JButton btnParamtres = new JButton("Parametres");
-		btnParamtres.setBounds(153, 350, 115, 29);
+		btnParamtres.setBounds(165, 350, 115, 29);
 		getContentPane().add(btnParamtres);
 		
-		JButton btnQuitter = new JButton("Quitter");
-		btnQuitter.setBounds(282, 350, 115, 29);
+		JButton btnQuitter = new JButton("Se Deconnecter");
+		btnQuitter.setBounds(282, 350, 154, 29);
 		getContentPane().add(btnQuitter);
 		
 		JButton btnAbonnements = new JButton("Abonnements");
-		btnAbonnements.setBounds(15, 350, 115, 29);
+		btnAbonnements.setBounds(15, 350, 135, 29);
 		getContentPane().add(btnAbonnements);
 		
 		JLabel lblMonPseudo = new JLabel("MON PSEUDO");
