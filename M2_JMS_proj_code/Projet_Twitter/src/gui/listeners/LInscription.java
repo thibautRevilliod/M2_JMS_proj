@@ -31,6 +31,9 @@ public class LInscription implements ActionListener
 					SenderTwitter.inscription(vi.getPseudo().getText(), vi.getPassword().getText(), vi.getNom().getText(), vi.getPrenom().getText(), vi.getVille().getText());
 					message = SenderTwitter.getMessageRetour();
 					JOptionPane.showMessageDialog(vi, message, "Information Inscription", JOptionPane.INFORMATION_MESSAGE);
+						if(message.contains("OK")){
+							this.vi.setVisible(false);
+						}
 				}
 			else 
 			{

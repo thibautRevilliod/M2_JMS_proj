@@ -2,19 +2,24 @@ package gui.main;
 import gui.vues.*;
 
 import java.*;
+import java.util.ArrayList;
 
 import bdd.JmsJDBC; 
 
 public class main {
 	
-
+	public static String pseudoConnecte;
+	public static ArrayList<Object> profilsSuivis;
+	public static ArrayList<Object> profilsSuiveurs;
+	
 	public static void main(String[] args) 
 	{
 		
 		VueConnexion vc;
 		VueInscription vi;
 		VueMenuDepart vd;
-		VueFildActu vf;
+		
+//		VueFildActu vf;
 		
 	
 //		// Pour ouvrir la connexion 
@@ -37,9 +42,9 @@ public class main {
 		
 		// provisoire : pour ouvrir le fil d'actualité : A LIER UNE FOIS LA CONNEXION ETABLIE
 		
-		vf = new VueFildActu();
-		vf.setVisible(true);
-		
+//		vf = new VueFildActu();
+//		vf.setVisible(true);
+//		
 		
 	}
 

@@ -93,7 +93,7 @@ public class VueInscription extends JFrame{
 		// Abonnements :
 		btnValider.addActionListener(new LInscription (this));    // A COMPLETER AVEC LA BDD
 		btnQuitter.addActionListener(new LFermerInscription (this));
-		this.addWindowListener(new LFermerInscription (this));
+		//this.addWindowListener(new LFermerInscription (this));
 					
 		
 		
@@ -110,7 +110,7 @@ public class VueInscription extends JFrame{
 	}
 
 
-	public JPasswordField getPassword() {
+	public JTextField getPassword() {
 		return password;
 	}
 

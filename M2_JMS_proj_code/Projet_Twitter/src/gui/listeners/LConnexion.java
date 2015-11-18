@@ -2,6 +2,7 @@ package gui.listeners;
 
 
 import gui.vues.VueConnexion;
+import gui.vues.VueFildActu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,8 +34,17 @@ public class LConnexion implements ActionListener
 					SenderTwitter.connexion(vc.getPseudo().getText(), vc.getPasswordField().getText());
 					message = SenderTwitter.getMessageRetour();
 					JOptionPane.showMessageDialog(vc, message, "Information Connexion", JOptionPane.INFORMATION_MESSAGE);
-					//TODO : Enregistrer le pseudo du profil connecté jusqu'à sa déconnexion
-					// il va être utilisé pour appeler les méthodes du SenderTwitter
+					if (message.contains("OK")){
+						//Enregistrement du pseudo du profil connecté jusqu'à sa déconnexion
+						// il va être utilisé pour appeler les méthodes du SenderTwitter
+						gui.main.main.pseudoConnecte = vc.getPseudo().getText();
+						//fermeture fenêtre de connexion
+						this.vc.setVisible(false);
+						//ouverture de la vue Fil d'actu
+						VueFildActu vf = new VueFildActu();
+						vf.setVisible(true);
+					}
+					
 			}
 			else {
 				message = "Vous devez remplir les 2 champs : pseudo et mot de passe";
