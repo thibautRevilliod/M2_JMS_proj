@@ -28,14 +28,12 @@ public class LSeDesabonner implements ActionListener
 		System.out.println("je me desabonne");
 		
 		//TODO : créer un bouton supprimer abonnement et mettre le code ci-dessous
-		SenderTwitter.suppAbonnement("PseudoTutu", "Toto");
+		SenderTwitter.suppAbonnement("PseudoTutu", gui.main.main.pseudoConnecte);
 		
 		//String message = SenderTwitter.getMessageRetour();
 		String message = SenderTwitter.getMessageRetour();
 		
-		//TODO : Enregistrer le pseudo du profil connecté jusqu'à sa déconnexion
-		// il va être utilisé pour appeler les méthodes du SenderTwitter
-		
+				
 		JOptionPane.showMessageDialog(vS, message, "Information Abonnement", JOptionPane.INFORMATION_MESSAGE);
 	}
 }

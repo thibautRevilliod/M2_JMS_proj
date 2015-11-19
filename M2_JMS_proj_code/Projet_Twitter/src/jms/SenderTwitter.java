@@ -56,8 +56,13 @@ public class SenderTwitter {
     
     private static String messageRetour;
     //liste abonnement est utilisé par le thread comme filtre pour le topic
+    
+    //Liste des personnes auxquelles on est abonné
     private static ArrayList<String> listeAbonnement = new ArrayList<String>();
+    //Liste des personnes qui nous suivent.
     private static ArrayList<String> listeSuivi = new ArrayList<String>();
+    
+    
     private static ArrayList<MessageGazouilli> listeGazouilliDunAbonnement = new ArrayList<MessageGazouilli>();
     private static ArrayList<MessageGazouilli> listeGazouilliDesAbonnements = new ArrayList<MessageGazouilli>();
     private static Thread threadConnexion;

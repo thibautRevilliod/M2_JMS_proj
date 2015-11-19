@@ -25,12 +25,10 @@ public class LValiderSuivre implements ActionListener
 	{
 		System.out.println("OK je me suis abonnée");
 		
-		SenderTwitter.creerAbonnement("PseudoTutu", "Toto");
+		SenderTwitter.creerAbonnement("PseudoTutu", gui.main.main.pseudoConnecte);
 		
 		String message = SenderTwitter.getMessageRetour();
 		
-		//TODO : Enregistrer le pseudo du profil connecté jusqu'à sa déconnexion
-		// il va être utilisé pour appeler les méthodes du SenderTwitter
 		
 		JOptionPane.showMessageDialog(vi, message, "Information Abonnement", JOptionPane.INFORMATION_MESSAGE);
 	}
