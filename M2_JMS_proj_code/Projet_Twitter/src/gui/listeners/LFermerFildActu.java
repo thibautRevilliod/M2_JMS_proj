@@ -33,8 +33,8 @@ public class LFermerFildActu implements ActionListener, WindowListener
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
 
-			SenderTwitter.deconnexion(gui.main.main.pseudoConnecte);
-			gui.main.main.pseudoConnecte = "";
+			SenderTwitter.deconnexion(gui.main.main.profilConnecte.getPSEUDO());
+			gui.main.main.profilConnecte = null;
 			String message = SenderTwitter.getMessageRetour();
 			JOptionPane.showMessageDialog(vue, message, "Information Deconnexion", JOptionPane.INFORMATION_MESSAGE);
 		
@@ -57,8 +57,8 @@ public class LFermerFildActu implements ActionListener, WindowListener
 	//@Override
 	public void windowClosing(WindowEvent arg0) {
 
-			SenderTwitter.deconnexion(gui.main.main.pseudoConnecte);
-			gui.main.main.pseudoConnecte = "";
+			SenderTwitter.deconnexion(gui.main.main.profilConnecte.getPSEUDO());
+			gui.main.main.profilConnecte = null;
 			String message = SenderTwitter.getMessageRetour();
 			JOptionPane.showMessageDialog(vue, message, "Information Deconnexion", JOptionPane.INFORMATION_MESSAGE);
 	

@@ -25,7 +25,7 @@ public class LValiderSuivre implements ActionListener
 	{
 		System.out.println("OK je me suis abonnée");
 		
-		SenderTwitter.creerAbonnement("PseudoTutu", gui.main.main.pseudoConnecte);
+		SenderTwitter.creerAbonnement("PseudoTutu", gui.main.main.profilConnecte.getPSEUDO());
 		
 		String message = SenderTwitter.getMessageRetour();
 		

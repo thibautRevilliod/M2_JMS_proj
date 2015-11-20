@@ -4,11 +4,13 @@ import gui.vues.*;
 import java.*;
 import java.util.ArrayList;
 
+import metier.ProfilType;
 import bdd.JmsJDBC; 
 
 public class main {
 	
-	public static String pseudoConnecte;
+//	public static String pseudoConnecte;
+	public static ProfilType profilConnecte = new ProfilType();
 	public static ArrayList<Object> profilsSuivis;
 	public static ArrayList<Object> profilsSuiveurs;
 	

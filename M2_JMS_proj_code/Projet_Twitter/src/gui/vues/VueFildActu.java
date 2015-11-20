@@ -40,7 +40,7 @@ public class VueFildActu extends JFrame
 		btnAbonnements.setBounds(15, 350, 135, 29);
 		getContentPane().add(btnAbonnements);
 		
-		JLabel lblMonPseudo = new JLabel(gui.main.main.pseudoConnecte);
+		JLabel lblMonPseudo = new JLabel(gui.main.main.profilConnecte.getPSEUDO());
 		lblMonPseudo.setBounds(15, 20, 135, 20);
 		getContentPane().add(lblMonPseudo);
 	
