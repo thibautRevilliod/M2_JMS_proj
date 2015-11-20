@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import metier.ProfilType;
 import jms.SenderTwitter;
 import metier.ProfilType;
 
@@ -38,7 +39,9 @@ public class LConnexion implements ActionListener
 					if (message.contains("OK")){
 						//Enregistrement du pseudo du profil connecté jusqu'à sa déconnexion
 						// il va être utilisé pour appeler les méthodes du SenderTwitter
-						gui.main.main.profilConnecte = new ProfilType(vc.getPseudo().getText(), "", "", "");
+				
+						gui.main.main.profilConnecte = new ProfilType();
+						gui.main.main.profilConnecte.setPSEUDO(vc.getPseudo().getText());
 						//fermeture fenêtre de connexion
 						this.vc.setVisible(false);
 						//ouverture de la vue Fil d'actu

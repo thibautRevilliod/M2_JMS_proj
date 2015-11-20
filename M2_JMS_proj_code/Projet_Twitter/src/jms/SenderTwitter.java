@@ -26,6 +26,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import bdd.JmsJDBC;
+import metier.MessageEnregistrementParam;
 import metier.MessageGazouilli;
 import metier.MessageAbonnement;
 import metier.MessageConnexion;
@@ -35,6 +36,7 @@ import metier.MessageListeAbonnement;
 import metier.MessageListeMessageDunProfil;
 import metier.MessageListeProfil;
 import metier.MessageNbGazouilliUnProfil;
+import metier.MessagePopulateProfil;
 import metier.ProfilType;
 
 public class SenderTwitter {	
@@ -69,9 +71,19 @@ public class SenderTwitter {
 	private static MonRunnable runnableConnexion;
 	private static int nbGazouilliUnProfil;
 	private static ArrayList<ProfilType> listeProfil = new ArrayList<ProfilType>();
+	private static ProfilType profilConnecte;
 	
     
-    public static ArrayList<ProfilType> getListeProfil() {
+	
+    public static ProfilType getProfilConnecte() {
+		return profilConnecte;
+	}
+
+	public static void setProfilConnecte(ProfilType profilConnecte) {
+		SenderTwitter.profilConnecte = profilConnecte;
+	}
+
+	public static ArrayList<ProfilType> getListeProfil() {
 		return listeProfil;
 	}
 
@@ -290,6 +302,58 @@ public class SenderTwitter {
         }
     }
 	
+	public static void populateProfilConnecte(String pseudo)
+	{
+        destName = FILEGESTPROFILS;
+
+        try {
+            
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+
+        	MessagePopulateProfil messagePopulateProfil = new MessagePopulateProfil(pseudo);
+        	ObjectMessage objectMessage = session.createObjectMessage(messagePopulateProfil);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("populateProfil");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messagePopulateProfil.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
+        	profilConnecte = (ProfilType) objectMessageRetour.getObject();
+        	setMessageRetour(profilConnecte.getMessageRetour().toString());
+        	System.out.println("received message : " + profilConnecte.toString());
+        	
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
 	public static void deconnexion(String pseudo)
 	{
         destName = FILEGESTPROFILS;
@@ -321,6 +385,57 @@ public class SenderTwitter {
 	        	//remove the profil on the list profil
 	        	listeAbonnement.clear();
         	}
+        	
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	//TODO : ne pas faire de update si aucun champ n'est modifié
+	public static void miseAJourProfil(String pseudo, String mdp, String nom, String prenom, String ville)
+	{
+        destName = FILEGESTPROFILS;
+
+        try {
+            
+        	initialize();
+
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+
+        	MessageEnregistrementParam messageDeconnexion = new MessageEnregistrementParam(pseudo, mdp, nom, prenom, ville);
+        	ObjectMessage objectMessage = session.createObjectMessage(messageDeconnexion);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("enregistrementParam");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messageDeconnexion.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	setMessageRetour(receivedMessage.toString());
+        	System.out.println("received message : " + receivedMessage);
+        
         	
         } catch (JMSException exception) {
             exception.printStackTrace();
@@ -835,6 +950,8 @@ public class SenderTwitter {
             }
         }
     }
+	
+	
 	
 	public static void main(String[] args) {
         Context context = null;

@@ -211,32 +211,90 @@ public class JmsJDBC {
 		}
 	}
 	
-	// si OK, retourne les informations du profil, sinon retourne null
-	public String[] informationProfil(String pid) {
-		String[] res = new String[4];
+	// mise à jour dans la BD des champs pour le profil connecté
+	public int miseAJourProfil(String ppseudo, String pmdp, String pnom, String pprenom, String pville) {
+		int id = -1;
 		try {
 			Statement s = conn.createStatement();
-        	//récupère l'ID de l'utilisateur
-			ResultSet rs = s.executeQuery("SELECT PSEUDO, NOM, PRENOM, VILLE FROM PROFIL WHERE IDPROFIL = '"+pid+"'");
+        	//vérification du pseudo
+			ResultSet rs = s.executeQuery("SELECT IDPROFIL FROM PROFIL WHERE PSEUDO = '"+ppseudo+"'");
         	if (rs.next())
         	{
-        		res[0] = rs.getString(1);
-        		res[1] = rs.getString(2);
-        		res[2] = rs.getString(3);
-        		res[3] = rs.getString(4);
-	        } 
+        		id = rs.getInt(1);
+        		//mise à jour de tous les champs concernant le profil
+        		s.executeUpdate("UPDATE PROFIL SET MDP = '" + pmdp +
+    			"',NOM = '" + pnom +
+				"',PRENOM = '" + pprenom +
+				"',VILLE = '" + pville +
+				"' WHERE PSEUDO = '"+ppseudo+"'");
+    		} 
 			else
 	        {
-				res = null;
+				id = -1;
 	        }
 	        
-	        return res;
+	        return id;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			res = null;
-			return res;
+			id = -1;
+			return id;
 		}
 	}
+	
+	// si OK, retourne les informations du profil, sinon retourne null
+//	public ProfilType informationProfil(String pid) {
+//		ProfilType profilType = new ProfilType();
+//		try {
+//			Statement s = conn.createStatement();
+//        	//récupère l'ID de l'utilisateur
+//			ResultSet rs = s.executeQuery("SELECT PSEUDO, NOM, PRENOM, VILLE FROM PROFIL WHERE IDPROFIL = '"+pid+"'");
+//        	if (rs.next())
+//        	{
+//        		profilType.setPSEUDO(rs.getString(1));
+//        		profilType.setNOM(rs.getString(2));
+//        		profilType.setPRENOM(rs.getString(3));
+//        		profilType.setVILLE(rs.getString(4));
+//	        } 
+//			else
+//	        {
+//				profilType = null;
+//	        }
+//	        
+//	        return profilType;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			profilType = null;
+//			return profilType;
+//		}
+//	}
+	
+	// si OK, retourne les informations du profil, sinon retourne null
+		public ProfilType informationProfil(String pseudo) {
+			ProfilType profilType = new ProfilType();
+			try {
+				Statement s = conn.createStatement();
+	        	//récupère l'ID de l'utilisateur
+				ResultSet rs = s.executeQuery("SELECT PSEUDO, MDP, NOM, PRENOM, VILLE FROM PROFIL WHERE PSEUDO = '"+pseudo+"'");
+	        	if (rs.next())
+	        	{
+	        		profilType.setPSEUDO(rs.getString(1));
+	        		profilType.setMDP(rs.getString(2));
+	        		profilType.setNOM(rs.getString(3));
+	        		profilType.setPRENOM(rs.getString(4));
+	        		profilType.setVILLE(rs.getString(5));
+		        } 
+				else
+		        {
+					profilType = null;
+		        }
+		        
+		        return profilType;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				profilType = null;
+				return profilType;
+			}
+		}
 	
 	//retourne la ville du Gazouilli ou null
 	public String creerGazouilli(String pcontenu, String pPseudoEmetteur, Timestamp ptime, boolean pGeolocalisation) {
@@ -456,11 +514,11 @@ public class JmsJDBC {
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select PSEUDO,NOM, PRENOM, VILLE  from PROFIL");
+			ResultSet rs = s.executeQuery("select PSEUDO, NOM, PRENOM, VILLE  from PROFIL");
 
     		while(rs.next())
     		{
-    			profil = new ProfilType(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+    			profil = new ProfilType(rs.getString(1), "", rs.getString(2), rs.getString(3), rs.getString(4));
     			res.add(profil);
     		}
     		
@@ -499,8 +557,8 @@ public class JmsJDBC {
 		
 		System.out.println("--> Vérification mdp : " + bdd.verificationIDMDP("PseudoToto", "mdp"));
 		System.out.println("--> Information profil : ");
-			String[] var_res = bdd.informationProfil("1");
-			System.out.println("     " + var_res[0] + " " + var_res[1] + " " + var_res[2] + " " + var_res[3]);
+			ProfilType profil = bdd.informationProfil("PseudoToto");
+			System.out.println("     " + profil.getPSEUDO() + " " + profil.getNOM() + " " + profil.getPRENOM() + " " + profil.getVILLE());
 		
 		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoToto", "PseudoTutu"));
 		

@@ -24,12 +24,15 @@ public class VueParametres extends JFrame{
 		private JLabel lblEntrezVotreNom;
 		private JLabel lblEntrezVotrePrnom;
 		private JLabel lblEntrezVotreVille;
-		private JTextField textField;
-		private JTextField textField_1;
-		private JTextField textField_2;
-		private JTextField textField_3;
-		private JTextField textField_4;
+		private JLabel lblPseudo;
+		private JTextField champsMdp;
+		private JTextField champsNom;
+		private JTextField champsPrenom;
+		private JTextField champsVille;
 	
+
+	
+
 
 	public VueParametres ()
 	{
@@ -47,6 +50,10 @@ public class VueParametres extends JFrame{
 		lblEntrezVotrePseudo.setBounds(48, 42, 211, 20);
 		getContentPane().add(lblEntrezVotrePseudo);
 		
+		lblPseudo = new JLabel(gui.main.main.profilConnecte.getPSEUDO());
+		lblPseudo.setBounds(274, 39, 146, 26);
+		getContentPane().add(lblPseudo);
+		
 		lblEntrezVotreMot = new JLabel("Entrez votre mot de passe :");
 		lblEntrezVotreMot.setBounds(48, 78, 211, 20);
 		getContentPane().add(lblEntrezVotreMot);
@@ -63,30 +70,25 @@ public class VueParametres extends JFrame{
 		lblEntrezVotreVille.setBounds(48, 183, 211, 20);
 		getContentPane().add(lblEntrezVotreVille);
 		
-		textField = new JTextField();
-		textField.setBounds(274, 39, 146, 26);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+		champsMdp = new JTextField(gui.main.main.profilConnecte.getMDP());
+		champsMdp.setBounds(274, 75, 146, 26);
+		getContentPane().add(champsMdp);
+		champsMdp.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(274, 75, 146, 26);
-		getContentPane().add(textField_1);
-		textField_1.setColumns(10);
+		champsNom = new JTextField(gui.main.main.profilConnecte.getNOM());
+		champsNom.setBounds(274, 111, 146, 26);
+		getContentPane().add(champsNom);
+		champsNom.setColumns(10);
 		
-		textField_2 = new JTextField();
-		textField_2.setBounds(274, 111, 146, 26);
-		getContentPane().add(textField_2);
-		textField_2.setColumns(10);
+		champsPrenom = new JTextField(gui.main.main.profilConnecte.getPRENOM());
+		champsPrenom.setBounds(274, 147, 146, 26);
+		getContentPane().add(champsPrenom);
+		champsPrenom.setColumns(10);
 		
-		textField_3 = new JTextField();
-		textField_3.setBounds(274, 147, 146, 26);
-		getContentPane().add(textField_3);
-		textField_3.setColumns(10);
-		
-		textField_4 = new JTextField();
-		textField_4.setBounds(274, 183, 146, 26);
-		getContentPane().add(textField_4);
-		textField_4.setColumns(10);
+		champsVille = new JTextField(gui.main.main.profilConnecte.getVILLE());
+		champsVille.setBounds(274, 183, 146, 26);
+		getContentPane().add(champsVille);
+		champsVille.setColumns(10);
 		
 		JButton btnEnregistrer = new JButton("Enregistrer");
 		btnEnregistrer.setBounds(144, 249, 115, 29);
@@ -104,4 +106,23 @@ public class VueParametres extends JFrame{
 				
 				
 	}	
+	
+	public JTextField getChampsMdp() {
+		return champsMdp;
+	}
+
+
+	public JTextField getChampsNom() {
+		return champsNom;
+	}
+
+
+	public JTextField getChampsPrenom() {
+		return champsPrenom;
+	}
+
+
+	public JTextField getChampsVille() {
+		return champsVille;
+	}
 }

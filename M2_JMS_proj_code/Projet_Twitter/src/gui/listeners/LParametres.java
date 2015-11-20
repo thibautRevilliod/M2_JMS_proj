@@ -7,6 +7,9 @@ import gui.vues.VueParametres;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import jms.SenderTwitter;
+import metier.ProfilType;
+
 
 
 
@@ -22,6 +25,14 @@ public class LParametres implements ActionListener
 
 	public void actionPerformed(ActionEvent e)
 	{
+		String message;
+		
+		SenderTwitter.populateProfilConnecte("PseudoToto");
+		message = SenderTwitter.getMessageRetour();
+
+		gui.main.main.profilConnecte = SenderTwitter.getProfilConnecte();
+
+		
 		VueParametres vP = new VueParametres();
 		vP.setVisible(true);
 		vP.setLocation(800, 300);

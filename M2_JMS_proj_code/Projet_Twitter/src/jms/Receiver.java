@@ -61,6 +61,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
+import metier.MessageEnregistrementParam;
 import metier.MessageGazouilli;
 import metier.MessageAbonnement;
 import metier.MessageConnexion;
@@ -70,6 +71,7 @@ import metier.MessageListeAbonnement;
 import metier.MessageListeMessageDunProfil;
 import metier.MessageListeProfil;
 import metier.MessageNbGazouilliUnProfil;
+import metier.MessagePopulateProfil;
 import metier.ProfilType;
 import bdd.JmsJDBC;
 
@@ -96,7 +98,7 @@ public class Receiver {
 	private static String factoryName = "ConnectionFactory";
 	private static String destName = null;
 	private static Destination dest = null;
-	private static int count = 20;
+//	private static int count = 20;
 	private static Session session = null;
 	private static MessageConsumer receiver = null;
 	private static MessageProducer sender = null;
@@ -191,7 +193,8 @@ public class Receiver {
             
         	initializeQueues();
 
-            for (int i = 0; i < count; ++i) {
+//            for (int i = 0; i < count; ++i) {
+        		while(true) {
                 Message message = receiver.receive();
                 if (message instanceof ObjectMessage) {
                 	if (message.getJMSType().equals("inscription"))
@@ -204,6 +207,12 @@ public class Receiver {
                 	} else if (message.getJMSType().equals("deconnexion"))
                 	{
                 		receptionDeconnexion(message);
+                	} else if(message.getJMSType().equals("enregistrementParam"))
+                	{
+                		receptionMajProfil(message);
+                	} else if(message.getJMSType().equals("populateProfil"))
+                	{
+                		receptionPopulateMessage(message);
                 	} else if (message.getJMSType().equals("creerAbonnement"))
                 	{
                 		receptionCreerAbonnement(message);
@@ -349,6 +358,42 @@ public class Receiver {
         System.out.println("envoi de replyMessage : " + replyMessage);                    
 	}
 	
+	public static void receptionPopulateMessage(Message message) throws JMSException
+	{
+		ObjectMessage replyMessage;
+		ProfilType profilConnecte;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessagePopulateProfil messagePopulateProfil = (MessagePopulateProfil) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messagePopulateProfil.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+
+        profilConnecte = bdd.informationProfil(messagePopulateProfil.getPseudo());
+        
+        ProfilType messageConnexionRetour = new ProfilType(profilConnecte.getPSEUDO(), profilConnecte.getMDP(), profilConnecte.getNOM(),profilConnecte.getPRENOM(), profilConnecte.getVILLE());
+        
+        if(profilConnecte == null)//connexion KO en BD
+        {
+        	messageConnexionRetour.setMessageRetour("PopulateMessage KO");
+        }
+        else
+        {
+        	messageConnexionRetour.setMessageRetour("PopulateMessage OK");
+        } 
+  
+        replyMessage = session.createObjectMessage(messageConnexionRetour);
+    
+        // create the senders
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + messageConnexionRetour.toString());                    
+	}
+	
 	public static void receptionDeconnexion(Message message) throws JMSException
 	{
 		TextMessage replyMessage;
@@ -369,6 +414,39 @@ public class Receiver {
         }else
         {
         	replyMessage = session.createTextMessage("Deconnexion KO");
+        }
+        
+        // create the sender
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + replyMessage);                    
+	}
+	
+	public static void receptionMajProfil(Message message) throws JMSException
+	{
+		int retourMajProfil;
+		TextMessage replyMessage;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessageEnregistrementParam messageMajProfil = (MessageEnregistrementParam) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messageMajProfil.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+               
+     // enregistrement du profil en BD 
+        retourMajProfil = bdd.miseAJourProfil(messageMajProfil.getPseudo(), messageMajProfil.getMotDePasse(), messageMajProfil.getNom(), messageMajProfil.getPrenom(), messageMajProfil.getVille());
+        
+        if(retourMajProfil == -1)//update KO en BD
+        {
+        	replyMessage = session.createTextMessage("Mise à jour profil KO");
+        }
+        else
+        {
+        	replyMessage = session.createTextMessage("Mise à jour profil OK");
         }
         
         // create the sender
