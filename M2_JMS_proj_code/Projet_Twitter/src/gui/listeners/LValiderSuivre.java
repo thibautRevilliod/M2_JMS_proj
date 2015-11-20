@@ -1,14 +1,12 @@
 package gui.listeners;
 
 
-import gui.vues.VueInscription;
-import gui.vues.VueSuivre;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import gui.vues.VueSuivre;
 import jms.SenderTwitter;
 
 public class LValiderSuivre implements ActionListener
@@ -25,7 +23,7 @@ public class LValiderSuivre implements ActionListener
 	{
 		System.out.println("OK je me suis abonnée");
 		
-		SenderTwitter.creerAbonnement("PseudoTutu", gui.main.main.pseudoConnecte);
+		SenderTwitter.creerAbonnement("PseudoTutu", gui.main.main.profilConnecte.getPSEUDO());
 		
 		String message = SenderTwitter.getMessageRetour();
 		

@@ -1,16 +1,15 @@
 package gui.main;
 import gui.vues.*;
+import metier.ProfilType;
 
-import java.*;
 import java.util.ArrayList;
-
-import bdd.JmsJDBC; 
 
 public class main {
 	
-	public static String pseudoConnecte;
-	public static ArrayList<Object> profilsSuivis;
-	public static ArrayList<Object> profilsSuiveurs;
+	public static ProfilType profilConnecte;
+	public static ArrayList<String> profilsAbonnes;
+	public static ArrayList<String> profilsSuivis;
+	
 	
 	public static void main(String[] args) 
 	{

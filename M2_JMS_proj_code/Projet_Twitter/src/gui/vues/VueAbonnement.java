@@ -38,11 +38,23 @@ public class VueAbonnement extends JFrame{
 		btnQuitter.setBounds(290, 260, 115, 29);
 		getContentPane().add(btnQuitter);
 		
-		JList list = new JList();
+		JList<String> list = new JList<String>();
+		//On transforme l'arrayList des profils abonnes en String[] pour l'afficher dans l'interface.
+		String[] listAbonnes = new String[gui.main.main.profilsAbonnes.size()];
+		for (int i=0; i<gui.main.main.profilsAbonnes.size();i++){
+			listAbonnes[i]=gui.main.main.profilsAbonnes.get(i);
+		}
+		list.setListData(listAbonnes);
 		list.setBounds(35, 79, 184, 151);
 		getContentPane().add(list);
 		
-		JList list_1 = new JList();
+		JList<String> list_1 = new JList<String>();
+		//On transforme l'arrayList des profils suivis en String[] pour l'afficher dans l'interface.
+		String[] listSuivis = new String[gui.main.main.profilsSuivis.size()];
+		for (int i=0; i<gui.main.main.profilsSuivis.size();i++){
+			listAbonnes[i]=gui.main.main.profilsSuivis.get(i);
+		}
+		list.setListData(listAbonnes);
 		list_1.setBounds(290, 80, 184, 151);
 		getContentPane().add(list_1);
 		

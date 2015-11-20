@@ -29,7 +29,7 @@ public class VueFildActu extends JFrame
 		getContentPane().add(btnGazouiller);
 		
 		JButton btnParamtres = new JButton("Parametres");
-		btnParamtres.setBounds(165, 350, 115, 29);
+		btnParamtres.setBounds(159, 350, 115, 29);
 		getContentPane().add(btnParamtres);
 		
 		JButton btnQuitter = new JButton("Se Deconnecter");
@@ -40,7 +40,7 @@ public class VueFildActu extends JFrame
 		btnAbonnements.setBounds(15, 350, 135, 29);
 		getContentPane().add(btnAbonnements);
 		
-		JLabel lblMonPseudo = new JLabel(gui.main.main.pseudoConnecte);
+		JLabel lblMonPseudo = new JLabel(gui.main.main.profilConnecte.getPSEUDO());
 		lblMonPseudo.setBounds(15, 20, 135, 20);
 		getContentPane().add(lblMonPseudo);
 	
