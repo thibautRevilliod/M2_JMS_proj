@@ -383,7 +383,7 @@ public class JmsJDBC {
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfilSuiviPar1 = PROFIL.idProfil AND idProfil1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pIdProfil1+"')");
+			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfil1 = PROFIL.idProfil AND idProfilSuiviPar1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pIdProfil1+"')");
 
     		while(rs.next())
     		{
@@ -404,8 +404,8 @@ public class JmsJDBC {
 		try {
 			Statement s = conn.createStatement();
         	//récupère le dernier ID
-			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfil1 = PROFIL.idProfil AND idProfilSuiviPar1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfilSuiviPar1+"')");
-
+			ResultSet rs = s.executeQuery("select PROFIL.PSEUDO from ABONNEMENTS, PROFIL WHERE ABONNEMENTS.idProfilSuiviPar1 = PROFIL.idProfil AND idProfil1 = (SELECT idProfil FROM PROFIL WHERE pseudo = '"+pPseudoIdProfilSuiviPar1+"')");
+			
     		while(rs.next())
     		{
     			res.add(rs.getString(1));
@@ -572,9 +572,9 @@ public class JmsJDBC {
 			
 		System.out.println("--> Liste Suivi : ");
 			System.out.print("     ");
-			for(int i = 0; i < bdd.listeSuivi("PseudoToto").size(); i++)
+			for(int i = 0; i < bdd.listeSuivi("PseudoTutu").size(); i++)
 			{
-				System.out.print(bdd.listeSuivi("PseudoToto").get(i) + " ");
+				System.out.print(bdd.listeSuivi("PseudoTutu").get(i) + " ");
 			}
 			System.out.println("");
 			
@@ -593,13 +593,6 @@ public class JmsJDBC {
 		System.out.println("--> Liste des profils : " +bdd.listeProfil().get(0).toString());
 
 		
-//		banque.creerCompte("Bobby", 1000);
-//		System.out.println(" Compte Bobby : "+banque.position("Bobby"));
-//		banque.creerCompte("Bob", 1000);
-//		System.out.println(" Compte Bob : "+banque.position("Bob"));
-//		banque.ajouter("Bobby", 100);
-//		banque.retirer("Bobby", 150);
-//		System.out.println(" Compte Bobby : "+banque.position("Bobby"));
 
 		//Pour ouvrir H2 il faut pointer sur le bon dossier:
 		//C:\Users\landt\Dropbox\USB\MIAGE\M2\S9\Intergiciels pour la répartition\Projet_JMS\M2_JMS_proj\M2_JMS_proj_code\Projet_Twitter

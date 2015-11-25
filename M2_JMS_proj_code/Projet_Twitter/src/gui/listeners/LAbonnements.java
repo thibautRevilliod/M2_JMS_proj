@@ -31,22 +31,22 @@ public class LAbonnements implements ActionListener
 		//TODO : Le code ci-dessous permet de retourner la liste des abonnements			
 			//listeAbonne
 			SenderTwitter.listeAbonne(gui.main.main.profilConnecte.getPSEUDO());
+			String message = SenderTwitter.getMessageRetour();	
 			gui.main.main.profilsAbonnes = SenderTwitter.getListeAbonnement();
-			String message = SenderTwitter.getMessageRetour();		
+
 			
 					
 		//TODO : Le code ci-dessous permet de retourner la liste des suiveurs
 			//listeSuiveurs
 			SenderTwitter.listeSuivi(gui.main.main.profilConnecte.getPSEUDO());
-			gui.main.main.profilsSuivis = SenderTwitter.getListeSuivi();
 			message = SenderTwitter.getMessageRetour();		
+			gui.main.main.profilsSuivis = SenderTwitter.getListeSuivi();
+			
 			
 			
 			VueAbonnement va = new VueAbonnement();
 			va.setVisible(true);
 			va.setLocation(800, 300);
-			JOptionPane.showMessageDialog(va, message, "Information liste Abonne", JOptionPane.INFORMATION_MESSAGE);
-			JOptionPane.showMessageDialog(va, message, "Information liste Suivi", JOptionPane.INFORMATION_MESSAGE);
 		//TODO : Le code ci-dessous permet de retourner le nombre de gazouilli d'un profil
 		//	SenderTwitter.nbGazouilliDunProfil("Toto");
 			//message = SenderTwitter.getMessageRetour();		
