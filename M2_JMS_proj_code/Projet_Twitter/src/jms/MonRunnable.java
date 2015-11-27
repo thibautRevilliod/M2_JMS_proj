@@ -70,12 +70,14 @@ public class MonRunnable implements Runnable {
 		        			if((listeDesAbonnementsProfil.contains(message.getJMSType())) && (ville.equals(messageGazouilli.getVille())))
 		        			{
 		        				//cas avec la geolocalisation
+		        				gui.main.main.gazouillis.add(messageGazouilli);
 				                System.out.println("Gazouilli : " + messageGazouilli.toString());
 		        			}
 		        			
 		        		}else if(listeDesAbonnementsProfil.contains(message.getJMSType()))
 			        	{
 			        		//cas sans geolocalisation
+		        			gui.main.main.gazouillis.add(messageGazouilli);
 			                System.out.println("Gazouilli : " + messageGazouilli.toString());
 			                //retourner dans l'interface le résultat
 			        	}

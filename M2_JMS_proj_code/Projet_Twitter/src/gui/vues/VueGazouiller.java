@@ -14,6 +14,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
@@ -22,7 +23,11 @@ public class VueGazouiller extends JFrame{
 		
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
+	private JTextArea textArea;
 	private JTextField textField;
+	private ButtonGroup group;
+	private JRadioButton rdbtnOui;
+	private JRadioButton rdbtnNon;
 	
 
 	public VueGazouiller ()
@@ -46,10 +51,22 @@ public class VueGazouiller extends JFrame{
 		lblNewLabel_1.setBounds(35, 95, 69, 20);
 		getContentPane().add(lblNewLabel_1);
 		
-		textField = new JTextField();
-		textField.setBounds(169, 92, 261, 124);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+//		textField = new JTextField();
+//		textField.setBounds(169, 92, 261, 124);
+//		getContentPane().add(textField);
+//		textField.setColumns(10);
+		
+		String textAreaContent = "";
+		textAreaContent.replaceAll("'","\'");
+		
+		textArea = new JTextArea(textAreaContent);
+		textArea.setEditable(true);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		textArea.setBounds(169, 92, 261, 124);
+		getContentPane().add(textArea);
+		
+		
 		
 		JButton btnEnvoyer = new JButton("Envoyer");
 		btnEnvoyer.setBounds(94, 247, 115, 29);
@@ -59,13 +76,16 @@ public class VueGazouiller extends JFrame{
 		btnQuitter.setBounds(259, 247, 115, 29);
 		getContentPane().add(btnQuitter);
 				
-		JRadioButton rdbtnOui = new JRadioButton("Oui");
+		rdbtnOui = new JRadioButton("Oui");
 		rdbtnOui.setBounds(169, 23, 91, 29);
+		rdbtnOui.setName("Oui");
 				
-		JRadioButton rdbtnNon = new JRadioButton("Non");
+		rdbtnNon = new JRadioButton("Non");
 		rdbtnNon.setBounds(280, 23, 76, 29);
+		rdbtnNon.setName("Non");
+		rdbtnNon.setSelected(true);
 		
-        ButtonGroup group = new ButtonGroup();
+        group = new ButtonGroup();
         
         group.add(rdbtnOui);
         add(rdbtnOui);
@@ -77,5 +97,78 @@ public class VueGazouiller extends JFrame{
 		btnEnvoyer.addActionListener(new LEnvoyerMessage(this));    // A COMPLETER AVEC LA BDD
 		btnQuitter.addActionListener(new LFermerGazouiller (this));
 		this.addWindowListener(new LFermerGazouiller (this));
+	}
+
+
+	public JLabel getLblNewLabel() {
+		return lblNewLabel;
+	}
+
+
+	public void setLblNewLabel(JLabel lblNewLabel) {
+		this.lblNewLabel = lblNewLabel;
+	}
+
+
+	public JLabel getLblNewLabel_1() {
+		return lblNewLabel_1;
+	}
+
+
+	public void setLblNewLabel_1(JLabel lblNewLabel_1) {
+		this.lblNewLabel_1 = lblNewLabel_1;
+	}
+
+
+	public JTextArea getTextArea() {
+		return textArea;
+	}
+
+
+	public void setTextArea(JTextArea textArea) {
+		this.textArea = textArea;
+	}
+
+
+	public ButtonGroup getGroup() {
+		return group;
+	}
+
+
+	public void setGroup(ButtonGroup group) {
+		this.group = group;
+	}
+
+
+	public JRadioButton getRdbtnOui() {
+		return rdbtnOui;
+	}
+
+
+	public void setRdbtnOui(JRadioButton rdbtnOui) {
+		this.rdbtnOui = rdbtnOui;
+	}
+
+
+	public JRadioButton getRdbtnNon() {
+		return rdbtnNon;
+	}
+
+
+	public void setRdbtnNon(JRadioButton rdbtnNon) {
+		this.rdbtnNon = rdbtnNon;
+	}
+
+
+	public JTextField getTextField() {
+		return textField;
+	}
+
+
+	public void setTextField(JTextField textField) {
+		this.textField = textField;
 	}	
+	
+	
+	
 }

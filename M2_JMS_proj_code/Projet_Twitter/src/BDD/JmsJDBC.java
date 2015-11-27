@@ -588,7 +588,7 @@ public class JmsJDBC {
 		
 		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoToto", "PseudoTutu"));
 		
-		System.out.println("--> Liste gazouilli de PseudoToto : " +bdd.listeGazouilli("PseudoToto").toString());
+		System.out.println("--> Liste gazouilli de PseudoTutu : " +bdd.listeGazouilli("PseudoTutu").toString());
 
 		System.out.println("--> Liste gazouilli des abonnements de PseudoTutu : " +bdd.listeGazouilliAbonnements("PseudoTutu").toString());
 		
