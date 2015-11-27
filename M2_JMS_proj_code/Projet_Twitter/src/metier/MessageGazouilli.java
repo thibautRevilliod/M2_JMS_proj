@@ -2,6 +2,7 @@ package metier;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class MessageGazouilli implements Serializable {
 	private String contenu;
@@ -73,10 +74,24 @@ public class MessageGazouilli implements Serializable {
 
 	@Override
 	public String toString() {
-		return "MessageGazouilli [contenu=" + contenu + ", ville=" + ville
-				+ ", pseudoEmetteur=" + pseudoEmetteur + ", dateHeure="
-				+ dateHeure + ", estGeolocalise=" + estGeolocalise
-				+ ", messageRetour=" + messageRetour + "]";
+		String gazouilliContent = "";
+		String formatedDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(getDateHeure());
+		
+		gazouilliContent += getPseudoEmetteur() + " [publication date : " + formatedDate + "]\n";
+		
+//		if(isEstGeolocalise())
+//		{
+			gazouilliContent += "[localisation : " + getVille() + "]\n";
+//		}
+		
+		gazouilliContent += getContenu();
+		
+		return gazouilliContent;
+		
+//		return "MessageGazouilli [contenu=" + contenu + ", ville=" + ville
+//				+ ", pseudoEmetteur=" + pseudoEmetteur + ", dateHeure="
+//				+ dateHeure + ", estGeolocalise=" + estGeolocalise
+//				+ ", messageRetour=" + messageRetour + "]";
 	}
 	
 	

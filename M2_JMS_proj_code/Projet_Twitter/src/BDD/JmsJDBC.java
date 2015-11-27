@@ -551,8 +551,10 @@ public class JmsJDBC {
 			//récupère la dateHeure
 	    	Date date= new Date();
 			Timestamp time = new Timestamp(date.getTime());
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "PseudoToto", time, true));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "PseudoToto", time, false));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu geoloc", "PseudoToto", time, true));
 			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "PseudoTutu", time, false));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu3", "Toto", time, false));
 			System.out.println(" --> OK");
 		
 		System.out.println("--> Vérification mdp : " + bdd.verificationIDMDP("PseudoToto", "mdp"));
@@ -561,6 +563,8 @@ public class JmsJDBC {
 			System.out.println("     " + profil.getPSEUDO() + " " + profil.getNOM() + " " + profil.getPRENOM() + " " + profil.getVILLE());
 		
 		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoToto", "PseudoTutu"));
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoTutu", "PseudoToto"));
+		
 		
 		System.out.println("--> Liste Abonne : ");
 			System.out.print("     ");
@@ -584,9 +588,9 @@ public class JmsJDBC {
 		
 		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoToto", "PseudoTutu"));
 		
-		System.out.println("--> Liste gazouilli de PseudoToto : " +bdd.listeGazouilli("PseudoToto").get(0).toString());
+		System.out.println("--> Liste gazouilli de PseudoToto : " +bdd.listeGazouilli("PseudoToto").toString());
 
-		System.out.println("--> Liste gazouilli des abonnements de PseudoToto : " +bdd.listeGazouilliAbonnements("PseudoToto").get(0).toString());
+		System.out.println("--> Liste gazouilli des abonnements de PseudoTutu : " +bdd.listeGazouilliAbonnements("PseudoTutu").toString());
 		
 		System.out.println("--> Nombre de gazouilli de PseudoToto : " +bdd.nbGazouilliPourUnProfil("PseudoToto"));
 		
