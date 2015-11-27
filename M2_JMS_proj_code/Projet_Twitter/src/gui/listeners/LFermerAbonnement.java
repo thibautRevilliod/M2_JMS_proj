@@ -8,6 +8,7 @@ import java.awt.event.WindowListener;
 import javax.swing.JOptionPane;
 
 import gui.vues.VueAbonnement;
+import gui.vues.VueFildActu;
 
 
 
@@ -32,6 +33,8 @@ public class LFermerAbonnement implements ActionListener, WindowListener
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
 			this.vue.setVisible(false);
+			VueFildActu fil = new VueFildActu();
+			fil.setVisible(true);
 		}
 		
 	}
@@ -48,14 +51,8 @@ public class LFermerAbonnement implements ActionListener, WindowListener
 
 	//@Override
 	public void windowClosing(WindowEvent arg0) {
-		int reponse = JOptionPane.showConfirmDialog(this.vue, "Voulez-vous réellemment fermer la fenêtre ?", "Quitter ?", JOptionPane.YES_NO_OPTION);
-		
-		
-		if (reponse == JOptionPane.YES_OPTION) 
-		{
-			this.vue.setVisible(false);
-		}
-		
+		VueFildActu fil = new VueFildActu();
+		fil.setVisible(true);
 	} 
 	
 }

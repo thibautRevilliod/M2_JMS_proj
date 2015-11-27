@@ -2,7 +2,7 @@ package gui.vues;
 
 import gui.listeners.LConnexion;
 import gui.listeners.LEnregistrerParametres;
-import gui.listeners.LFermer;
+import gui.listeners.LFermerConnexion;
 import gui.listeners.LFermerInscription;
 import gui.listeners.LFermerParametres;
 import gui.listeners.LInscription;
@@ -41,7 +41,7 @@ public class VueParametres extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setSize(515,345);
 		this.setResizable(false);
-		this.setLocation(50, 50);
+		this.setLocation(800, 300);
 	
 		this.addWindowListener(new LFermerParametres (this));
 		getContentPane().setLayout(null);

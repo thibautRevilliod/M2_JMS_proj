@@ -52,8 +52,8 @@ public class VueConnexion extends JFrame
 		
 		// Abonnements :
 		btnValider.addActionListener(new LConnexion (this));
-		btnQuitter.addActionListener(new LFermer (this));
-		this.addWindowListener(new LFermer (this));
+		btnQuitter.addActionListener(new LFermerConnexion (this));
+		this.addWindowListener(new LFermerConnexion (this));
 		getContentPane().setLayout(null);
 				
 				

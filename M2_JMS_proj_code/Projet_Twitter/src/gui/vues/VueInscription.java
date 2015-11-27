@@ -31,7 +31,7 @@ public class VueInscription extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setSize(515,345);
 		this.setResizable(false);
-		this.setLocation(50, 50);
+		setLocation(800, 300);
 	
 		this.addWindowListener(new LFermerInscription (this));
 		getContentPane().setLayout(null);

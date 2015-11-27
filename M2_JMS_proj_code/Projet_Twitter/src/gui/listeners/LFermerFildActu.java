@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import jms.SenderTwitter;
 import gui.vues.VueFildActu;
+import gui.vues.VueMenuDepart;
 
 
 
@@ -40,6 +41,8 @@ public class LFermerFildActu implements ActionListener, WindowListener
 		
 			
 			this.vue.setVisible(false);
+			VueMenuDepart menu = new VueMenuDepart();
+			menu.setVisible(true);
 		}
 		
 	}
@@ -61,7 +64,8 @@ public class LFermerFildActu implements ActionListener, WindowListener
 			gui.main.main.profilConnecte = null;
 			String message = SenderTwitter.getMessageRetour();
 			JOptionPane.showMessageDialog(vue, message, "Information Deconnexion", JOptionPane.INFORMATION_MESSAGE);
-	
+			VueMenuDepart menu = new VueMenuDepart();
+			menu.setVisible(true);
 	} 
 	
 }

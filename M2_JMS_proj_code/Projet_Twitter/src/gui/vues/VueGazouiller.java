@@ -2,7 +2,7 @@ package gui.vues;
 
 import gui.listeners.LConnexion;
 import gui.listeners.LEnvoyerMessage;
-import gui.listeners.LFermer;
+import gui.listeners.LFermerConnexion;
 import gui.listeners.LFermerGazouiller;
 import gui.listeners.LFermerInscription;
 import gui.listeners.LInscription;

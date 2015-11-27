@@ -1,6 +1,7 @@
 package gui.listeners;
 
 import gui.vues.VueConnexion;
+import gui.vues.VueMenuDepart;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,14 +12,14 @@ import javax.swing.JOptionPane;
 
 
 
-public class LFermer implements ActionListener, WindowListener 
+public class LFermerConnexion implements ActionListener, WindowListener 
 {
 
 		
 	private VueConnexion vue;
 		
 	
-	public LFermer (VueConnexion pvue)
+	public LFermerConnexion (VueConnexion pvue)
 	{
 			this.vue=pvue;
 	}
@@ -32,6 +33,8 @@ public class LFermer implements ActionListener, WindowListener
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
 			this.vue.setVisible(false);
+			VueMenuDepart menu = new VueMenuDepart();
+			menu.setVisible(true);
 		}
 		
 	}
@@ -41,12 +44,10 @@ public class LFermer implements ActionListener, WindowListener
 	
 	public void windowClosing(WindowEvent arg0) 
 	{
-		int reponse = JOptionPane.showConfirmDialog(this.vue, "Voulez réellemment fermer la fenêtre ?", "Quitter ?", JOptionPane.YES_NO_OPTION);
-					
-		if (reponse == JOptionPane.YES_OPTION) 
-		{
+		
 			this.vue.setVisible(false);
-		}
+			VueMenuDepart menu = new VueMenuDepart();
+			menu.setVisible(true);
 		
 	}
 	

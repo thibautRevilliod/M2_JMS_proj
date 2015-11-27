@@ -12,6 +12,7 @@ public class main {
 	public static ProfilType profilConnecte = new ProfilType();
 	public static ArrayList<String> profilsAbonnes;
 	public static ArrayList<String> profilsSuivis;
+	public static ArrayList<ProfilType> tousLesProfils;
 
 	
 	public static void main(String[] args) 

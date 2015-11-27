@@ -486,8 +486,11 @@ public class SenderTwitter {
         	setMessageRetour(receivedMessage.toString());
         	System.out.println("received message : " + receivedMessage);
         	
+        	if(receivedMessage.toString().equals("Abonnement avec '" + messageAbonnement.getPseudoIdProfilSuiviPar1() +"' OK"))
+        	{
         	// ajout de l'utilisateur suivi dans la liste d'abonnement
-        	listeAbonnement.add(pPseudoIdProfilSuiviPar1);
+        	listeSuivi.add(pPseudoIdProfilSuiviPar1);
+        	}
             
           
         } catch (JMSException exception) {

@@ -47,6 +47,7 @@ public class LConnexion implements ActionListener
 						//ouverture de la vue Fil d'actu
 						VueFildActu vf = new VueFildActu();
 						vf.setVisible(true);
+						
 					}
 					
 			}
@@ -66,12 +67,6 @@ public class LConnexion implements ActionListener
 			message = SenderTwitter.getMessageRetour();
 			//TODO A gérer : SenderTwitter.getListeGazouilliDesAbonnements();
 			JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
-		
-		//TODO: Déplacer le code ci-dessous où on a besoin de la liste des profils
-		//liste des profils de la BD
-			SenderTwitter.listeDesProfils();
-			message = SenderTwitter.getMessageRetour();
-			JOptionPane.showMessageDialog(vc, message, "Information Liste des profils", JOptionPane.INFORMATION_MESSAGE);
 	}
 }
 

@@ -4,6 +4,7 @@ import gui.listeners.LConsulter;
 import gui.listeners.LFermerSuivre;
 import gui.listeners.LSeDesabonner;
 import gui.listeners.LValiderSuivre;
+import metier.ProfilType;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,7 +15,8 @@ import javax.swing.JComboBox;
 public class VueSuivre extends JFrame{
 		
 	private JLabel lblNewLabel;
-	private JTextField textField;
+	private JTextField recherche;
+	JComboBox<String> listRecherche;
 	
 
 	public VueSuivre ()
@@ -24,7 +26,7 @@ public class VueSuivre extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setSize(554,230);
 		this.setResizable(false);
-		this.setLocation(50, 50);
+		this.setLocation(800, 300);
 	
 		this.addWindowListener(new LFermerSuivre (this));
 		getContentPane().setLayout(null);
@@ -37,18 +39,26 @@ public class VueSuivre extends JFrame{
 		btnQuitter.setBounds(418, 145, 115, 29);
 		getContentPane().add(btnQuitter);
 		
-		JButton btnSeDesabonner = new JButton("Se desabonner");
-		btnSeDesabonner.setBounds(260, 145, 143, 29);
-		getContentPane().add(btnSeDesabonner);
 		
-		textField = new JTextField();
-		textField.setBounds(270, 41, 146, 26);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+		recherche = new JTextField();
+		recherche.setBounds(270, 41, 263, 26);
+		getContentPane().add(recherche);
+		recherche.setColumns(10);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(272, 86, 36, 26);
-		getContentPane().add(comboBox);
+		listRecherche = new JComboBox<String>();
+		for (int i=0; i<gui.main.main.tousLesProfils.size();i++)
+		{
+			ProfilType pT = gui.main.main.tousLesProfils.get(i);
+			if ( ! pT.getPSEUDO().equals(gui.main.main.profilConnecte.getPSEUDO()))
+			{
+				if(! gui.main.main.profilsSuivis.contains(pT.getPSEUDO())){
+					listRecherche.addItem(pT.getPSEUDO());
+				}
+			}
+			
+		}
+		listRecherche.setBounds(272, 86, 261, 26);
+		getContentPane().add(listRecherche);
 		
 		JLabel lblDansLaListe = new JLabel("Dans la liste :");
 		lblDansLaListe.setBounds(48, 89, 130, 20);
@@ -61,11 +71,25 @@ public class VueSuivre extends JFrame{
 		JButton btnConsulter = new JButton("Consulter");
 		btnConsulter.setBounds(15, 145, 115, 29);
 		getContentPane().add(btnConsulter);
-		
-		btnSeDesabonner.addActionListener(new LSeDesabonner(this));
+
 		btnSabonner.addActionListener(new LValiderSuivre(this));
 		btnConsulter.addActionListener(new LConsulter(this));
 		btnQuitter.addActionListener(new LFermerSuivre (this));
 		this.addWindowListener(new LFermerSuivre (this));
-	}	
+	}
+
+
+	public JTextField getRecherche() {
+		return recherche;
+	}
+
+
+	public void setRecherche(JTextField recherche) {
+		this.recherche = recherche;
+	}
+
+
+	public String getSelectedItemListRecherche() {
+		return listRecherche.getSelectedItem().toString();
+	}
 }

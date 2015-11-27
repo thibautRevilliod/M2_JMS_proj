@@ -1,5 +1,6 @@
 package gui.listeners;
 
+import gui.vues.VueAbonnement;
 import gui.vues.VueSuivre;
 
 import java.awt.event.ActionEvent;
@@ -32,6 +33,8 @@ public class LFermerSuivre implements ActionListener, WindowListener
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
 			this.vue.setVisible(false);
+			VueAbonnement abo = new VueAbonnement();
+			abo.setVisible(true);
 		}
 		
 	}
@@ -41,12 +44,9 @@ public class LFermerSuivre implements ActionListener, WindowListener
 	
 	public void windowClosing(WindowEvent arg0) 
 	{
-		int reponse = JOptionPane.showConfirmDialog(this.vue, "Voulez réellemment fermer la fenêtre ?", "Quitter ?", JOptionPane.YES_NO_OPTION);
-					
-		if (reponse == JOptionPane.YES_OPTION) 
-		{
-			this.vue.setVisible(false);
-		}
+		this.vue.setVisible(false);
+		VueAbonnement abo = new VueAbonnement();
+		abo.setVisible(true);
 		
 	}
 	

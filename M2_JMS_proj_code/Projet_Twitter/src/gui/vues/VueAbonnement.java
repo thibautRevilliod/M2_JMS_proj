@@ -1,6 +1,7 @@
 package gui.vues;
 
 import gui.listeners.LFermerAbonnement;
+import gui.listeners.LSeDesabonner;
 import gui.listeners.LSuivre;
 
 import javax.swing.JButton;
@@ -12,6 +13,7 @@ public class VueAbonnement extends JFrame{
 		
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
+	private JList<String> listPseudoSuivis;
 	
 
 	public VueAbonnement ()
@@ -19,9 +21,9 @@ public class VueAbonnement extends JFrame{
 		
 		this.setTitle("Abonnements");
 		this.setLocationRelativeTo(null);
-		this.setSize(515,345);
+		this.setSize(515,432);
 		this.setResizable(false);
-		this.setLocation(50, 50);
+		this.setLocation(800, 300);
 	
 		this.addWindowListener(new LFermerAbonnement (this));
 		getContentPane().setLayout(null);
@@ -35,7 +37,7 @@ public class VueAbonnement extends JFrame{
 		getContentPane().add(lblNewLabel_1);
 		
 		JButton btnQuitter = new JButton("Quitter");
-		btnQuitter.setBounds(290, 260, 115, 29);
+		btnQuitter.setBounds(290, 347, 115, 29);
 		getContentPane().add(btnQuitter);
 		
 		JList<String> list = new JList<String>();
@@ -45,26 +47,36 @@ public class VueAbonnement extends JFrame{
 			listAbonnes[i]=gui.main.main.profilsAbonnes.get(i);
 		}
 		list.setListData(listAbonnes);
-		list.setBounds(35, 79, 184, 151);
+		list.setBounds(35, 79, 184, 196);
 		getContentPane().add(list);
 		
-		JList<String> list_1 = new JList<String>();
+		listPseudoSuivis = new JList<String>();
 		//On transforme l'arrayList des profils suivis en String[] pour l'afficher dans l'interface.
 		String[] listSuivis = new String[gui.main.main.profilsSuivis.size()];
 		for (int i=0; i<gui.main.main.profilsSuivis.size();i++){
 			listSuivis[i]=gui.main.main.profilsSuivis.get(i);
 			System.out.println("listSuivis[i]"+listSuivis[i]);
 		}
-		list_1.setListData(listSuivis);
-		list_1.setBounds(290, 80, 184, 151);
-		getContentPane().add(list_1);
+		listPseudoSuivis.setListData(listSuivis);
+		listPseudoSuivis.setBounds(290, 80, 184, 195);
+		getContentPane().add(listPseudoSuivis);
 		
 		JButton btnSabonner = new JButton("Gérer les abonnements");
-		btnSabonner.setBounds(80, 260, 195, 29);
+		btnSabonner.setBounds(80, 347, 195, 29);
 		getContentPane().add(btnSabonner);
 		
+		JButton btnSeDesabonner = new JButton("Se desabonner");
+		btnSeDesabonner.setBounds(314, 282, 143, 29);
+		getContentPane().add(btnSeDesabonner);
+		
+		btnSeDesabonner.addActionListener(new LSeDesabonner(this));
 		btnSabonner.addActionListener(new LSuivre(this));
 		btnQuitter.addActionListener(new LFermerAbonnement (this));
 		this.addWindowListener(new LFermerAbonnement (this));
 	}	
+
+	public String getPseudoSuiviSelected() {
+		return listPseudoSuivis.getSelectedValue();
+	}
+
 }
