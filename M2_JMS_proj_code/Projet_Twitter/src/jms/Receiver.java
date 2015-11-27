@@ -72,6 +72,7 @@ import metier.MessageListeMessageDunProfil;
 import metier.MessageListeProfil;
 import metier.MessageNbGazouilliUnProfil;
 import metier.MessagePopulateProfil;
+import metier.ProfilAConsulter;
 import metier.ProfilType;
 import bdd.JmsJDBC;
 
@@ -213,6 +214,9 @@ public class Receiver {
                 	} else if(message.getJMSType().equals("populateProfil"))
                 	{
                 		receptionPopulateMessage(message);
+                	} else if(message.getJMSType().equals("populateProfilToConsult"))
+                	{
+                		receptionPopulateConsultMessage(message);
                 	} else if (message.getJMSType().equals("creerAbonnement"))
                 	{
                 		receptionCreerAbonnement(message);
@@ -273,6 +277,7 @@ public class Receiver {
         }
     }
 	
+
 	public static void receptionInscription(Message message) throws JMSException
 	{
 		int retourCreerProfil;
@@ -393,6 +398,45 @@ public class Receiver {
         
         System.out.println("envoi de replyMessage : " + messageConnexionRetour.toString());                    
 	}
+
+	private static void receptionPopulateConsultMessage(Message message) throws JMSException {
+		ObjectMessage replyMessage;
+		ProfilAConsulter profilAConsulter;
+		
+		ObjectMessage objectMessage = (ObjectMessage) message;
+        MessagePopulateProfil messagePopulateProfil = (MessagePopulateProfil) objectMessage.getObject();
+    	
+        System.out.println("Received: " + messagePopulateProfil.toString());
+        
+        Destination temporaryQueue = objectMessage.getJMSReplyTo();
+        System.out.println("[Receiver] temporary queue : " + temporaryQueue.toString());
+
+        profilAConsulter = bdd.informationProfilAConsulter(messagePopulateProfil.getPseudo());
+        
+        ProfilAConsulter messageConnexionRetour = new ProfilAConsulter(profilAConsulter.getPSEUDO(),
+        		profilAConsulter.getNOM(),profilAConsulter.getPRENOM(), 
+        		profilAConsulter.getVILLE(), profilAConsulter.getNbGazouillis(),
+        		profilAConsulter.getNbSuiveurs(), profilAConsulter.getNbSuivis());
+        
+        if(profilAConsulter == null)//connexion KO en BD
+        {
+        	messageConnexionRetour.setMessageRetour("PopulateConsultMessage KO");
+        }
+        else
+        {
+        	messageConnexionRetour.setMessageRetour("PopulateConsultMessage OK");
+        } 
+  
+        replyMessage = session.createObjectMessage(messageConnexionRetour);
+    
+        // create the senders
+        sender = session.createProducer(temporaryQueue);
+        
+        sender.send(replyMessage);
+        
+        System.out.println("envoi de replyMessage : " + messageConnexionRetour.toString());                    
+	}
+		
 	
 	public static void receptionDeconnexion(Message message) throws JMSException
 	{

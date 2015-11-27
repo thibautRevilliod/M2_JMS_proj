@@ -27,7 +27,7 @@ public class LParametres implements ActionListener
 	{
 		String message;
 		
-		SenderTwitter.populateProfilConnecte("PseudoToto");
+		SenderTwitter.populateProfilConnecte(gui.main.main.profilConnecte.getPSEUDO());
 		message = SenderTwitter.getMessageRetour();
 
 		gui.main.main.profilConnecte = SenderTwitter.getProfilConnecte();

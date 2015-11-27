@@ -6,22 +6,36 @@ import gui.listeners.LAbonnements;
 import gui.listeners.LFermerFildActu;
 import gui.listeners.LGazouiller;
 import gui.listeners.LParametres;
+import gui.listeners.LRechercher;
+import metier.ProfilType;
 
 import java.awt.Dimension;
 import java.awt.ScrollPane;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.awt.event.ActionEvent;
+
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 public class VueFildActu extends JFrame
-
 {
+	private Java2sAutoComboBox champRecherche;
+	private ArrayList<String> profils = new ArrayList<String>();
 	public VueFildActu() {
-		setTitle("Fil d'actualit\u00E9s");
-		setSize(473, 453);
+		setTitle("Gazouillons - Fil d'actualit\u00E9s");
+		setSize(550, 577);
 		setLocation(400, 300);
 		getContentPane().setLayout(null);
 		
@@ -43,7 +57,23 @@ public class VueFildActu extends JFrame
 //		
 //		getContentPane().add(list);
 		
-		
+		profils.add("");
+		for (int i=0; i<gui.main.main.tousLesProfils.size();i++)
+		{
+			ProfilType pT = gui.main.main.tousLesProfils.get(i);
+			if ( ! pT.getPSEUDO().equals(gui.main.main.profilConnecte.getPSEUDO()))
+			{
+				profils.add(pT.getPSEUDO());
+			}
+		}
+		champRecherche = new Java2sAutoComboBox(profils);
+        champRecherche.setLocation(212, 19);
+        champRecherche.setSize(215, 26);
+
+        champRecherche.getEditor().selectAll();
+        champRecherche.setName("someComboBox");
+        champRecherche.setDataList(profils);
+        getContentPane().add(champRecherche);
 		
 		String textAreaContent = "";
 		
@@ -55,37 +85,54 @@ public class VueFildActu extends JFrame
 		area.setEditable(false);
 		area.setLineWrap(true);
 		area.setWrapStyleWord(true);
-		area.setBounds(10, 52, 419, 269);
+		area.setBounds(10, 108, 503, 352);
 		//JScrollPane spane = new JScrollPane(area);
 		getContentPane().add(area);
 		
 		
 		
 		JButton btnGazouiller = new JButton("Gazouiller");
-		btnGazouiller.setBounds(314, 16, 115, 29);
+		btnGazouiller.setBounds(393, 72, 120, 29);
 		getContentPane().add(btnGazouiller);
 		
 		JButton btnParamtres = new JButton("Parametres");
-		btnParamtres.setBounds(159, 350, 115, 29);
+		btnParamtres.setBounds(197, 476, 115, 29);
 		getContentPane().add(btnParamtres);
 		
 		JButton btnQuitter = new JButton("Se Deconnecter");
-		btnQuitter.setBounds(282, 350, 154, 29);
+		btnQuitter.setBounds(354, 476, 154, 29);
 		getContentPane().add(btnQuitter);
 		
 		JButton btnAbonnements = new JButton("Abonnements");
-		btnAbonnements.setBounds(15, 350, 135, 29);
+		btnAbonnements.setBounds(20, 476, 135, 29);
 		getContentPane().add(btnAbonnements);
 		
 		JLabel lblMonPseudo = new JLabel(gui.main.main.profilConnecte.getPSEUDO());
-		lblMonPseudo.setBounds(15, 20, 135, 20);
+		lblMonPseudo.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblMonPseudo.setBounds(10, 72, 135, 20);
 		getContentPane().add(lblMonPseudo);
+		
+		JLabel lblNewLabel = new JLabel("Rechercher un Gazouilleur");
+		lblNewLabel.setBounds(15, 19, 196, 26);
+		getContentPane().add(lblNewLabel);
+		
+		JButton btnRechercher = new JButton("Voir");
+		btnRechercher.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnRechercher.setBounds(442, 18, 71, 29);
+		getContentPane().add(btnRechercher);
 	
 		// Abonnements :
+		btnRechercher.addActionListener(new LRechercher(this));
 		btnAbonnements.addActionListener(new LAbonnements(this));
 		btnGazouiller.addActionListener(new LGazouiller (this)); 
 		btnParamtres.addActionListener(new LParametres (this)); 
 		btnQuitter.addActionListener(new LFermerFildActu (this));
 		this.addWindowListener(new LFermerFildActu (this));
+	}
+	public String getSelectedItemListRecherche() {
+		return champRecherche.getSelectedItem().toString();
 	}
 }
