@@ -1,5 +1,6 @@
 package gui.main;
 import gui.vues.*;
+import metier.MessageGazouilli;
 import metier.ProfilType;
 
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ public class main {
 	public static ArrayList<String> profilsAbonnes;
 	public static ArrayList<String> profilsSuivis;
 	public static ArrayList<ProfilType> tousLesProfils;
+	public static ArrayList<MessageGazouilli> gazouillis;
+
 
 	
 	public static void main(String[] args) 

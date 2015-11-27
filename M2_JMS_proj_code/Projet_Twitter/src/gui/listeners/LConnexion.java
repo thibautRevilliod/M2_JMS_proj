@@ -42,6 +42,15 @@ public class LConnexion implements ActionListener
 				
 						gui.main.main.profilConnecte = new ProfilType();
 						gui.main.main.profilConnecte.setPSEUDO(vc.getPseudo().getText());
+						
+						//liste des gazouillis de tout les abonnés d'un profil
+						SenderTwitter.listeGazouilliDesAbonnements(gui.main.main.profilConnecte.getPSEUDO());
+						message = SenderTwitter.getMessageRetour();
+						//TODO A gérer : SenderTwitter.getListeGazouilliDesAbonnements();
+						gui.main.main.gazouillis = SenderTwitter.getListeGazouilliDesAbonnements();
+						JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
+
+						
 						//fermeture fenêtre de connexion
 						this.vc.setVisible(false);
 						//ouverture de la vue Fil d'actu
@@ -61,12 +70,14 @@ public class LConnexion implements ActionListener
 			JOptionPane.showMessageDialog(vc, message, "Erreur Connexion", JOptionPane.WARNING_MESSAGE);
 		}	
 		
+
 		//TODO: Déplacer le code ci-dessous dans le fil de l'actualité
 		//liste des gazouillis de tout les abonnés d'un profil
 			SenderTwitter.listeGazouilliDesAbonnements(gui.main.main.profilConnecte.getPSEUDO());
 			message = SenderTwitter.getMessageRetour();
 			//TODO A gérer : SenderTwitter.getListeGazouilliDesAbonnements();
 			JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
+
 	}
 }
 

@@ -7,9 +7,14 @@ import gui.listeners.LFermerFildActu;
 import gui.listeners.LGazouiller;
 import gui.listeners.LParametres;
 
+import java.awt.Dimension;
 import java.awt.ScrollPane;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class VueFildActu extends JFrame
 
@@ -20,9 +25,41 @@ public class VueFildActu extends JFrame
 		setLocation(400, 300);
 		getContentPane().setLayout(null);
 		
-		ScrollPane scrollPane = new ScrollPane();
-		scrollPane.setBounds(10, 52, 419, 269);
-		getContentPane().add(scrollPane);
+//		ScrollPane scrollPane = new ScrollPane();
+//		scrollPane.setBounds(10, 52, 419, 269);
+//		getContentPane().add(scrollPane);
+		
+//		JList<String> list = new JList<String>();
+//		//On transforme l'arrayList des profils abonnes en String[] pour l'afficher dans l'interface.
+//		String[] listGazouillis = new String[gui.main.main.gazouillis.size()];
+//		for (int i=0; i<gui.main.main.gazouillis.size();i++){
+//			listGazouillis[i]=gui.main.main.gazouillis.get(i).toString();
+//		}
+//		list.setListData(listGazouillis);
+//		list.setBounds(10, 52, 419, 269);
+//		
+//		JScrollPane listScroller = new JScrollPane(list);
+//		listScroller.setPreferredSize(new Dimension(250, 80));
+//		
+//		getContentPane().add(list);
+		
+		
+		
+		String textAreaContent = "";
+		
+		for (int i=0; i<gui.main.main.gazouillis.size();i++){
+			textAreaContent += gui.main.main.gazouillis.get(i).toString() + "\n"; 
+		}
+		
+		JTextArea area = new JTextArea(textAreaContent,8,12);
+		area.setEditable(false);
+		area.setLineWrap(true);
+		area.setWrapStyleWord(true);
+		area.setBounds(10, 52, 419, 269);
+		//JScrollPane spane = new JScrollPane(area);
+		getContentPane().add(area);
+		
+		
 		
 		JButton btnGazouiller = new JButton("Gazouiller");
 		btnGazouiller.setBounds(314, 16, 115, 29);
