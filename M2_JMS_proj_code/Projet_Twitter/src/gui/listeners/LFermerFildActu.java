@@ -68,9 +68,9 @@ public class LFermerFildActu implements ActionListener, WindowListener
 			gui.main.main.profilConnecte = null;
 			String message = SenderTwitter.getMessageRetour();
 			JOptionPane.showMessageDialog(vue, message, "Information Deconnexion", JOptionPane.INFORMATION_MESSAGE);
-			}catch(Exception e){
-				
-			}
+		}catch(Exception e){
+			
+		}
 			
 			VueMenuDepart menu = new VueMenuDepart();
 			menu.setVisible(true);

@@ -45,7 +45,7 @@ public class VueSuivre extends JFrame{
 		for (int i=0; i<gui.main.main.tousLesProfils.size();i++)
 		{
 			ProfilType pT = gui.main.main.tousLesProfils.get(i);
-			if ( ! pT.getPSEUDO().equals(gui.main.main.profilConnecte.getPSEUDO()))
+			if ( ! pT.getPSEUDO().toUpperCase().equals(gui.main.main.profilConnecte.getPSEUDO().toUpperCase()))
 			{
 				if(! gui.main.main.profilsSuivis.contains(pT.getPSEUDO())){
 					profils.add(pT.getPSEUDO());
@@ -64,7 +64,6 @@ public class VueSuivre extends JFrame{
        
 		btnSabonner.addActionListener(new LValiderSuivre(this));
 		btnQuitter.addActionListener(new LFermerSuivre (this));
-		this.addWindowListener(new LFermerSuivre (this));
 	}
 
 	public String getSelectedItemListRecherche() {

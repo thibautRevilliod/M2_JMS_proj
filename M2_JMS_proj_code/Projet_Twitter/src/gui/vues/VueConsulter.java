@@ -53,6 +53,5 @@ public class VueConsulter extends JFrame
 		lblNbSuivis.setBounds(205, 113, 115, 20);
 		getContentPane().add(lblNbSuivis);
 		btnQuitter.addActionListener(new LFermerConsulter (this));
-		this.addWindowListener(new LFermerConsulter (this));
 	}
 }

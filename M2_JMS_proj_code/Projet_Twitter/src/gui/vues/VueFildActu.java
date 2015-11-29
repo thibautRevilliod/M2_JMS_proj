@@ -61,7 +61,7 @@ public class VueFildActu extends JFrame
 		for (int i=0; i<gui.main.main.tousLesProfils.size();i++)
 		{
 			ProfilType pT = gui.main.main.tousLesProfils.get(i);
-			if ( ! pT.getPSEUDO().equals(gui.main.main.profilConnecte.getPSEUDO()))
+			if ( ! pT.getPSEUDO().toUpperCase().equals(gui.main.main.profilConnecte.getPSEUDO().toUpperCase()))
 			{
 				profils.add(pT.getPSEUDO());
 			}
