@@ -49,10 +49,15 @@ public class LConnexion implements ActionListener
 						message = SenderTwitter.getMessageRetour();
 						//TODO A gérer : SenderTwitter.getListeGazouilliDesAbonnements();
 						gui.main.main.gazouillis = SenderTwitter.getListeGazouilliDesAbonnements();
+
 						gui.main.main.gazouillisSession = new ArrayList<>();
 						//JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
 
+
 						
+						SenderTwitter.listeDesProfils();
+						message = SenderTwitter.getMessageRetour();
+						gui.main.main.tousLesProfils = SenderTwitter.getListeProfil();
 						//fermeture fenêtre de connexion
 						this.vc.setVisible(false);
 						//ouverture de la vue Fil d'actu

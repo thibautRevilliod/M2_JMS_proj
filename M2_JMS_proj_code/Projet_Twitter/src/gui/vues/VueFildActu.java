@@ -7,11 +7,14 @@ import gui.listeners.LFermerFildActu;
 import gui.listeners.LGazouiller;
 import gui.listeners.LParametres;
 import gui.listeners.LRafraichir;
+import gui.listeners.LRechercher;
+import metier.ProfilType;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.ScrollPane;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,6 +24,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.awt.event.ActionEvent;
+
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 public class VueFildActu extends JFrame
 {
@@ -28,9 +41,11 @@ public class VueFildActu extends JFrame
 	private JScrollPane scroll;
 	private Timer timer;
 	private LRafraichir timerAction;
+	private Java2sAutoComboBox champRecherche;
+	private ArrayList<String> profils = new ArrayList<String>();
 	
 	public VueFildActu() {
-		setTitle("Fil d'actualit\u00E9s");
+		setTitle("Gazouillons - Fil d'actualit\u00E9s");
 //		setSize(473, 453);
 //		setLocation(400, 300);
 //		getContentPane().setLayout(null);
@@ -40,6 +55,16 @@ public class VueFildActu extends JFrame
 
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new GridLayout(0, 1, 5, 5));
+        
+        profils.add("");
+		for (int i=0; i<gui.main.main.tousLesProfils.size();i++)
+		{
+			ProfilType pT = gui.main.main.tousLesProfils.get(i);
+			if ( ! pT.getPSEUDO().toUpperCase().equals(gui.main.main.profilConnecte.getPSEUDO().toUpperCase()))
+			{
+				profils.add(pT.getPSEUDO());
+			}
+		}
         
         String textAreaContent = "";
 		
@@ -70,6 +95,23 @@ public class VueFildActu extends JFrame
 		JLabel lblMonPseudo = new JLabel(gui.main.main.profilConnecte.getPSEUDO());
 		topPanel.add(lblMonPseudo);
 		
+		JLabel lblNewLabel = new JLabel("Rechercher un Gazouilleur");
+		topPanel.add(lblNewLabel);
+		
+		JButton btnRechercher = new JButton("Voir");
+		btnRechercher.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		
+		topPanel.add(btnRechercher);
+		
+		champRecherche = new Java2sAutoComboBox(profils);
+        champRecherche.getEditor().selectAll();
+        champRecherche.setName("someComboBox");
+        champRecherche.setDataList(profils);
+        topPanel.add(champRecherche);
+		
 		JButton btnGazouiller = new JButton("Gazouiller");
 		topPanel.add(btnGazouiller);
 		
@@ -82,6 +124,10 @@ public class VueFildActu extends JFrame
 		JButton btnQuitter = new JButton("Se Deconnecter");
 		bottomPanel.add(btnQuitter);
 		
+		
+		
+		
+		
 		contentPane.add(centerPanel, BorderLayout.CENTER);
         contentPane.add(bottomPanel, BorderLayout.PAGE_END);
         contentPane.add(topPanel, BorderLayout.PAGE_START);
@@ -93,6 +139,7 @@ public class VueFildActu extends JFrame
         
         timer = new Timer(1000, timerAction);
         timer.start();
+
 		
 //		ScrollPane scrollPane = new ScrollPane();
 //		scrollPane.setBounds(10, 52, 419, 269);
@@ -114,6 +161,8 @@ public class VueFildActu extends JFrame
 		
 		
 		
+		
+
 //		String textAreaContent = "";
 //		
 //		for (int i=0; i<gui.main.main.gazouillis.size();i++){
@@ -159,6 +208,11 @@ public class VueFildActu extends JFrame
 //		getContentPane().add(lblMonPseudo);
 //	
 //		// Abonnements :
+
+				
+	
+		// Abonnements :
+		btnRechercher.addActionListener(new LRechercher(this));
 		btnAbonnements.addActionListener(new LAbonnements(this));
 		btnGazouiller.addActionListener(new LGazouiller (this));
 //		btnRafraichir.addActionListener(new LRafraichir (this));
@@ -175,6 +229,8 @@ public class VueFildActu extends JFrame
 		this.area = area;
 	}
 	
-	
-	
+	public String getSelectedItemListRecherche() {
+		return champRecherche.getSelectedItem().toString();
+	}
+
 }

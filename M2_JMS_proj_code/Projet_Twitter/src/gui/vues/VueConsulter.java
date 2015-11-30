@@ -2,20 +2,16 @@ package gui.vues;
 
 import javax.swing.JFrame;
 
-import gui.listeners.LAbonnements;
 import gui.listeners.LFermerConsulter;
-import gui.listeners.LFermerFildActu;
-import gui.listeners.LGazouiller;
-import gui.listeners.LParametres;
-
+import metier.ProfilAConsulter;
 import java.awt.ScrollPane;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class VueConsulter extends JFrame
-
 {
-	public VueConsulter() {
+
+	public VueConsulter(ProfilAConsulter profil) {
 		setTitle("Consulter un profil");
 		setSize(553, 580);
 		setLocation(400, 300);
@@ -29,7 +25,7 @@ public class VueConsulter extends JFrame
 		btnQuitter.setBounds(401, 479, 115, 29);
 		getContentPane().add(btnQuitter);
 		
-		JLabel lblMonPseudo = new JLabel("PSEUDO DU GARs");
+		JLabel lblMonPseudo = new JLabel(profil.getPSEUDO());
 		lblMonPseudo.setBounds(205, 16, 135, 20);
 		getContentPane().add(lblMonPseudo);
 		
@@ -45,18 +41,17 @@ public class VueConsulter extends JFrame
 		lblNombreDeSuivis.setBounds(25, 113, 171, 20);
 		getContentPane().add(lblNombreDeSuivis);
 		
-		JLabel lblNbgaz = new JLabel("NBGAZ");
+		JLabel lblNbgaz = new JLabel(String.valueOf(profil.getNbGazouillis()));
 		lblNbgaz.setBounds(205, 56, 69, 20);
 		getContentPane().add(lblNbgaz);
 		
-		JLabel lblNbSuiveurs = new JLabel("NB SUIVEURs");
+		JLabel lblNbSuiveurs = new JLabel(String.valueOf(profil.getNbSuiveurs()));
 		lblNbSuiveurs.setBounds(205, 86, 115, 20);
 		getContentPane().add(lblNbSuiveurs);
 		
-		JLabel lblNbSuivis = new JLabel("NB SUIVIS");
+		JLabel lblNbSuivis = new JLabel(String.valueOf(profil.getNbSuivis()));
 		lblNbSuivis.setBounds(205, 113, 115, 20);
 		getContentPane().add(lblNbSuivis);
 		btnQuitter.addActionListener(new LFermerConsulter (this));
-		this.addWindowListener(new LFermerConsulter (this));
 	}
 }

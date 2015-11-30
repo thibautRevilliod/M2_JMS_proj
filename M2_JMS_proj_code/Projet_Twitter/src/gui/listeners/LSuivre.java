@@ -28,7 +28,6 @@ public class LSuivre implements ActionListener
 	{
 		SenderTwitter.listeDesProfils();
 		String message = SenderTwitter.getMessageRetour();
-		JOptionPane.showMessageDialog(vA, message, "Information Liste des profils", JOptionPane.INFORMATION_MESSAGE);
 		gui.main.main.tousLesProfils = SenderTwitter.getListeProfil();
 
 		
@@ -36,7 +35,7 @@ public class LSuivre implements ActionListener
 		VueSuivre vP = new VueSuivre();
 		vP.setVisible(true);
 		vP.setLocation(800, 300);
-		this.vA.dispose();
+		this.vA.setVisible(false);
 		
 		
 	}

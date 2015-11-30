@@ -37,6 +37,7 @@ import metier.MessageListeMessageDunProfil;
 import metier.MessageListeProfil;
 import metier.MessageNbGazouilliUnProfil;
 import metier.MessagePopulateProfil;
+import metier.ProfilAConsulter;
 import metier.ProfilType;
 
 public class SenderTwitter {	
@@ -72,10 +73,15 @@ public class SenderTwitter {
 	private static int nbGazouilliUnProfil;
 	private static ArrayList<ProfilType> listeProfil = new ArrayList<ProfilType>();
 	private static ProfilType profilConnecte;
+	private static ProfilAConsulter profilAConsulter;
 	
     
 	
-    public static ProfilType getProfilConnecte() {
+    public static ProfilAConsulter getProfilAConsulter() {
+		return profilAConsulter;
+	}
+
+	public static ProfilType getProfilConnecte() {
 		return profilConnecte;
 	}
 
@@ -327,6 +333,58 @@ public class SenderTwitter {
         	profilConnecte = (ProfilType) objectMessageRetour.getObject();
         	setMessageRetour(profilConnecte.getMessageRetour().toString());
         	System.out.println("received message : " + profilConnecte.toString());
+        	
+          
+        } catch (JMSException exception) {
+            exception.printStackTrace();
+        } catch (NamingException exception) {
+            exception.printStackTrace();
+        } finally {
+            // close the context
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            // close the connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+	
+	public static void populateProfilAConsulter(String pseudo)
+	{
+        destName = FILEGESTPROFILS;
+
+        try {
+            
+        	initialize();            
+        	
+    		TemporaryQueue temporaryQueue = session.createTemporaryQueue(); 
+        	
+        	// create the consumer
+        	consumer = session.createConsumer(temporaryQueue);
+
+        	MessagePopulateProfil messagePopulateProfil = new MessagePopulateProfil(pseudo);
+        	ObjectMessage objectMessage = session.createObjectMessage(messagePopulateProfil);
+        	objectMessage.setJMSReplyTo(temporaryQueue);
+        	objectMessage.setJMSType("populateProfilToConsult");
+        	sender.send(objectMessage);
+        	System.out.println("Sent: " + messagePopulateProfil.toString());
+        	
+        	Message receivedMessage = consumer.receive();
+        	ObjectMessage objectMessageRetour = (ObjectMessage) receivedMessage;
+        	profilAConsulter= (ProfilAConsulter) objectMessageRetour.getObject();
+        	setMessageRetour(profilAConsulter.getMessageRetour().toString());
+        	System.out.println("received message : " + profilAConsulter.toString());
         	
           
         } catch (JMSException exception) {

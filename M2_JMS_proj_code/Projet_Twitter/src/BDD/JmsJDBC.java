@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import metier.MessageGazouilli;
+import metier.ProfilAConsulter;
 import metier.ProfilType;
 import jms.SenderTwitter;
 
@@ -295,6 +296,40 @@ public class JmsJDBC {
 				return profilType;
 			}
 		}
+		public ProfilAConsulter informationProfilAConsulter(String pseudo) {
+			ProfilAConsulter profilAConsulter = new ProfilAConsulter();
+			try{
+				Statement s = conn.createStatement();
+				ResultSet rs = s.executeQuery("SELECT PSEUDO, NOM, PRENOM, VILLE FROM PROFIL WHERE PSEUDO = '"+pseudo+"'");
+	        	if (rs.next())
+	        	{
+	        		profilAConsulter.setPSEUDO(rs.getString(1));
+	        		profilAConsulter.setNOM(rs.getString(2));
+	        		profilAConsulter.setPRENOM(rs.getString(3));
+	        		profilAConsulter.setVILLE(rs.getString(4));
+	        		
+	        		rs = s.executeQuery("SELECT COUNT(*) FROM ABONNEMENTS WHERE idProfilSuiviPar1=(SELECT idProfil FROM PROFIL WHERE pseudo ='"+pseudo+"')");
+	        		if(rs.next()){
+	        			profilAConsulter.setNbSuiveurs(rs.getInt(1));
+	        		}
+	        		rs = s.executeQuery("SELECT COUNT(*) FROM ABONNEMENTS WHERE idProfil1=(SELECT idProfil FROM PROFIL WHERE pseudo ='"+pseudo+"')");
+	        		if(rs.next()){
+	        			profilAConsulter.setNbSuivis(rs.getInt(1));
+	        		}
+	        		profilAConsulter.setNbGazouillis(this.nbGazouilliPourUnProfil(pseudo));
+		        } 
+				else
+		        {
+					profilAConsulter = null;
+		        }
+			}catch (SQLException e) {
+				e.printStackTrace();
+				profilAConsulter = null;
+				
+			}
+			return profilAConsulter;
+		}
+
 	
 	//retourne la ville du Gazouilli ou null
 	public String creerGazouilli(String pcontenu, String pPseudoEmetteur, Timestamp ptime, boolean pGeolocalisation) {
@@ -603,6 +638,5 @@ public class JmsJDBC {
 		
 		bdd.fermer();		
 	}
-
 }
 

@@ -72,7 +72,6 @@ public class VueAbonnement extends JFrame{
 		btnSeDesabonner.addActionListener(new LSeDesabonner(this));
 		btnSabonner.addActionListener(new LSuivre(this));
 		btnQuitter.addActionListener(new LFermerAbonnement (this));
-		this.addWindowListener(new LFermerAbonnement (this));
 	}	
 
 	public String getPseudoSuiviSelected() {
