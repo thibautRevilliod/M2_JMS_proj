@@ -15,6 +15,7 @@ public class main {
 	public static ArrayList<String> profilsSuivis;
 	public static ArrayList<ProfilType> tousLesProfils;
 	public static ArrayList<MessageGazouilli> gazouillis;
+	public static ArrayList<MessageGazouilli> gazouillisSession;
 
 
 	

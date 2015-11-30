@@ -6,6 +6,7 @@ import gui.vues.VueFildActu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -35,7 +36,7 @@ public class LConnexion implements ActionListener
 			if (! vc.getPseudo().getText().equals("") && ! vc.getPasswordField().getText().equals("") ){
 					SenderTwitter.connexion(vc.getPseudo().getText(), vc.getPasswordField().getText());
 					message = SenderTwitter.getMessageRetour();
-					JOptionPane.showMessageDialog(vc, message, "Information Connexion", JOptionPane.INFORMATION_MESSAGE);
+					//JOptionPane.showMessageDialog(vc, message, "Information Connexion", JOptionPane.INFORMATION_MESSAGE);
 					if (message.contains("OK")){
 						//Enregistrement du pseudo du profil connecté jusqu'à sa déconnexion
 						// il va être utilisé pour appeler les méthodes du SenderTwitter
@@ -48,7 +49,8 @@ public class LConnexion implements ActionListener
 						message = SenderTwitter.getMessageRetour();
 						//TODO A gérer : SenderTwitter.getListeGazouilliDesAbonnements();
 						gui.main.main.gazouillis = SenderTwitter.getListeGazouilliDesAbonnements();
-						JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
+						gui.main.main.gazouillisSession = new ArrayList<>();
+						//JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
 
 						
 						//fermeture fenêtre de connexion
@@ -76,7 +78,7 @@ public class LConnexion implements ActionListener
 			SenderTwitter.listeGazouilliDesAbonnements(gui.main.main.profilConnecte.getPSEUDO());
 			message = SenderTwitter.getMessageRetour();
 			//TODO A gérer : SenderTwitter.getListeGazouilliDesAbonnements();
-			JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
+			//JOptionPane.showMessageDialog(vc, message, "Information Liste Gazouilli des Abonnements", JOptionPane.INFORMATION_MESSAGE);
 
 	}
 }
