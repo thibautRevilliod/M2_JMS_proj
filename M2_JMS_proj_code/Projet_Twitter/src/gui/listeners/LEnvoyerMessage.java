@@ -46,7 +46,9 @@ public class LEnvoyerMessage implements ActionListener
 		SenderTwitter.creerGazouilliTopic(contenuGazouilli, gui.main.main.profilConnecte.getPSEUDO(), estGeolocalise);
 		String message = SenderTwitter.getMessageRetour();
 		JOptionPane.showMessageDialog(vg, message, "Information envoyer message", JOptionPane.INFORMATION_MESSAGE);
-		
+		if (message.contains("OK")){
+			this.vg.setVisible(false);
+		}
 	}
 }
 

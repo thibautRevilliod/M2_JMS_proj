@@ -8,6 +8,7 @@ import gui.listeners.LFermerInscription;
 import gui.listeners.LInscription;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Dimension;
 
 import javax.swing.ButtonGroup;
@@ -17,9 +18,11 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JRadioButton;
+import java.awt.Font;
 
-public class VueGazouiller extends JFrame{
+public class VueGazouiller extends JDialog{
 		
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
@@ -30,25 +33,27 @@ public class VueGazouiller extends JFrame{
 	private JRadioButton rdbtnNon;
 	
 
-	public VueGazouiller ()
+	public VueGazouiller (JFrame jf)
 	{
-		
+		super(jf,Dialog.ModalityType.DOCUMENT_MODAL);
 		this.setTitle("Gazouiller");
 		this.setLocationRelativeTo(null);
 		this.setSize(515,345);
 		this.setResizable(false);
 		this.setLocation(800, 300);
-	
+		this.setResizable(false);
 		this.addWindowListener(new LFermerGazouiller (this));
 		this.addWindowListener(new LFermerGazouiller (this));
 		getContentPane().setLayout(null);
 		
 		lblNewLabel = new JLabel("G\u00E9olocaliser ?");
-		lblNewLabel.setBounds(35, 27, 101, 20);
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel.setBounds(35, 27, 123, 20);
 		getContentPane().add(lblNewLabel);
 		
 		lblNewLabel_1 = new JLabel("Message");
-		lblNewLabel_1.setBounds(35, 95, 69, 20);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_1.setBounds(35, 95, 81, 20);
 		getContentPane().add(lblNewLabel_1);
 		
 //		textField = new JTextField();
@@ -60,6 +65,7 @@ public class VueGazouiller extends JFrame{
 		textAreaContent.replaceAll("'","\'");
 		
 		textArea = new JTextArea(textAreaContent);
+		textArea.setFont(new Font("Monospaced", Font.PLAIN, 18));
 		textArea.setEditable(true);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
@@ -69,11 +75,13 @@ public class VueGazouiller extends JFrame{
 		
 		
 		JButton btnEnvoyer = new JButton("Envoyer");
+		btnEnvoyer.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnEnvoyer.setBounds(94, 247, 115, 29);
 		getContentPane().add(btnEnvoyer);
 		
-		JButton btnQuitter = new JButton("Quitter");
-		btnQuitter.setBounds(259, 247, 115, 29);
+		JButton btnQuitter = new JButton("Annuler");
+		btnQuitter.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnQuitter.setBounds(293, 247, 115, 29);
 		getContentPane().add(btnQuitter);
 				
 		rdbtnOui = new JRadioButton("Oui");
@@ -88,10 +96,10 @@ public class VueGazouiller extends JFrame{
         group = new ButtonGroup();
         
         group.add(rdbtnOui);
-        add(rdbtnOui);
+        getContentPane().add(rdbtnOui);
         
         group.add(rdbtnNon);
-        add(rdbtnNon);
+        getContentPane().add(rdbtnNon);
 		
 		// Abonnements :
 		btnEnvoyer.addActionListener(new LEnvoyerMessage(this));    // A COMPLETER AVEC LA BDD

@@ -23,15 +23,13 @@ public class main {
 	
 	public static void main(String[] args) 
 	{
-		//com.jtattoo.plaf.texture.TextureLookAndFeel
-		//com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel
-//		try {
-//			UIManager.setLookAndFeel("com.jtattoo.plaf.texture.TextureLookAndFeel");
-//		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-//				| UnsupportedLookAndFeelException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			UIManager.setLookAndFeel("com.jtattoo.plaf.graphite.GraphiteLookAndFeel");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		VueMenuDepart vd;		

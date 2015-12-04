@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import gui.listeners.LFermerSuivre;
 import gui.listeners.LValiderSuivre;
 import metier.ProfilType;
+import java.awt.Font;
 
 public class VueSuivre extends JFrame{
 		
@@ -29,15 +30,18 @@ public class VueSuivre extends JFrame{
 		getContentPane().setLayout(null);
 		
 		lblNewLabel = new JLabel("Pseudo :");
-		lblNewLabel.setBounds(35, 44, 206, 20);
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel.setBounds(35, 44, 92, 20);
 		getContentPane().add(lblNewLabel);
 		
 		JButton btnQuitter = new JButton("Annuler");
+		btnQuitter.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnQuitter.setBounds(231, 106, 115, 29);
 		getContentPane().add(btnQuitter);
 		
 		JButton btnSabonner = new JButton("S'abonner");
-		btnSabonner.setBounds(63, 106, 103, 29);
+		btnSabonner.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnSabonner.setBounds(51, 106, 115, 29);
 		getContentPane().add(btnSabonner);
 		
 		//On récupère le pseudo de tous les profils et on enlève : ceux auxquels on est abonné et l'utilisateur courant
@@ -54,8 +58,9 @@ public class VueSuivre extends JFrame{
 			
 		}
 		champRecherche = new Java2sAutoComboBox(profils);
+		champRecherche.setFont(new Font("Tahoma", Font.PLAIN, 18));
         champRecherche.setLocation(145, 41);
-        champRecherche.setSize(215, 26);
+        champRecherche.setSize(224, 26);
 
         champRecherche.getEditor().selectAll();
         champRecherche.setName("someComboBox");

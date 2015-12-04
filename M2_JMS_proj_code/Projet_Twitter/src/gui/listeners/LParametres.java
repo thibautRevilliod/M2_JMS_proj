@@ -33,7 +33,7 @@ public class LParametres implements ActionListener
 		gui.main.main.profilConnecte = SenderTwitter.getProfilConnecte();
 
 		
-		VueParametres vP = new VueParametres();
+		VueParametres vP = new VueParametres(this.vF);
 		vP.setVisible(true);
 		vP.setLocation(800, 300);
 	}

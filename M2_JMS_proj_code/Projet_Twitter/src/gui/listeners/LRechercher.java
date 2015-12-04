@@ -27,7 +27,8 @@ public class LRechercher implements ActionListener {
 			message = SenderTwitter.getMessageRetour();
 			//JOptionPane.showMessageDialog(vi, message, "Nouvel abonnement", JOptionPane.INFORMATION_MESSAGE);
 			if(message.contains("OK")) {
-				VueConsulter consult = new VueConsulter(SenderTwitter.getProfilAConsulter());
+				VueConsulter consult = new VueConsulter(this.vF, SenderTwitter.getProfilAConsulter());
+				
 				consult.setVisible(true);
 				
 				System.out.println("OK consultation");
