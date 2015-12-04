@@ -40,8 +40,6 @@ public class main {
 		vd.setVisible(true);
 		vd.setLocation(850, 300);
 		
-		
-		
 	}
 
 }
