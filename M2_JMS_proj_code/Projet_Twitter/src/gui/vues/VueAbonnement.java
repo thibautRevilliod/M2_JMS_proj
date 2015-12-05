@@ -13,15 +13,17 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import java.awt.Font;
 
-public class VueAbonnement extends JFrame{
+public class VueAbonnement extends JDialog{
 		
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JList<String> listPseudoSuivis;
 	
 
-	public VueAbonnement ()
-	{	this.setTitle("Abonnements");
+	public VueAbonnement (JFrame jf)
+	{	
+		super(jf,Dialog.ModalityType.DOCUMENT_MODAL);
+		this.setTitle("Abonnements");
 		this.setLocationRelativeTo(null);
 		this.setSize(515,432);
 		this.setResizable(false);
@@ -78,8 +80,8 @@ public class VueAbonnement extends JFrame{
 		btnSeDesabonner.setBounds(290, 282, 184, 29);
 		getContentPane().add(btnSeDesabonner);
 		
-		btnSeDesabonner.addActionListener(new LSeDesabonner(this));
-		btnSabonner.addActionListener(new LSuivre(this));
+		btnSeDesabonner.addActionListener(new LSeDesabonner(this,jf));
+		btnSabonner.addActionListener(new LSuivre(this,jf));
 		btnQuitter.addActionListener(new LFermerAbonnement (this));
 	}	
 

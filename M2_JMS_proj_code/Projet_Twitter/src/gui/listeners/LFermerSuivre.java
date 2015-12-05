@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 
@@ -17,11 +18,13 @@ public class LFermerSuivre implements ActionListener, WindowListener
 
 		
 	private VueSuivre vue;
+	private JFrame jFrameLiee;
 		
 	
-	public LFermerSuivre (VueSuivre pvue)
+	public LFermerSuivre (VueSuivre pvue, JFrame jf)
 	{
 			this.vue=pvue;
+			this.jFrameLiee=jf;
 	}
 	
 	
@@ -33,7 +36,7 @@ public class LFermerSuivre implements ActionListener, WindowListener
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
 			this.vue.setVisible(false);
-			VueAbonnement abo = new VueAbonnement();
+			VueAbonnement abo = new VueAbonnement(this.jFrameLiee);
 			abo.setVisible(true);
 		}
 		
@@ -45,7 +48,7 @@ public class LFermerSuivre implements ActionListener, WindowListener
 	public void windowClosing(WindowEvent arg0) 
 	{
 		this.vue.setVisible(false);
-		VueAbonnement abo = new VueAbonnement();
+		VueAbonnement abo = new VueAbonnement(this.jFrameLiee);
 		abo.setVisible(true);
 		
 	}

@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import gui.listeners.LAbonnements;
 import gui.listeners.LFermerFildActu;
 import gui.listeners.LGazouiller;
+import gui.listeners.LMonProfil;
 import gui.listeners.LParametres;
 import gui.listeners.LRafraichir;
 import gui.listeners.LRechercher;
@@ -26,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import java.awt.FlowLayout;
+import javax.swing.SwingConstants;
 
 public class VueFildActu extends JFrame
 {
@@ -83,12 +85,9 @@ public class VueFildActu extends JFrame
 		timerAction = new LRafraichir (this);
 		
 		JPanel panelInterne = new JPanel();
-		panelInterne.setLayout(new BorderLayout(2, 3));
+		panelInterne.setLayout(new BorderLayout(3, 3));
 		
-		JPanel panelRecherche = new JPanel();
-		panelInterne.add(panelRecherche,BorderLayout.NORTH);
-		
-
+		JPanel panelRecherche = new JPanel();		
 		
 		JLabel lblNewLabel = new JLabel("Rechercher un Gazouilleur");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -102,42 +101,48 @@ public class VueFildActu extends JFrame
         panelRecherche.add(champRecherche);
 		
 		JButton btnRechercher = new JButton("Voir");
-		btnRechercher.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnRechercher.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		
+		btnRechercher.setFont(new Font("Tahoma", Font.PLAIN, 18));		
 		panelRecherche.add(btnRechercher);
 		
-		topPanel.add(panelInterne);
+		panelInterne.add(panelRecherche,BorderLayout.NORTH);
+		
 				
 		JPanel panelGazouiller = new JPanel();
 		FlowLayout flowLayout_1 = (FlowLayout) panelGazouiller.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.RIGHT);
-		panelInterne.add(panelGazouiller);
 								
 		JButton btnGazouiller = new JButton("Gazouiller");
 		btnGazouiller.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panelGazouiller.add(btnGazouiller, BorderLayout.LINE_END);
-		btnGazouiller.addActionListener(new LGazouiller (this));
+		
+		panelInterne.add(panelGazouiller);
 		
 		JPanel panelProfil = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panelProfil.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
-		panelInterne.add(panelProfil,BorderLayout.LINE_START);
+		flowLayout.setAlignment(FlowLayout.LEFT);		
 		
 		JLabel lblMonPseudo = new JLabel(gui.main.main.profilConnecte.getPSEUDO());
 		lblMonPseudo.setFont(new Font("Tahoma", Font.BOLD, 24));
 		panelProfil.add(lblMonPseudo);
+		panelInterne.add(panelProfil,BorderLayout.LINE_START);
 		
+		JPanel monProfil = new JPanel();
+
+		FlowLayout flowLayout2 = (FlowLayout) monProfil.getLayout();
+		flowLayout2.setAlignment(FlowLayout.LEFT);
+		flowLayout.setAlignment(FlowLayout.LEFT);		
 		
+		JButton btnMonProfil = new JButton("Mon Profil");
+		btnMonProfil.setHorizontalAlignment(SwingConstants.LEFT);
+		btnMonProfil.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		monProfil.add(btnMonProfil);
+		panelInterne.add(monProfil, BorderLayout.SOUTH);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		monProfil.add(lblNewLabel_1);
 				
-
-						
-			
-		btnRechercher.addActionListener(new LRechercher(this));
-
+		topPanel.add(panelInterne);
+	
 		JButton btnParamtres = new JButton("Parametres");
 		btnParamtres.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		bottomPanel.add(btnParamtres);
@@ -149,9 +154,6 @@ public class VueFildActu extends JFrame
 		JButton btnQuitter = new JButton("Se Deconnecter");
 		btnQuitter.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		bottomPanel.add(btnQuitter);
-		
-		
-		
 		
 		
 		contentPane.add(centerPanel, BorderLayout.CENTER);
@@ -166,7 +168,9 @@ public class VueFildActu extends JFrame
         timer = new Timer(1000, timerAction);
         timer.start();
 		btnAbonnements.addActionListener(new LAbonnements(this));
-//		btnRafraichir.addActionListener(new LRafraichir (this));
+		btnMonProfil.addActionListener(new LMonProfil(this));
+		btnRechercher.addActionListener(new LRechercher(this));
+		btnGazouiller.addActionListener(new LGazouiller (this));
 		btnParamtres.addActionListener(new LParametres (this)); 
 		btnQuitter.addActionListener(new LFermerFildActu (this));
 		this.addWindowListener(new LFermerFildActu (this));

@@ -3,30 +3,33 @@ package gui.vues;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import gui.listeners.LFermerSuivre;
 import gui.listeners.LValiderSuivre;
 import metier.ProfilType;
+
+import java.awt.Dialog;
 import java.awt.Font;
 
-public class VueSuivre extends JFrame{
+public class VueSuivre extends JDialog{
 		
 	private JLabel lblNewLabel;
 	private Java2sAutoComboBox champRecherche;
 	private ArrayList<String> profils = new ArrayList<String>();
 
-	public VueSuivre ()
+	public VueSuivre (JFrame jf)
 	{
-		
+		super(jf,Dialog.ModalityType.DOCUMENT_MODAL);
 		this.setTitle("S'abonner");
 		this.setLocationRelativeTo(null);
 		this.setSize(412,196);
 		this.setResizable(false);
 		this.setLocation(800, 300);
 	
-		this.addWindowListener(new LFermerSuivre (this));
+		this.addWindowListener(new LFermerSuivre (this,jf));
 		getContentPane().setLayout(null);
 		
 		lblNewLabel = new JLabel("Pseudo :");
@@ -67,8 +70,8 @@ public class VueSuivre extends JFrame{
         champRecherche.setDataList(profils);
         getContentPane().add(champRecherche);
        
-		btnSabonner.addActionListener(new LValiderSuivre(this));
-		btnQuitter.addActionListener(new LFermerSuivre (this));
+		btnSabonner.addActionListener(new LValiderSuivre(this,jf));
+		btnQuitter.addActionListener(new LFermerSuivre (this,jf));
 	}
 
 	public String getSelectedItemListRecherche() {

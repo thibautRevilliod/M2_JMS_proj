@@ -4,6 +4,7 @@ package gui.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import gui.vues.VueAbonnement;
@@ -14,11 +15,12 @@ public class LValiderSuivre implements ActionListener
 {
 
 	private VueSuivre vi;
-	
+	private JFrame jFrameLiee;
 
-	public LValiderSuivre (VueSuivre vueSuivre)
+	public LValiderSuivre (VueSuivre vueSuivre, JFrame jf)
 	{
 		this.vi=vueSuivre;
+		this.jFrameLiee=jf;
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -32,7 +34,7 @@ public class LValiderSuivre implements ActionListener
 			JOptionPane.showMessageDialog(vi, message, "Nouvel abonnement", JOptionPane.INFORMATION_MESSAGE);
 			if(message.contains("OK")) {
 				vi.setVisible(false);
-				VueAbonnement vueAbo = new VueAbonnement();
+				VueAbonnement vueAbo = new VueAbonnement(this.jFrameLiee);
 				vueAbo.setVisible(true);
 				
 				System.out.println("OK je me suis abonnée");

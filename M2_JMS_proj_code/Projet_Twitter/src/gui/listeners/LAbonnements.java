@@ -34,7 +34,6 @@ public class LAbonnements implements ActionListener
 			gui.main.main.profilsAbonnes = SenderTwitter.getListeAbonnement();
 			System.out.println(message);
 			
-					
 		//Le code ci-dessous permet de retourner la liste des personnes suivies par l'utilisateur
 			SenderTwitter.listeSuivi(gui.main.main.profilConnecte.getPSEUDO());
 			message = SenderTwitter.getMessageRetour();		
@@ -42,9 +41,8 @@ public class LAbonnements implements ActionListener
 			System.out.println(message);
 			
 			
-			VueAbonnement va = new VueAbonnement();
+			VueAbonnement va = new VueAbonnement(this.vue);
 			va.setVisible(true);
-			this.vue.setVisible(false);
 
 	}
 }

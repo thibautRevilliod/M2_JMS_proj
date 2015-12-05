@@ -73,8 +73,8 @@ public class VueConsulter extends JDialog
 		
 		JLabel lblMonPseudo = new JLabel(profil.getPSEUDO());
 		lblMonPseudo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMonPseudo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 24));
-		lblMonPseudo.setBounds(169, 16, 213, 20);
+		lblMonPseudo.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblMonPseudo.setBounds(169, 16, 213, 35);
 		getContentPane().add(lblMonPseudo);
 		
 		JLabel lblNombreDeGazouillis = new JLabel("Nombre de gazouillis :");
