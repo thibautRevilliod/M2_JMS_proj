@@ -276,7 +276,8 @@ public class SenderTwitter {
 	            listeAbonne(pseudo);
         		//abonnement au topic messagesGeo
 		        	//lance le thread d'écoute du Topic
-		        	runnableConnexion = new MonRunnable(pseudo, messageConnexionRetour.getVille());
+	            	MonRunnable.setTest(true);
+	            	runnableConnexion = new MonRunnable(pseudo, messageConnexionRetour.getVille());
 		        	threadConnexion = new Thread(runnableConnexion);
 		        	threadConnexion.start();
         	}
