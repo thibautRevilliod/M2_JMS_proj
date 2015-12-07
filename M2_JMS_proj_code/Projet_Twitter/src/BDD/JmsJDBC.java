@@ -578,56 +578,56 @@ public class JmsJDBC {
 		JmsJDBC bdd = new JmsJDBC("JMS");
 		
 		System.out.println(" Création des profils : ");
-			System.out.println("Profil n°: " + bdd.creerProfil("PseudoToto", "mdp", "NomToto", "PrenomToto", "Toulouse"));
-			System.out.println("Profil n°: " +bdd.creerProfil("PseudoTutu", "mdp", "NomTutu", "PrenomTutu", "Marseille"));
-			System.out.println("Profil n°: " +bdd.creerProfil("Toto", "123", "NomToto", "PrenomToto", "Rodez"));
+			System.out.println("Profil n°: " + bdd.creerProfil("patoche", "mdp", "Sébastien", "Patrick", "Paris"));
+			System.out.println("Profil n°: " +bdd.creerProfil("mimie", "mdp", "Mathy", "Mimie", "Rennes"));
+			System.out.println("Profil n°: " +bdd.creerProfil("claire", "mdp", "Chazal", "Claire", "Rennes"));
 			System.out.println(" --> OK");
 		System.out.println(" Création des Gazouilli : ");
 			//récupère la dateHeure
 	    	Date date= new Date();
 			Timestamp time = new Timestamp(date.getTime());
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu", "PseudoToto", time, false));
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu geoloc", "PseudoToto", time, true));
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu2", "PseudoTutu", time, false));
-			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour contenu3", "Toto", time, false));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour je suis patoche", "patoche", time, false));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour je suis patoche de Paris", "patoche", time, true));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour je suis mimie", "mimie", time, false));
+			System.out.println("gazouilli n°: " + bdd.creerGazouilli("Bonjour je suis claire", "claire", time, false));
 			System.out.println(" --> OK");
 		
-		System.out.println("--> Vérification mdp : " + bdd.verificationIDMDP("PseudoToto", "mdp"));
+		System.out.println("--> Vérification mdp : " + bdd.verificationIDMDP("patoche", "mdp"));
 		System.out.println("--> Information profil : ");
-			ProfilType profil = bdd.informationProfil("PseudoToto");
+			ProfilType profil = bdd.informationProfil("patoche");
 			System.out.println("     " + profil.getPSEUDO() + " " + profil.getNOM() + " " + profil.getPRENOM() + " " + profil.getVILLE());
 		
-		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoToto", "PseudoTutu"));
-		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoTutu", "PseudoToto"));
-		
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("patoche", "mimie"));
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("mimie", "patoche"));
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("claire", "mimie"));
 		
 		System.out.println("--> Liste Abonne : ");
 			System.out.print("     ");
-			for(int i = 0; i < bdd.listeAbonne("PseudoTutu").size(); i++)
+			for(int i = 0; i < bdd.listeAbonne("mimie").size(); i++)
 			{
-				System.out.print(bdd.listeAbonne("PseudoTutu").get(i) + " ");
+				System.out.print(bdd.listeAbonne("mimie").get(i) + " ");
 			}
 			System.out.println("");
 			
 		System.out.println("--> Liste Suivi : ");
 			System.out.print("     ");
-			for(int i = 0; i < bdd.listeSuivi("PseudoTutu").size(); i++)
+			for(int i = 0; i < bdd.listeSuivi("mimie").size(); i++)
 			{
-				System.out.print(bdd.listeSuivi("PseudoTutu").get(i) + " ");
+				System.out.print(bdd.listeSuivi("mimie").get(i) + " ");
 			}
 			System.out.println("");
 			
-		System.out.println("--> Supprimer Abonnement : " + bdd.supprimerAbonnement("PseudoToto", "PseudoTutu"));
+		System.out.println("--> Supprimer Abonnement : " + bdd.supprimerAbonnement("patoche", "mimie"));
 		
-		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoTutu", "PseudoToto"));
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("mimie", "patoche"));
 		
-		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("PseudoToto", "PseudoTutu"));
+		System.out.println("--> Création Abonnement : " + bdd.creerAbonnement("patoche", "mimie"));
 		
-		System.out.println("--> Liste gazouilli de PseudoTutu : " +bdd.listeGazouilli("PseudoTutu").toString());
+		System.out.println("--> Liste gazouilli de mimie : " +bdd.listeGazouilli("mimie").toString());
 
-		System.out.println("--> Liste gazouilli des abonnements de PseudoTutu : " +bdd.listeGazouilliAbonnements("PseudoTutu").toString());
+		System.out.println("--> Liste gazouilli des abonnements de mimie : " +bdd.listeGazouilliAbonnements("mimie").toString());
 		
-		System.out.println("--> Nombre de gazouilli de PseudoToto : " +bdd.nbGazouilliPourUnProfil("PseudoToto"));
+		System.out.println("--> Nombre de gazouilli de patoche : " +bdd.nbGazouilliPourUnProfil("patoche"));
 		
 		System.out.println("--> Liste des profils : " +bdd.listeProfil().get(0).toString());
 

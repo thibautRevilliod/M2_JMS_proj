@@ -5,6 +5,7 @@ package gui.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import jms.SenderTwitter;
@@ -18,10 +19,13 @@ public class LSeDesabonner implements ActionListener
 {
 
 	private VueAbonnement vS;
+	private JFrame jFrameLiee;
 
-	public LSeDesabonner (VueAbonnement _vS)
+
+	public LSeDesabonner (VueAbonnement _vS, JFrame jf)
 	{
 		this.vS=_vS;
+		this.jFrameLiee=jf;
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -47,7 +51,7 @@ public class LSeDesabonner implements ActionListener
 				message2 = SenderTwitter.getMessageRetour();		
 				gui.main.main.profilsSuivis = SenderTwitter.getListeSuivi();
 				System.out.println("OK je me suis désabonnée");
-				VueAbonnement abo = new VueAbonnement();
+				VueAbonnement abo = new VueAbonnement(this.jFrameLiee);
 				abo.setVisible(true);
 				
 				

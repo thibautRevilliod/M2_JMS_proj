@@ -23,7 +23,7 @@ public class LGazouiller implements ActionListener
 
 	public void actionPerformed(ActionEvent e)
 	{
-		VueGazouiller ve = new VueGazouiller();
+		VueGazouiller ve = new VueGazouiller(this.vF);
 		ve.setVisible(true);
 			
 	}

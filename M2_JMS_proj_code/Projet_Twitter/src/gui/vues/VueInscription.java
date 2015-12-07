@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import java.awt.Font;
 
 public class VueInscription extends JFrame{
 		
@@ -37,55 +38,67 @@ public class VueInscription extends JFrame{
 		getContentPane().setLayout(null);
 		
 		lblEntrezVotrePseudo = new JLabel("Entrez votre pseudo :");
-		lblEntrezVotrePseudo.setBounds(48, 42, 211, 20);
+		lblEntrezVotrePseudo.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblEntrezVotrePseudo.setBounds(29, 48, 241, 20);
 		getContentPane().add(lblEntrezVotrePseudo);
 		
 		lblEntrezVotreMot = new JLabel("Entrez votre mot de passe :");
-		lblEntrezVotreMot.setBounds(48, 78, 211, 20);
+		lblEntrezVotreMot.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblEntrezVotreMot.setBounds(29, 84, 241, 20);
 		getContentPane().add(lblEntrezVotreMot);
 		
 		lblEntrezVotreNom = new JLabel("Entrez votre nom :");
-		lblEntrezVotreNom.setBounds(48, 114, 211, 20);
+		lblEntrezVotreNom.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblEntrezVotreNom.setBounds(29, 120, 241, 20);
 		getContentPane().add(lblEntrezVotreNom);
 		
 		lblEntrezVotrePrnom = new JLabel("Entrez votre prenom :");
-		lblEntrezVotrePrnom.setBounds(48, 150, 211, 20);
+		lblEntrezVotrePrnom.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblEntrezVotrePrnom.setBounds(29, 156, 241, 20);
 		getContentPane().add(lblEntrezVotrePrnom);
 		
 		lblEntrezVotreVille = new JLabel("Entrez votre ville :");
-		lblEntrezVotreVille.setBounds(48, 183, 211, 20);
+		lblEntrezVotreVille.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblEntrezVotreVille.setBounds(29, 189, 241, 20);
 		getContentPane().add(lblEntrezVotreVille);
 		
 		pseudo = new JTextField();
-		pseudo.setBounds(274, 39, 146, 26);
+		pseudo.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		pseudo.setBounds(296, 48, 175, 26);
 		getContentPane().add(pseudo);
 		pseudo.setColumns(10);
 		
 		password = new JPasswordField();
-		password.setBounds(274, 75, 146, 26);
+		password.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		password.setBounds(296, 84, 175, 26);
 		getContentPane().add(password);
 		password.setColumns(10);
 		
 		nom = new JTextField();
-		nom.setBounds(274, 111, 146, 26);
+		nom.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		nom.setBounds(296, 120, 175, 26);
 		getContentPane().add(nom);
 		nom.setColumns(10);
 		
 		prenom = new JTextField();
-		prenom.setBounds(274, 147, 146, 26);
+		prenom.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		prenom.setBounds(296, 156, 175, 26);
 		getContentPane().add(prenom);
 		prenom.setColumns(10);
 		
 		ville = new JTextField();
-		ville.setBounds(274, 183, 146, 26);
+		ville.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		ville.setBounds(296, 192, 175, 26);
 		getContentPane().add(ville);
 		ville.setColumns(10);
 		
 		JButton btnValider = new JButton("Valider");
+		btnValider.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnValider.setBounds(144, 249, 115, 29);
 		getContentPane().add(btnValider);
 		
 		JButton btnQuitter = new JButton("Quitter");
+		btnQuitter.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnQuitter.setBounds(296, 249, 115, 29);
 		getContentPane().add(btnQuitter);
 		

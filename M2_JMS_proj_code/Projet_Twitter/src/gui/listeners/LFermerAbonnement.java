@@ -33,8 +33,6 @@ public class LFermerAbonnement implements ActionListener, WindowListener
 		if (reponse == JOptionPane.YES_OPTION) 
 		{
 			this.vue.setVisible(false);
-			VueFildActu fil = new VueFildActu();
-			fil.setVisible(true);
 		}
 		
 	}
@@ -51,8 +49,6 @@ public class LFermerAbonnement implements ActionListener, WindowListener
 
 	//@Override
 	public void windowClosing(WindowEvent arg0) {
-		VueFildActu fil = new VueFildActu();
-		fil.setVisible(true);
 	} 
 	
 }

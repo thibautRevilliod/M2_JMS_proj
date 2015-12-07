@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 
 public class VueMenuDepart extends JFrame
@@ -24,6 +25,7 @@ public class VueMenuDepart extends JFrame
 		getContentPane().setLayout(null);
 		
 		JButton btnInscription = new JButton("Inscription");
+		btnInscription.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnInscription.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -32,14 +34,17 @@ public class VueMenuDepart extends JFrame
 		getContentPane().add(btnInscription);
 		
 		JButton btnConnexion = new JButton("Connexion");
+		btnConnexion.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnConnexion.setBounds(137, 74, 115, 29);
 		getContentPane().add(btnConnexion);
 		
 		JButton btnQuitter = new JButton("Quitter");
+		btnQuitter.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnQuitter.setBounds(258, 74, 115, 29);
 		getContentPane().add(btnQuitter);
 		
 		JLabel lblQueVoulezVous = new JLabel("Que voulez vous faire ? ");
+		lblQueVoulezVous.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblQueVoulezVous.setBounds(36, 38, 265, 20);
 		getContentPane().add(lblQueVoulezVous);
 		

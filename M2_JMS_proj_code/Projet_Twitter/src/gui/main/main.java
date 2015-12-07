@@ -23,10 +23,14 @@ public class main {
 	
 	public static void main(String[] args) 
 	{
-		//com.jtattoo.plaf.texture.TextureLookAndFeel
-		//com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel
+
+
+//		try {
+//			UIManager.setLookAndFeel("com.jtattoo.plaf.texture.TextureLookAndFeel");
+
 		try {
-			UIManager.setLookAndFeel("com.jtattoo.plaf.texture.TextureLookAndFeel");
+			UIManager.setLookAndFeel("com.jtattoo.plaf.graphite.GraphiteLookAndFeel");
+
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			// TODO Auto-generated catch block
@@ -41,8 +45,6 @@ public class main {
 		vd = new VueMenuDepart();
 		vd.setVisible(true);
 		vd.setLocation(850, 300);
-		
-		
 		
 	}
 
