@@ -274,6 +274,7 @@ public class SenderTwitter {
         	{	        	
         		//mise à jour de la liste des abonnés
 	            listeAbonne(pseudo);
+	            listeSuivi(pseudo);
         		//abonnement au topic messagesGeo
 		        	//lance le thread d'écoute du Topic
 	            	MonRunnable.setTest(true);

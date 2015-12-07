@@ -31,7 +31,7 @@ public class MonRunnable implements Runnable {
 	private String destName = null;
 	private String pseudo;
 	private String ville;
-	private ArrayList<String> listeDesAbonnementsProfil = new ArrayList<String>();
+	private ArrayList<String> listeDesSuivisProfil = new ArrayList<String>();
 	private static boolean test = true;
 	
 	public static boolean isTest() {
@@ -56,25 +56,25 @@ public class MonRunnable implements Runnable {
 			ObjectMessage objectMessage = null;
 			MessageGazouilli messageGazouilli = null;
 	        while(test) {
-	        	//TODO: vérification dans le topic toute les 100 milliseconde ok ?
+	        	//vérification dans le topic toute les 100 milliseconde ok ?
 	        	Message message = topicSubscriber.receive(100);
-	        	listeDesAbonnementsProfil = SenderTwitter.getListeAbonnement();
-	        	if((listeDesAbonnementsProfil != null) && (message != null))
+	        	listeDesSuivisProfil = SenderTwitter.getListeSuivi();
+	        	if((listeDesSuivisProfil != null) && (message != null))
 	        	{
-	        		if(listeDesAbonnementsProfil.size() > 0)
+	        		if(listeDesSuivisProfil.size() > 0)
 		        	{	
 	        			objectMessage = (ObjectMessage) message;
 		                messageGazouilli = (MessageGazouilli) objectMessage.getObject();
 		                if(messageGazouilli.isEstGeolocalise())
 		        		{
-		        			if((listeDesAbonnementsProfil.contains(message.getJMSType())) && (ville.equals(messageGazouilli.getVille())))
+		        			if((listeDesSuivisProfil.contains(message.getJMSType())) && (ville.equals(messageGazouilli.getVille())))
 		        			{
 		        				//cas avec la geolocalisation
 		        				gui.main.main.gazouillisSession.add(messageGazouilli);
 				                System.out.println("Gazouilli : " + messageGazouilli.toString());
 		        			}
 		        			
-		        		}else if(listeDesAbonnementsProfil.contains(message.getJMSType()))
+		        		}else if(listeDesSuivisProfil.contains(message.getJMSType()))
 			        	{
 			        		//cas sans geolocalisation
 		        			gui.main.main.gazouillisSession.add(messageGazouilli);

@@ -29,7 +29,6 @@ public class LRafraichir implements ActionListener
 
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println("test");
 		for (int i=0; i<gui.main.main.gazouillisSession.size();i++){
 			vF.getArea().append(gui.main.main.gazouillisSession.get(i).toString()+"\n--\n");
 			gui.main.main.gazouillisSession.remove(i);
